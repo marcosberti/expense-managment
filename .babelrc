@@ -13,5 +13,5 @@
       }
     ]
   ],
-  "plugins": ["@emotion/babel-plugin"]
+  "plugins": ["transform-inline-environment-variables"]
 }
