@@ -9,6 +9,10 @@ import * as mq from './styles/media-queries'
 const Grid = ({children}) => (
   <main
     css={css`
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
       ${mq.large} {
         display: grid;
         grid-template-columns: 15rem 1fr;

@@ -20,7 +20,6 @@ const Nav = styled.nav`
     transform: none;
     position: static;
     width: 100%;
-    border-right: 1px solid #adadad;
     grid-area: navbar;
   }
 `

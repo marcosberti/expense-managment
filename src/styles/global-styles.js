@@ -10,9 +10,19 @@ const GlobalStyles = () => (
         font-family: 'Poppins', sans-serif;
         color: #333;
       }
+      * {
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+      }
       body {
-        overflow: hidden;
         background-color: #eee;
+        height: 100vh;
+        width: 100vw;
+
+        & > #root {
+          width: 100%;
+          height: 100%;
+        }
       }
       ul,
       button {

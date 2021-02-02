@@ -2,7 +2,9 @@
 import {css} from '@emotion/react'
 import {Category} from './category'
 import {RentIcon, FitnessIcon, SchoolIcon} from '../../../assets/icons'
+import * as mq from '../../../styles/media-queries'
 
+// TODO: fetch data from db
 const categorias = [
   {
     name: 'Alquiler',
@@ -14,12 +16,28 @@ const categorias = [
 ]
 
 const Categories = () => (
-  <div>
+  <div
+    css={css`
+      --category-size: 10rem;
+      --category-margin-right: 1.5rem;
+      --category-padding: 1rem;
+
+      overflow-x: auto;
+      width: 100vw;
+
+      ${mq.large} {
+        --category-size: 12rem;
+      }
+    `}
+  >
+    {console.log('mirar comentario')}
     <ul
       css={css`
+        width: calc(
+          (var(--category-size) * ${categorias.length}) +
+            (var(--category-margin-right) * ${categorias.length - 1}) + 2rem
+        );
         display: flex;
-        padding-left: 2rem;
-        padding-top: 2rem;
       `}
     >
       {categorias.map(categoria => (

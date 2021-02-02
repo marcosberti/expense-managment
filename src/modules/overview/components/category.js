@@ -8,11 +8,11 @@ const Category = ({data: {name, ammount, icon: Icon}}) => (
   <li
     css={css`
       padding: 1rem;
-      margin-right: 1.5rem;
+      margin-right: var(--category-margin-right);
       background-color: #fff;
       border-radius: 8px;
-      width: 10rem;
-      height: 10rem;
+      width: var(--category-size);
+      height: var(--category-size);
     `}
   >
     <div
@@ -23,7 +23,7 @@ const Category = ({data: {name, ammount, icon: Icon}}) => (
         justify-content: space-between;
       `}
     >
-      <Icon fill="#333" size={84} />
+      <Icon fill="#21bf73" size={84} />
       <div
         css={css`
           padding-left: 10px;
