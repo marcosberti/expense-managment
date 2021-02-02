@@ -11,7 +11,7 @@ const Overview = () => (
     <h2
       css={css`
         font-weight: 600;
-        color: #555;
+        color: var(--text-color-light);
       `}
     >
       Categorias con mas gastos

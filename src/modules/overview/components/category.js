@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import {primary} from '../../../styles/colors'
 
 const options = {style: 'currency', currency: 'ARS'}
 
@@ -9,7 +10,7 @@ const Category = ({data: {name, ammount, icon: Icon}}) => (
     css={css`
       padding: 1rem;
       margin-right: var(--category-margin-right);
-      background-color: #fff;
+      background-color: var(--background-color-light);
       border-radius: 8px;
       width: var(--category-size);
       height: var(--category-size);
@@ -23,7 +24,7 @@ const Category = ({data: {name, ammount, icon: Icon}}) => (
         justify-content: space-between;
       `}
     >
-      <Icon fill="#21bf73" size={84} />
+      <Icon fill={primary[400]} size={84} />
       <div
         css={css`
           padding-left: 10px;

@@ -9,7 +9,7 @@ import {MenuIcon, DeclineIcon} from '../../../assets/icons/index'
 import {Button} from '../../common/components/button'
 
 const Nav = styled.nav`
-  background-color: #fff;
+  background-color: var(--background-color-light);
   height: 100vh;
   width: 100vw;
   position: absolute;
@@ -52,7 +52,7 @@ const NavbarItem = styled.li`
   ${({isActive = false}) =>
     isActive
       ? `color: #fff;
-         background-color: #21bf73;
+         background-color: var(--primary-400);
          border-radius: 10px;`
       : null}
 `

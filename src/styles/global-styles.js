@@ -1,41 +1,63 @@
 /** @jsxImportSource @emotion/react */
 import {Global as EmotionGlobal, css} from '@emotion/react'
 import emotionNormalize from 'emotion-normalize'
+import {primary, neutral} from './colors'
 
 const GlobalStyles = () => (
   <EmotionGlobal
     styles={css`
       ${emotionNormalize}
-      html {
-        font-family: 'Poppins', sans-serif;
-        color: #333;
-      }
-      * {
-        box-sizing: border-box;
-        scroll-behavior: smooth;
-      }
-      body {
-        background-color: #eee;
-        height: 100vh;
-        width: 100vw;
 
-        & > #root {
-          width: 100%;
-          height: 100%;
+      html {
+        --background-color-light: #fff;
+        --background-color: ${neutral[200]};
+        --text-color: ${neutral[600]};
+        --text-color-light: ${neutral[400]};
+        --primary-400: ${primary[400]};
+
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-color);
+        box-sizing: border-box;
+      }
+
+      * {
+        &::-webkit-scrollbar {
+          width: 8px;
+          background: ${neutral[300]};
+        }
+        &::-webkit-scrollbar-thumb {
+          background: ${primary[400]};
         }
       }
+
+      *,
+      *:after,
+      *:before {
+        box-sizing: inherit;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: var(--background-color);
+        height: 100vh;
+        width: 100vw;
+      }
+
       ul,
       button {
         margin: 0;
         padding: 0;
       }
+
       ul {
         list-style: none;
       }
+
       button {
         cursor: pointer;
         border: none;
       }
+
       svg {
         vertical-align: middle;
       }
