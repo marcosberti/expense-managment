@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import {Small} from '../../common/components'
+import {formatDate} from '../../common/utils/utils'
 
 const Header = ({user}) => (
   <header
@@ -10,15 +12,7 @@ const Header = ({user}) => (
     `}
   >
     <h1>{user.name}</h1>
-    <small
-      css={css`
-        color: #777;
-      `}
-    >
-      {new Intl.DateTimeFormat('es-AR', {dateStyle: 'medium'}).format(
-        Date.now()
-      )}
-    </small>
+    <Small>{formatDate(Date.now())}</Small>
   </header>
 )
 

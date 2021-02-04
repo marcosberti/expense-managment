@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
+import PropTypes from 'prop-types'
 import {Category} from './category'
 import {RentIcon, FitnessIcon, SchoolIcon} from '../../../assets/icons'
 import * as mq from '../../../styles/media-queries'
@@ -8,14 +9,25 @@ import * as mq from '../../../styles/media-queries'
 const categorias = [
   {
     name: 'Alquiler',
-    ammount: 24000,
+    ammount: 66666,
     icon: RentIcon,
   },
-  {name: 'Deporte', ammount: 1000, icon: FitnessIcon},
-  {name: 'Educación', ammount: 4700, icon: SchoolIcon},
+  {name: 'Deporte', ammount: 3454, icon: FitnessIcon},
+  {name: 'Cursos', ammount: 4700, icon: SchoolIcon},
 ]
 
-const Categories = () => (
+const CategoriesTitle = () => (
+  <h2
+    css={css`
+      font-weight: 600;
+      color: var(--text-color-light);
+    `}
+  >
+    Categorias con mas gastos
+  </h2>
+)
+
+const CategoriesList = ({children}) => (
   <div
     css={css`
       --category-size: 10rem;
@@ -23,28 +35,43 @@ const Categories = () => (
       --category-padding: 1rem;
 
       overflow-x: auto;
-      width: 100vw;
+      width: 100%;
 
       ${mq.large} {
         --category-size: 12rem;
       }
     `}
   >
-    {console.log('mirar comentario')}
     <ul
       css={css`
         width: calc(
           (var(--category-size) * ${categorias.length}) +
-            (var(--category-margin-right) * ${categorias.length - 1}) + 2rem
+            (var(--category-margin-right) * ${categorias.length - 1})
         );
         display: flex;
       `}
     >
-      {categorias.map(categoria => (
-        <Category key={JSON.stringify(categoria)} data={categoria} />
-      ))}
+      {children}
     </ul>
   </div>
 )
+
+CategoriesList.propTypes = {
+  children: PropTypes.array,
+}
+
+const Categories = () => {
+  console.error('si categorias esta vacia, hacer un category de placeholder')
+  return (
+    <div>
+      <CategoriesTitle />
+      <CategoriesList>
+        {categorias.map(categoria => (
+          <Category key={JSON.stringify(categoria)} data={categoria} />
+        ))}
+      </CategoriesList>
+    </div>
+  )
+}
 
 export {Categories}

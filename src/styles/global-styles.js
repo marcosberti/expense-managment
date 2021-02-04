@@ -14,6 +14,9 @@ const GlobalStyles = () => (
         --text-color: ${neutral[600]};
         --text-color-light: ${neutral[400]};
         --primary-400: ${primary[400]};
+        --font-size-sm: 0.75rem;
+        --font-size-lg: 1.2rem;
+        --border-radius: 10px;
 
         font-family: 'Poppins', sans-serif;
         color: var(--text-color);
@@ -23,6 +26,7 @@ const GlobalStyles = () => (
       * {
         &::-webkit-scrollbar {
           width: 8px;
+          height: 8px;
           background: ${neutral[300]};
         }
         &::-webkit-scrollbar-thumb {
@@ -60,6 +64,10 @@ const GlobalStyles = () => (
 
       svg {
         vertical-align: middle;
+      }
+
+      h1 {
+        margin-bottom: 0.5rem;
       }
     `}
   />

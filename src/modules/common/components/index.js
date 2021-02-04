@@ -13,4 +13,8 @@ const Button = styled.button`
   ${({variant}) => ({...buttonVariants[variant]})}
 `
 
-export {Button}
+const Small = styled.small`
+  color: var(--text-color-light);
+`
+
+export {Button, Small}

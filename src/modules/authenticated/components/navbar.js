@@ -6,7 +6,7 @@ import styled from '@emotion/styled'
 import {useMobile} from '../../../hooks/useMobile'
 import * as mq from '../../../styles/media-queries'
 import {MenuIcon, DeclineIcon} from '../../../assets/icons/index'
-import {Button} from '../../common/components/button'
+import {Button} from '../../common/components'
 
 const Nav = styled.nav`
   background-color: var(--background-color-light);
@@ -53,7 +53,7 @@ const NavbarItem = styled.li`
     isActive
       ? `color: #fff;
          background-color: var(--primary-400);
-         border-radius: 10px;`
+         border-radius: var(--border-radius);`
       : null}
 `
 

@@ -1,21 +1,27 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import {Categories} from './categories'
+import * as mq from '../../../styles/media-queries'
 
 const Overview = () => (
   <div
     css={css`
       padding: 1rem;
+
+      ${mq.large} {
+        display: grid;
+        grid-template-rows: 1fr 16rem;
+      }
     `}
   >
-    <h2
+    <div
       css={css`
-        font-weight: 600;
-        color: var(--text-color-light);
+        border-radius: var(--border-radius);
+        background-color: var(--background-color-light);
       `}
     >
-      Categorias con mas gastos
-    </h2>
+      {' '}
+    </div>
     <Categories />
   </div>
 )
