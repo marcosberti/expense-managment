@@ -23,4 +23,6 @@ const neutral = {
   600: '#333',
 }
 
-export {primary, secondary, neutral}
+const transparent = '#fff0'
+
+export {primary, secondary, neutral, transparent}
