@@ -62,6 +62,7 @@ CategoriesList.propTypes = {
 
 const Categories = () => {
   console.error('si categorias esta vacia, hacer un category de placeholder')
+  console.error('cata categoria con su color, si no con uno por defecto')
   return (
     <div>
       <CategoriesTitle />

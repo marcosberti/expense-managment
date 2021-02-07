@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
-import {DonutChart} from './donut-chart'
+import {MainChart} from './main-chart'
 import {Categories} from './categories'
 import * as mq from '../../../styles/media-queries'
-import {primary} from '../../../styles/colors'
 
 const Overview = () => (
   <div
@@ -24,15 +23,11 @@ const Overview = () => (
         ${mq.large} {
           display: grid;
           grid-template-columns: 1fr auto;
-
-          & > div:first-of-type {
-            border-right: 4px solid ${primary[300]};
-          }
         }
       `}
     >
       <div> </div>
-      <DonutChart income={124800} spent={100000} />
+      <MainChart />
     </div>
     <Categories />
   </div>

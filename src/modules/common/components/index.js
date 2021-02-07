@@ -17,4 +17,15 @@ const Small = styled.small`
   color: var(--text-color-light);
 `
 
-export {Button, Small}
+const Big = styled.div`
+  color: var(--text-color-light);
+  font-size: 1.5rem;
+  font-weight: 600;
+`
+const Bigger = styled.div`
+  color: var(--text-color-light);
+  font-size: 2.5rem;
+  font-weight: 700;
+`
+
+export {Button, Small, Big, Bigger}

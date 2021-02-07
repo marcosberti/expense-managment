@@ -2,7 +2,7 @@
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import {useMobile} from '../../../hooks/useMobile'
-import {formatAmmount} from '../../common/utils/utils'
+import {formatAmount} from '../../common/utils/utils'
 import {primary} from '../../../styles/colors'
 
 const Category = ({data: {name, ammount, icon: Icon}}) => {
@@ -51,7 +51,7 @@ const Category = ({data: {name, ammount, icon: Icon}}) => {
               font-size: var(--font-size-lg);
             `}
           >
-            {formatAmmount(ammount)}
+            {formatAmount(ammount)}
           </span>
         </div>
       </div>

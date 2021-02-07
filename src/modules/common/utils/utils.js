@@ -9,6 +9,6 @@ const formatDate = date => {
 
 const options = {style: 'currency', currency: 'ARS'}
 
-const formatAmmount = ammount => ammount.toLocaleString('es-AR', options)
+const formatAmount = ammount => ammount.toLocaleString('es-AR', options)
 
-export {formatDate, formatAmmount}
+export {formatDate, formatAmount}
