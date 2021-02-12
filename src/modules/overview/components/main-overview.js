@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import {AbsoluteBox, Small, Big, Bigger} from 'common-components'
+import {formatAmount} from 'common-utils'
+import {secondary} from 'colors'
+import * as mq from 'media-queries'
 import {DonutChart} from './donut-chart'
-import {AbsoluteBox, Small, Big, Bigger} from '../../common/components'
-import {formatAmount} from '../../common/utils/utils'
-import {secondary} from '../../../styles/colors'
-import * as mq from '../../../styles/media-queries'
 
 const MainOverview = ({income, spent}) => (
   <div

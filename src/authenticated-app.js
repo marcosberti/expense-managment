@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import * as mq from 'media-queries'
 import {Navbar} from './modules/authenticated/components/navbar'
 import {Header} from './modules/authenticated/components/header'
 import {Overview} from './modules/overview/components/overview'
-import * as mq from './styles/media-queries'
 
 const Grid = ({children}) => (
   <main

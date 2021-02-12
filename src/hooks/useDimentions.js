@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {bp} from '../styles/media-queries'
+import {bp} from 'media-queries'
 
 const useDimentions = (selector = 'body') => {
   const [dimentions, setDimentions] = React.useState(null)

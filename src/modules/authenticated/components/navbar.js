@@ -3,10 +3,10 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
-import {useMobile} from '../../../hooks/useMobile'
-import * as mq from '../../../styles/media-queries'
-import {MenuIcon, DeclineIcon} from '../../../assets/icons/index'
-import {Button} from '../../common/components'
+import {useDimentions} from 'hooks'
+import * as mq from 'media-queries'
+import {MenuIcon, DeclineIcon} from 'icons'
+import {Button} from 'common-components'
 
 const Nav = styled.nav`
   background-color: var(--background-color-light);
@@ -104,7 +104,7 @@ MobileMenuButton.propTypes = {
 
 const NavbarContainer = () => {
   const navRef = React.useRef()
-  const isMobile = useMobile()
+  const {isMobile} = useDimentions()
 
   return (
     <>

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import * as mq from '../../../styles/media-queries'
+import * as mq from 'media-queries'
 
 const buttonVariants = {
   icon: {

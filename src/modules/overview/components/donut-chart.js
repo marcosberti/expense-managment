@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {scaleSequential, interpolateRdYlGn, arc} from 'd3'
-import {useDimentions} from '../../../hooks/useDimentions'
+import {useDimentions} from 'hooks'
 
 const d3 = {
   scaleSequential,
@@ -45,7 +45,7 @@ const DonutChart = ({income, spent}) => {
               r={radius}
               fill="none"
               stroke="#eee"
-              strokeWidth={strokeWidth}
+              strokeWidth={strokeWidth * 0.8}
             />
           </g>
           <g transform={`translate(${width / 2} ${translateHeight})`}>
@@ -55,7 +55,7 @@ const DonutChart = ({income, spent}) => {
                 d={d.path}
                 fill="none"
                 stroke={d.stroke}
-                strokeWidth={strokeWidth * 0.8}
+                strokeWidth={strokeWidth}
                 strokeLinejoin="round"
               />
             ))}

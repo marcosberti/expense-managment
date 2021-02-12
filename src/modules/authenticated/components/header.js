@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import {Small} from '../../common/components'
-import {formatDate} from '../../common/utils/utils'
+import {Small} from 'common-components'
+import {formatDate} from 'common-utils'
 
 const Header = ({user}) => (
   <header

@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import {useMobile} from '../../../hooks/useMobile'
-import {formatAmount} from '../../common/utils/utils'
-import {primary} from '../../../styles/colors'
+import {useDimentions} from 'hooks'
+import {formatAmount} from 'common-utils'
+import {primary} from 'colors'
 
 const Category = ({data: {name, ammount, icon: Icon}}) => {
-  const isMobile = useMobile()
+  const {isMobile} = useDimentions()
   const iconSize = isMobile ? 60 : 84
 
   return (

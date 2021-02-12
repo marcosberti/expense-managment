@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import {AbsoluteBox, Big, Small} from '../../common/components'
-import {IncomeIcon, ExpensesIcon, MoneyBalanceIcon} from '../../../assets/icons'
-import * as mq from '../../../styles/media-queries'
-import {formatAmount} from '../../common/utils/utils'
-import {primary} from '../../../styles/colors'
+import {primary} from 'colors'
+import {Big, Small} from 'common-components'
+import {IncomeIcon, ExpensesIcon, MoneyBalanceIcon} from 'icons'
+import * as mq from 'media-queries'
+import {formatAmount} from 'common-utils'
 
 const AmountDetail = ({children}) => (
   <div
@@ -43,7 +43,6 @@ const DetailOverview = ({income, spent}) => {
         flex-grow: 1;
         order: 2;
         position: relative;
-        /* display: flex; */
 
         ${mq.large} {
           order: 1;
@@ -58,17 +57,17 @@ const DetailOverview = ({income, spent}) => {
         `}
       >
         <AmountDetail>
-          <IncomeIcon fill={primary[500]} size={size} />
-          <Small>Facturado</Small>
+          <IncomeIcon fill={primary[600]} size={size} />
+          <Small>Ingresos</Small>
           <Big>{formatAmount(income)}</Big>
         </AmountDetail>
         <AmountDetail>
-          <ExpensesIcon fill="#f00" size={size} />
+          <ExpensesIcon fill="#b71d1d" size={size} />
           <Small>Gastos</Small>
           <Big>{formatAmount(spent)}</Big>
         </AmountDetail>
         <AmountDetail>
-          <MoneyBalanceIcon fill="#00f" size={size} />
+          <MoneyBalanceIcon fill="#1c1ccc" size={size} />
           <Small>Balance</Small>
           <Big>{formatAmount(income - spent)}</Big>
         </AmountDetail>

@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import {RentIcon, FitnessIcon, SchoolIcon} from 'icons'
+import * as mq from 'media-queries'
 import {Category} from './category'
-import {RentIcon, FitnessIcon, SchoolIcon} from '../../../assets/icons'
-import * as mq from '../../../styles/media-queries'
 
 // TODO: fetch data from db
 const categorias = [
