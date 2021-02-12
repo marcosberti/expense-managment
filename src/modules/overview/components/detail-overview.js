@@ -6,6 +6,8 @@ import {Big, Small} from 'common-components'
 import {IncomeIcon, ExpensesIcon, MoneyBalanceIcon} from 'icons'
 import * as mq from 'media-queries'
 import {formatAmount} from 'common-utils'
+import {ChartWrapper} from './chart-wrapper'
+import {BarChart} from './bar-chart'
 
 const AmountDetail = ({children}) => (
   <div
@@ -35,46 +37,51 @@ const AmountDetail = ({children}) => (
   </div>
 )
 
-const DetailOverview = ({income, spent}) => {
-  const size = 42
-  return (
-    <div
-      css={css`
-        flex-grow: 1;
-        order: 2;
-        position: relative;
+const MoneyBalance = ({income, spent}) => (
+  <div
+    css={css`
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+    `}
+  >
+    {[
+      {text: 'Ingresos', fill: primary[600], value: income, icon: IncomeIcon},
+      {text: 'Gastos', fill: '#b71d1d', value: spent, icon: ExpensesIcon},
+      {
+        text: 'Balance',
+        fill: '#1c1ccc',
+        value: income - spent,
+        icon: MoneyBalanceIcon,
+      },
+    ].map(({text, fill, icon: Icon, value}) => (
+      <AmountDetail key={text}>
+        <Icon fill={fill} size={42} />
+        <Small>{text}</Small>
+        <Big>{formatAmount(value)}</Big>
+      </AmountDetail>
+    ))}
+  </div>
+)
 
-        ${mq.large} {
-          order: 1;
-        }
-      `}
-    >
-      <div
-        css={css`
-          display: flex;
-          gap: 1rem;
-          padding: 1rem;
-        `}
-      >
-        <AmountDetail>
-          <IncomeIcon fill={primary[600]} size={size} />
-          <Small>Ingresos</Small>
-          <Big>{formatAmount(income)}</Big>
-        </AmountDetail>
-        <AmountDetail>
-          <ExpensesIcon fill="#b71d1d" size={size} />
-          <Small>Gastos</Small>
-          <Big>{formatAmount(spent)}</Big>
-        </AmountDetail>
-        <AmountDetail>
-          <MoneyBalanceIcon fill="#1c1ccc" size={size} />
-          <Small>Balance</Small>
-          <Big>{formatAmount(income - spent)}</Big>
-        </AmountDetail>
-      </div>
-    </div>
-  )
-}
+const DetailOverview = ({income, spent}) => (
+  <div
+    css={css`
+      display: none;
+
+      ${mq.large} {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+      }
+    `}
+  >
+    <MoneyBalance income={income} spent={spent} />
+    <ChartWrapper wrapperId="barchart-wrapper">
+      <BarChart />
+    </ChartWrapper>
+  </div>
+)
 
 DetailOverview.propTypes = {
   income: PropTypes.number.isRequired,

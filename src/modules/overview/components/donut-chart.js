@@ -1,19 +1,26 @@
+import * as React from 'react'
 import PropTypes from 'prop-types'
-import {scaleSequential, interpolateRdYlGn, arc} from 'd3'
-import {useDimentions} from 'hooks'
+import {select, scaleSequential, interpolateRdYlGn, arc} from 'd3'
 
 const d3 = {
   scaleSequential,
   interpolateRdYlGn,
   arc,
+  select,
 }
 
 const margins = 30
 const strokeWidth = 30
 const perSilceAngle = (2 * Math.PI) / 100
 
-const DonutChart = ({income, spent}) => {
-  const {width, height, isMobile} = useDimentions('#donut')
+const DonutChart = ({
+  width = 100,
+  height = 100,
+  isMobile = false,
+  income,
+  spent,
+}) => {
+  const donutRef = React.useRef()
   const radius = (isMobile ? 250 : Math.min(width, height)) / 2 - margins
   const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([100, 0])
   const arcGenerator = d3.arc().innerRadius(radius).outerRadius(radius)
@@ -27,11 +34,23 @@ const DonutChart = ({income, spent}) => {
     }),
   }))
 
+  console.log(width, height)
+
   const translateHeight = height / 3 + (isMobile ? 16 : 0)
+
+  // React.useEffect(() => {
+  //   d3.select(donutRef.current)
+  //     .selectAll('path')
+  //     .data(data)
+  //     .attr('d', null)
+  //     .transition()
+  //     .duration(500)
+  //     .attr('d', d => d.path)
+  // }, [])
 
   return (
     <svg
-      id="donut"
+      id="donut-chart"
       width={width ?? '100%'}
       height={height ?? '100%'}
       viewBox={width && height ? `0 0 ${width} ${height}` : '0 0 100 100'}
@@ -48,7 +67,10 @@ const DonutChart = ({income, spent}) => {
               strokeWidth={strokeWidth * 0.8}
             />
           </g>
-          <g transform={`translate(${width / 2} ${translateHeight})`}>
+          <g
+            ref={donutRef}
+            transform={`translate(${width / 2} ${translateHeight})`}
+          >
             {data.map(d => (
               <path
                 key={d.path}
@@ -67,6 +89,9 @@ const DonutChart = ({income, spent}) => {
 }
 
 DonutChart.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  isMobile: PropTypes.bool,
   income: PropTypes.number.isRequired,
   spent: PropTypes.number.isRequired,
 }

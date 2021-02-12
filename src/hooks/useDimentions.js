@@ -21,7 +21,7 @@ const useDimentions = (selector = 'body') => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const elem = document.querySelector(selector)
     setDimentions({
       width: elem.clientWidth,
