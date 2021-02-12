@@ -1,12 +1,13 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {select, scaleSequential, interpolateRdYlGn, arc} from 'd3'
+import {arc, select, scaleSequential, interpolate, interpolateRdYlGn} from 'd3'
 
 const d3 = {
-  scaleSequential,
-  interpolateRdYlGn,
   arc,
   select,
+  scaleSequential,
+  interpolate,
+  interpolateRdYlGn,
 }
 
 const margins = 30
@@ -28,25 +29,28 @@ const DonutChart = ({
 
   const data = new Array(100).fill(1).map((_, i) => ({
     stroke: i > spentPer ? '#fff0' : colorScale(i),
-    path: arcGenerator({
-      startAngle: i * perSilceAngle,
-      endAngle: (i + 1) * perSilceAngle,
-    }),
+    startAngle: i * perSilceAngle,
+    endAngle: (i + 1) * perSilceAngle,
   }))
-
-  console.log(width, height)
 
   const translateHeight = height / 3 + (isMobile ? 16 : 0)
 
-  // React.useEffect(() => {
-  //   d3.select(donutRef.current)
-  //     .selectAll('path')
-  //     .data(data)
-  //     .attr('d', null)
-  //     .transition()
-  //     .duration(500)
-  //     .attr('d', d => d.path)
-  // }, [])
+  React.useEffect(() => {
+    d3.select(donutRef.current)
+      .selectAll('path')
+      .data(data)
+      .join('path')
+      .attr('stroke', d => d.stroke)
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-width', strokeWidth)
+      .transition()
+      .duration(1000)
+      .attrTween('d', d => {
+        const start = {startAngle: 0, endAngle: 0}
+        const i = d3.interpolate(start, d)
+        return t => arcGenerator(i(t))
+      })
+  }, [arcGenerator, data])
 
   return (
     <svg
@@ -55,35 +59,20 @@ const DonutChart = ({
       height={height ?? '100%'}
       viewBox={width && height ? `0 0 ${width} ${height}` : '0 0 100 100'}
     >
-      {width && height && (
-        <>
-          <g transform={`translate(${width / 2} ${translateHeight})`}>
-            <circle
-              cx="0"
-              cy="0"
-              r={radius}
-              fill="none"
-              stroke="#eee"
-              strokeWidth={strokeWidth * 0.8}
-            />
-          </g>
-          <g
-            ref={donutRef}
-            transform={`translate(${width / 2} ${translateHeight})`}
-          >
-            {data.map(d => (
-              <path
-                key={d.path}
-                d={d.path}
-                fill="none"
-                stroke={d.stroke}
-                strokeWidth={strokeWidth}
-                strokeLinejoin="round"
-              />
-            ))}
-          </g>
-        </>
-      )}
+      <g transform={`translate(${width / 2} ${translateHeight})`}>
+        <circle
+          cx="0"
+          cy="0"
+          r={radius}
+          fill="none"
+          stroke="#eee"
+          strokeWidth={strokeWidth * 0.8}
+        />
+      </g>
+      <g
+        ref={donutRef}
+        transform={`translate(${width / 2} ${translateHeight})`}
+      />
     </svg>
   )
 }

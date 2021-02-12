@@ -7,7 +7,7 @@ import {Categories} from './categories'
 
 // TODO: conectar y recuperar de db
 const income = 80000
-const spent = 65000
+const spent = 75000
 
 const Charts = () => (
   <div
