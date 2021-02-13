@@ -4,7 +4,7 @@ import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import {useDimentions} from 'hooks'
 
-const ChartWrapper = ({wrapperId, children}) => {
+const ChartWrapper = ({wrapperId, children, className}) => {
   const dimentions = useDimentions(`#${wrapperId}`)
   const hasProps = Boolean(Object.keys(dimentions).length)
 
@@ -14,6 +14,7 @@ const ChartWrapper = ({wrapperId, children}) => {
       css={css`
         height: 100%;
       `}
+      className={className ?? null}
     >
       {hasProps ? React.cloneElement(children, dimentions) : null}
     </div>
@@ -23,6 +24,7 @@ const ChartWrapper = ({wrapperId, children}) => {
 ChartWrapper.propTypes = {
   wrapperId: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
+  className: PropTypes.string,
 }
 
 export {ChartWrapper}

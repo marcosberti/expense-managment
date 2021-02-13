@@ -12,9 +12,14 @@ const MainOverview = ({income, spent}) => (
   <div
     css={css`
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
       position: relative;
-      max-height: 20rem;
-      min-width: 18rem;
+      min-height: 18rem;
+      /* max-height: 18rem;
+      min-width: 18rem; */
 
       ${mq.large} {
         max-height: none;
@@ -22,19 +27,31 @@ const MainOverview = ({income, spent}) => (
       }
     `}
   >
-    <AbsoluteBox position={{mobile: {top: '34%'}, desktop: {top: '30%'}}}>
+    <AbsoluteBox position={{mobile: {top: '24%'}, desktop: {top: '30%'}}}>
       <Small>Gastaste</Small>
       <Big>{formatAmount(spent)}</Big>
     </AbsoluteBox>
-    <ChartWrapper wrapperId="donutchart-wrapper">
+    <ChartWrapper
+      wrapperId="donutchart-wrapper"
+      css={css`
+        min-height: 12rem;
+        min-width: 12rem;
+      `}
+    >
       <DonutChart income={income} spent={spent} />
     </ChartWrapper>
-    <AbsoluteBox
+    {/* <AbsoluteBox
       position={{mobile: {bottom: '.5rem'}, desktop: {bottom: '1.5rem'}}}
+    > */}
+    <div
+      css={css`
+        text-align: center;
+      `}
     >
       <Small>Disponible</Small>
       <Bigger>{formatAmount(income - spent)}</Bigger>
-    </AbsoluteBox>
+    </div>
+    {/* </AbsoluteBox> */}
   </div>
 )
 

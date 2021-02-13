@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import * as mq from 'media-queries'
+import {useDimentions} from 'hooks'
 import {MainOverview} from './main-overview'
 import {DetailOverview} from './detail-overview'
 import {Categories} from './categories'
@@ -9,23 +10,27 @@ import {Categories} from './categories'
 const income = 80000
 const spent = 75000
 
-const Charts = () => (
-  <div
-    css={css`
-      border-radius: var(--border-radius);
-      background-color: var(--background-color-light);
-      display: flex;
-      flex-direction: column;
+const Charts = () => {
+  const {isMobile} = useDimentions()
 
-      ${mq.large} {
-        flex-direction: row;
-      }
-    `}
-  >
-    <DetailOverview income={income} spent={spent} />
-    <MainOverview income={income} spent={spent} />
-  </div>
-)
+  return (
+    <div
+      css={css`
+        border-radius: var(--border-radius);
+        background-color: var(--background-color-light);
+        display: flex;
+        flex-direction: column;
+
+        ${mq.large} {
+          flex-direction: row;
+        }
+      `}
+    >
+      {!isMobile ? <DetailOverview income={income} spent={spent} /> : null}
+      <MainOverview income={income} spent={spent} />
+    </div>
+  )
+}
 
 const Overview = () => (
   <div

@@ -21,8 +21,9 @@ const DonutChart = ({
   income,
   spent,
 }) => {
+  console.log(width, height)
   const donutRef = React.useRef()
-  const radius = (isMobile ? 250 : Math.min(width, height)) / 2 - margins
+  const radius = Math.min(width, height) / 2 - margins
   const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([100, 0])
   const arcGenerator = d3.arc().innerRadius(radius).outerRadius(radius)
   const spentPer = Math.floor((spent * 100) / income)
@@ -33,7 +34,7 @@ const DonutChart = ({
     endAngle: (i + 1) * perSilceAngle,
   }))
 
-  const translateHeight = height / 3 + (isMobile ? 16 : 0)
+  const translateHeight = height / 3 + (isMobile ? 24 : 0)
 
   React.useEffect(() => {
     d3.select(donutRef.current)
@@ -42,7 +43,7 @@ const DonutChart = ({
       .join('path')
       .attr('stroke', d => d.stroke)
       .attr('stroke-linejoin', 'round')
-      .attr('stroke-width', strokeWidth)
+      .attr('stroke-width', strokeWidth * (isMobile ? 0.7 : 1))
       .transition()
       .duration(1000)
       .attrTween('d', d => {
@@ -50,14 +51,14 @@ const DonutChart = ({
         const i = d3.interpolate(start, d)
         return t => arcGenerator(i(t))
       })
-  }, [arcGenerator, data])
+  }, [arcGenerator, data, isMobile])
 
   return (
     <svg
       id="donut-chart"
-      width={width ?? '100%'}
-      height={height ?? '100%'}
-      viewBox={width && height ? `0 0 ${width} ${height}` : '0 0 100 100'}
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
     >
       <g transform={`translate(${width / 2} ${translateHeight})`}>
         <circle
@@ -66,7 +67,7 @@ const DonutChart = ({
           r={radius}
           fill="none"
           stroke="#eee"
-          strokeWidth={strokeWidth * 0.8}
+          strokeWidth={strokeWidth * 0.8 * (isMobile ? 0.7 : 1)}
         />
       </g>
       <g

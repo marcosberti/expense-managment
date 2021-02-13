@@ -16,25 +16,18 @@ const Button = styled.button`
 
 const Small = styled.small`
   color: var(--text-color-light);
+  font-size: var(--font-size-sm);
 `
 
 const Big = styled.div`
   color: var(--text-color-light);
   font-weight: 600;
-  font-size: 1.25rem;
-
-  ${mq.large} {
-    font-size: 1.5rem;
-  }
+  font-size: var(--font-size-lg);
 `
 const Bigger = styled.div`
   color: var(--text-color-light);
-  font-size: 1.75rem;
+  font-size: var(--font-size-xl);
   font-weight: 700;
-
-  ${mq.large} {
-    font-size: 2.5rem;
-  }
 `
 const AbsoluteBox = styled.div`
   position: absolute;
