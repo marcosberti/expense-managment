@@ -1,7 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import {axisLeft, axisBottom, scaleLinear, scaleBand, max, select} from 'd3'
+import {secondary} from 'colors'
+import {formatAmount} from 'common-utils'
 
 const d3 = {
   axisLeft,
@@ -55,21 +56,48 @@ const BarChart = ({width = 100, height = 100}) => {
   const yAxis = d3.axisLeft().scale(yScale)
 
   React.useEffect(() => {
-    d3.select(chartRef.current)
+    const incomeRects = d3
+      .select(chartRef.current)
       .selectAll('rect.income')
       .data(monthlyIncome)
+      .join('rect')
+      .attr('class', 'income')
+      .attr('fill', secondary[500])
+      .attr('transform', `translate(${xScale.bandwidth() / 4})`)
+
+    incomeRects.append('title').text(d => formatAmount(d.income))
+
+    const expensesRects = d3
+      .select(chartRef.current)
+      .selectAll('rect.expenses')
+      .data(monthlyIncome)
+      .join('rect')
+      .attr('class', 'expenses')
+      .attr('fill', secondary[300])
+      .attr('transform', `translate(${xScale.bandwidth() / 2})`)
+
+    expensesRects.append('title').text(d => formatAmount(d.expenses))
+
+    d3.select(chartRef.current)
+      .selectAll('rect')
+      .attr('x', d => xScale(d.month))
+      .attr('width', xScale.bandwidth() / 4)
       .attr('y', height - margins.bottom)
       .attr('height', 0)
+      .on('mouseover', function () {
+        d3.select(this).attr('opacity', 0.75)
+      })
+      .on('mouseout', function () {
+        d3.select(this).attr('opacity', 1)
+      })
+
+    incomeRects
       .transition()
       .duration(500)
       .attr('y', d => yScale(d.income))
       .attr('height', d => yScale(0) - yScale(d.income))
 
-    d3.select(chartRef.current)
-      .selectAll('rect.expenses')
-      .data(monthlyIncome)
-      .attr('y', height - margins.bottom)
-      .attr('height', 0)
+    expensesRects
       .transition()
       .duration(500)
       .attr('y', d => yScale(d.expenses))
@@ -77,34 +105,11 @@ const BarChart = ({width = 100, height = 100}) => {
 
     d3.select(xAxisRef.current).call(xAxis)
     d3.select(yAxisRef.current).call(yAxis)
-  }, [height, xAxis, yAxis, yScale])
+  }, [height, xAxis, xScale, yAxis, yScale])
 
   return (
-    <svg
-      width={width ?? '100%'}
-      height={height ?? '100%'}
-      viewBox={`0 0 ${width} ${height}`}
-    >
-      <g ref={chartRef}>
-        {monthlyIncome.map(({month}) => (
-          <React.Fragment key={month}>
-            <rect
-              className="income"
-              fill="#5fa2c5"
-              x={xScale(month)}
-              width={xScale.bandwidth() / 4}
-              transform={`translate(${xScale.bandwidth() / 4}, 0)`}
-            />
-            <rect
-              className="expenses"
-              fill="#ec56aa"
-              x={xScale(month)}
-              width={xScale.bandwidth() / 4}
-              transform={`translate(${xScale.bandwidth() / 2}, 0)`}
-            />
-          </React.Fragment>
-        ))}
-      </g>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+      <g ref={chartRef} />
       <g
         ref={xAxisRef}
         transform={`translate(0, ${height - margins.bottom})`}

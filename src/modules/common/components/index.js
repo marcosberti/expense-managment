@@ -29,6 +29,11 @@ const Bigger = styled.div`
   font-size: var(--font-size-xl);
   font-weight: 700;
 `
+
+const TextCenter = styled.div`
+  text-align: center;
+`
+
 const AbsoluteBox = styled.div`
   position: absolute;
   left: 50%;
@@ -40,4 +45,4 @@ const AbsoluteBox = styled.div`
     ${({position}) => position.desktop}
   }
 `
-export {AbsoluteBox, Big, Bigger, Button, Small}
+export {AbsoluteBox, Big, Bigger, Button, Small, TextCenter}

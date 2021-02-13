@@ -1,30 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import {Big, Small} from 'common-components'
 import {RentIcon, FitnessIcon, SchoolIcon} from 'icons'
 import * as mq from 'media-queries'
 import {Category} from './category'
 
 // TODO: fetch data from db
 const categorias = [
-  {
-    name: 'Alquiler',
-    ammount: 66666,
-    icon: RentIcon,
-  },
-  {name: 'Deporte', ammount: 3454, icon: FitnessIcon},
-  {name: 'Cursos', ammount: 4700, icon: SchoolIcon},
+  // {
+  //   name: 'Alquiler',
+  //   ammount: 66666,
+  //   icon: RentIcon,
+  // },
+  // {name: 'Deporte', ammount: 3454, icon: FitnessIcon},
+  // {name: 'Cursos', ammount: 4700, icon: SchoolIcon},
 ]
 
 const CategoriesTitle = () => (
-  <h2
+  <Big
     css={css`
-      font-weight: 600;
-      color: var(--text-color-light);
+      margin: 1.125rem 0;
     `}
   >
     Categorias con mas gastos
-  </h2>
+  </Big>
 )
 
 const CategoriesList = ({children}) => (
@@ -60,17 +60,38 @@ CategoriesList.propTypes = {
   children: PropTypes.array,
 }
 
+const SinCategorias = () => (
+  <div
+    css={css`
+      font-style: italic;
+    `}
+  >
+    <div
+      css={css`
+        color: var(--secondary-400);
+        font-weight: 500;
+      `}
+    >
+      Aún no se han creado categorias
+    </div>
+    <Small>Puede crear categorias en la sección 'Movimientos' (link)</Small>
+  </div>
+)
+
 const Categories = () => {
-  console.error('si categorias esta vacia, hacer un category de placeholder')
-  console.error('cata categoria con su color, si no con uno por defecto')
+  console.error('cada categoria con su color, si no con uno por defecto')
   return (
     <div>
       <CategoriesTitle />
-      <CategoriesList>
-        {categorias.map(categoria => (
-          <Category key={JSON.stringify(categoria)} data={categoria} />
-        ))}
-      </CategoriesList>
+      {categorias.length ? (
+        <CategoriesList>
+          {categorias.map(categoria => (
+            <Category key={JSON.stringify(categoria)} data={categoria} />
+          ))}
+        </CategoriesList>
+      ) : (
+        <SinCategorias />
+      )}
     </div>
   )
 }

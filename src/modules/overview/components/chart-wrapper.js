@@ -13,6 +13,7 @@ const ChartWrapper = ({wrapperId, children, className}) => {
       id={wrapperId}
       css={css`
         height: 100%;
+        width: 100%;
       `}
       className={className ?? null}
     >

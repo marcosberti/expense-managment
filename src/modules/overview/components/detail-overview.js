@@ -1,70 +1,51 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import {primary} from 'colors'
-import {Big, Small} from 'common-components'
-import {IncomeIcon, ExpensesIcon, MoneyBalanceIcon} from 'icons'
+import {Small} from 'common-components'
 import * as mq from 'media-queries'
-import {formatAmount} from 'common-utils'
+import {secondary} from 'colors'
 import {ChartWrapper} from './chart-wrapper'
 import {BarChart} from './bar-chart'
 
-const AmountDetail = ({children}) => (
-  <div
-    css={css`
-      position: relative;
-      display: grid;
-      grid-template-columns: 42px 1fr;
-      grid-template-rows: auto;
-      grid-template-areas:
-        'icon text'
-        'icon amount';
-
-      & > svg {
-        grid-area: icon;
-      }
-
-      & > small {
-        grid-area: text;
-      }
-
-      & > div {
-        grid-area: amount;
-      }
-    `}
-  >
-    {children}
-  </div>
-)
-
-const MoneyBalance = ({income, spent}) => (
+const ChartColor = ({text, color}) => (
   <div
     css={css`
       display: flex;
-      gap: 1rem;
-      padding: 1rem;
+      align-items: center;
+      gap: 0.5rem;
     `}
   >
-    {[
-      {text: 'Ingresos', fill: primary[600], value: income, icon: IncomeIcon},
-      {text: 'Gastos', fill: '#b71d1d', value: spent, icon: ExpensesIcon},
-      {
-        text: 'Balance',
-        fill: '#1c1ccc',
-        value: income - spent,
-        icon: MoneyBalanceIcon,
-      },
-    ].map(({text, fill, icon: Icon, value}) => (
-      <AmountDetail key={text}>
-        <Icon fill={fill} size={42} />
-        <Small>{text}</Small>
-        <Big>{formatAmount(value)}</Big>
-      </AmountDetail>
-    ))}
+    <div
+      css={css`
+        width: 30px;
+        height: 30px;
+        background-color: ${color};
+        border-radius: var(--border-radius);
+      `}
+    />
+    <Small>{text}</Small>
   </div>
 )
 
-const DetailOverview = ({income, spent}) => (
+ChartColor.propTypes = {
+  text: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+}
+
+const ChartColors = () => (
+  <div
+    css={css`
+      padding: 1rem;
+      display: flex;
+      gap: 1rem;
+    `}
+  >
+    <ChartColor text="Ingresos" color={secondary[500]} />
+    <ChartColor text="Gastos" color={secondary[300]} />
+  </div>
+)
+
+const DetailOverview = () => (
   <div
     css={css`
       display: none;
@@ -76,16 +57,11 @@ const DetailOverview = ({income, spent}) => (
       }
     `}
   >
-    <MoneyBalance income={income} spent={spent} />
+    <ChartColors />
     <ChartWrapper wrapperId="barchart-wrapper">
       <BarChart />
     </ChartWrapper>
   </div>
 )
-
-DetailOverview.propTypes = {
-  income: PropTypes.number.isRequired,
-  spent: PropTypes.number.isRequired,
-}
 
 export {DetailOverview}

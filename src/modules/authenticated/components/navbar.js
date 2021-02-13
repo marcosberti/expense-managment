@@ -15,6 +15,7 @@ const Nav = styled.nav`
   position: absolute;
   transition: transform 0.5s ease;
   transform: translateX(-100vw);
+  z-index: 1;
 
   ${mq.large} {
     transform: none;
@@ -75,7 +76,7 @@ const MobileMenuButton = ({navRef}) => {
         position: absolute;
         top: 1rem;
         right: 1rem;
-        z-index: 1;
+        z-index: 2;
       `}
       onClick={handleClick}
     >

@@ -11,7 +11,7 @@ const d3 = {
 }
 
 const margins = 30
-const strokeWidth = 30
+const defaultStrokeWidth = 30
 const perSilceAngle = (2 * Math.PI) / 100
 
 const DonutChart = ({
@@ -21,20 +21,19 @@ const DonutChart = ({
   income,
   spent,
 }) => {
-  console.log(width, height)
   const donutRef = React.useRef()
   const radius = Math.min(width, height) / 2 - margins
   const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([100, 0])
   const arcGenerator = d3.arc().innerRadius(radius).outerRadius(radius)
-  const spentPer = Math.floor((spent * 100) / income)
+  const spentPer = income ? Math.floor((spent * 100) / income) : spent
+  const translateHeight = height / 3 + (isMobile ? 24 : 0)
+  const strokeWidth = defaultStrokeWidth * (isMobile || width < 200 ? 0.6 : 1)
 
   const data = new Array(100).fill(1).map((_, i) => ({
     stroke: i > spentPer ? '#fff0' : colorScale(i),
     startAngle: i * perSilceAngle,
     endAngle: (i + 1) * perSilceAngle,
   }))
-
-  const translateHeight = height / 3 + (isMobile ? 24 : 0)
 
   React.useEffect(() => {
     d3.select(donutRef.current)
@@ -43,7 +42,7 @@ const DonutChart = ({
       .join('path')
       .attr('stroke', d => d.stroke)
       .attr('stroke-linejoin', 'round')
-      .attr('stroke-width', strokeWidth * (isMobile ? 0.7 : 1))
+      .attr('stroke-width', strokeWidth)
       .transition()
       .duration(1000)
       .attrTween('d', d => {
@@ -51,15 +50,10 @@ const DonutChart = ({
         const i = d3.interpolate(start, d)
         return t => arcGenerator(i(t))
       })
-  }, [arcGenerator, data, isMobile])
+  }, [arcGenerator, data, strokeWidth])
 
   return (
-    <svg
-      id="donut-chart"
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-    >
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <g transform={`translate(${width / 2} ${translateHeight})`}>
         <circle
           cx="0"
@@ -67,7 +61,7 @@ const DonutChart = ({
           r={radius}
           fill="none"
           stroke="#eee"
-          strokeWidth={strokeWidth * 0.8 * (isMobile ? 0.7 : 1)}
+          strokeWidth={strokeWidth * 0.8}
         />
       </g>
       <g

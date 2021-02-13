@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {Global as EmotionGlobal, css} from '@emotion/react'
 import emotionNormalize from 'emotion-normalize'
-import {primary, neutral} from 'colors'
+import {primary, secondary, neutral} from 'colors'
 import * as mq from 'media-queries'
 
 const GlobalStyles = () => (
@@ -15,6 +15,7 @@ const GlobalStyles = () => (
         --text-color: ${neutral[600]};
         --text-color-light: ${neutral[400]};
         --primary-400: ${primary[400]};
+        --secondary-400: ${secondary[400]};
         --font-size-sm: 0.7rem;
         --font-size-lg: 1rem;
         --font-size-xl: 1.75rem;

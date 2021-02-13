@@ -7,8 +7,8 @@ import {DetailOverview} from './detail-overview'
 import {Categories} from './categories'
 
 // TODO: conectar y recuperar de db
-const income = 80000
-const spent = 75000
+const income = 0
+const spent = 0
 
 const Charts = () => {
   const {isMobile} = useDimentions()
@@ -18,10 +18,9 @@ const Charts = () => {
       css={css`
         border-radius: var(--border-radius);
         background-color: var(--background-color-light);
-        display: flex;
-        flex-direction: column;
 
         ${mq.large} {
+          display: flex;
           flex-direction: row;
         }
       `}
