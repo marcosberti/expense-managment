@@ -15,7 +15,9 @@ const GlobalStyles = () => (
         --text-color: ${neutral[600]};
         --text-color-light: ${neutral[400]};
         --primary-400: ${primary[400]};
+        --secondary-300: ${secondary[300]};
         --secondary-400: ${secondary[400]};
+        --secondary-500: ${secondary[500]};
         --font-size-sm: 0.7rem;
         --font-size-lg: 1rem;
         --font-size-xl: 1.75rem;

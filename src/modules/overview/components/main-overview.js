@@ -19,7 +19,7 @@ const MainOverview = ({income, spent}) => (
 
       ${mq.large} {
         padding: 1rem 1rem 2.5rem 1rem;
-        border-left: 4px solid var(--background-color);
+        border-left: 4px dashed var(--background-color);
       }
     `}
   >

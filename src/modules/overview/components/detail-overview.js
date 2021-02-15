@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 import {Small} from 'common-components'
 import * as mq from 'media-queries'
 import {secondary} from 'colors'
-import {ChartWrapper} from './chart-wrapper'
-import {BarChart} from './bar-chart'
+import {ChartWrapper, Chart} from './chart-wrapper'
+import {YearBalanceChart} from './year-balance-chart'
+import {PaymentsChart} from './payments-chart'
 
 const ChartColor = ({text, color}) => (
   <div
@@ -54,12 +55,18 @@ const DetailOverview = () => (
         display: flex;
         flex-grow: 1;
         flex-direction: column;
+        width: 20rem;
       }
     `}
   >
     <ChartColors />
-    <ChartWrapper wrapperId="barchart-wrapper">
-      <BarChart />
+    <ChartWrapper wrapperId="chart-wrapper">
+      {/* <Chart>
+        <YearBalanceChart />
+      </Chart> */}
+      <Chart>
+        <PaymentsChart />
+      </Chart>
     </ChartWrapper>
   </div>
 )
