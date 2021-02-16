@@ -5,6 +5,7 @@ import * as mq from 'media-queries'
 import {Navbar} from './modules/authenticated/components/navbar'
 import {Header} from './modules/authenticated/components/header'
 import {Overview} from './modules/overview/components/overview'
+import {Movements} from './modules/movements/movements'
 
 const Grid = ({children}) => (
   <main
@@ -37,7 +38,8 @@ const Authenticated = () => {
     <Grid>
       <Navbar />
       <Header user={user} />
-      <Overview />
+      {/* <Overview /> */}
+      <Movements />
     </Grid>
   )
 }

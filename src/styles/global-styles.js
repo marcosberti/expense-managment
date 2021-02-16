@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {Global as EmotionGlobal, css} from '@emotion/react'
 import emotionNormalize from 'emotion-normalize'
-import {primary, secondary, neutral} from 'colors'
+import {primary, primaryOpacity, secondary, neutral} from 'colors'
 import * as mq from 'media-queries'
 
 const GlobalStyles = () => (
@@ -17,6 +17,7 @@ const GlobalStyles = () => (
         --primary-300: ${primary[300]};
         --primary-400: ${primary[400]};
         --primary-600: ${primary[600]};
+        --primary-400-opacity: ${primaryOpacity};
         --secondary-300: ${secondary[300]};
         --secondary-400: ${secondary[400]};
         --secondary-500: ${secondary[500]};
@@ -68,10 +69,6 @@ const GlobalStyles = () => (
       button {
         cursor: pointer;
         border: none;
-      }
-
-      svg {
-        vertical-align: middle;
       }
 
       h1 {

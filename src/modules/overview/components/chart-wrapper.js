@@ -52,11 +52,6 @@ const NavigationText = styled(Small)`
   letter-spacing: 1px;
 `
 
-const getChartName = chartId => {
-  const chartNameArr = chartId.split('-')
-  return chartNameArr.slice(0, chartNameArr.length - 1).join(' ')
-}
-
 const NavigationButtons = ({activeId, childrenIds, handleActiveIdChange}) => {
   const handleClick = e => {
     handleActiveIdChange(e.currentTarget.dataset.id)
@@ -78,7 +73,7 @@ const NavigationButtons = ({activeId, childrenIds, handleActiveIdChange}) => {
           active={activeId === id}
         >
           <NavigationText clear={activeId === id}>
-            {getChartName(id)}
+            {id.replaceAll('-', ' ')}
           </NavigationText>
         </NavigationButton>
       ))}

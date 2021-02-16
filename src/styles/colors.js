@@ -5,6 +5,8 @@ const primary = {
   600: '#0D8249',
 }
 
+const primaryOpacity = '#21bf7338'
+
 const secondary = {
   100: '#d6d5f5',
   200: '#9997d1',
@@ -22,4 +24,4 @@ const neutral = {
   600: '#333',
 }
 
-export {primary, secondary, neutral}
+export {primary, primaryOpacity, secondary, neutral}
