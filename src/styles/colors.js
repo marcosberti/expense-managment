@@ -3,7 +3,6 @@ const primary = {
   400: '#21bf73',
   500: '#08A65A',
   600: '#0D8249',
-  700: '#18613E',
 }
 
 const secondary = {

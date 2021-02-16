@@ -14,7 +14,9 @@ const GlobalStyles = () => (
         --background-color: ${neutral[200]};
         --text-color: ${neutral[600]};
         --text-color-light: ${neutral[400]};
+        --primary-300: ${primary[300]};
         --primary-400: ${primary[400]};
+        --primary-600: ${primary[600]};
         --secondary-300: ${secondary[300]};
         --secondary-400: ${secondary[400]};
         --secondary-500: ${secondary[500]};

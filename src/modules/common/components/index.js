@@ -15,8 +15,10 @@ const Button = styled.button`
 `
 
 const Small = styled.small`
-  color: var(--text-color-light);
   font-size: var(--font-size-sm);
+  color: var(
+    ${props => (props.clear ? '--background-color' : '--text-color-light')}
+  );
 `
 
 const Big = styled.div`
