@@ -59,12 +59,12 @@ const DetailOverview = () => (
       }
     `}
   >
-    <ChartColors />
+    {/* <ChartColors /> */}
     <ChartWrapper wrapperId="chart-wrapper">
-      {/* <Chart>
+      <Chart id="year-balance-chart">
         <YearBalanceChart />
-      </Chart> */}
-      <Chart>
+      </Chart>
+      <Chart id="payments-chart">
         <PaymentsChart />
       </Chart>
     </ChartWrapper>

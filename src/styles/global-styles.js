@@ -22,6 +22,7 @@ const GlobalStyles = () => (
         --font-size-lg: 1rem;
         --font-size-xl: 1.75rem;
         --border-radius: 10px;
+        --scroll-size: 8px;
 
         font-family: 'Poppins', sans-serif;
         color: var(--text-color);
@@ -30,8 +31,8 @@ const GlobalStyles = () => (
 
       * {
         &::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
+          width: var(--scroll-size);
+          height: var(--scroll-size);
           background: ${neutral[300]};
         }
         &::-webkit-scrollbar-thumb {
