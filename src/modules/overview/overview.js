@@ -2,9 +2,9 @@
 import {css} from '@emotion/react'
 import * as mq from 'media-queries'
 import {useDimentions} from 'hooks'
-import {MainOverview} from './main-overview'
-import {DetailOverview} from './detail-overview'
-import {Categories} from './categories'
+import {MainOverview} from './components/main-overview'
+import {DetailOverview} from './components/detail-overview'
+import {Categories} from './components/categories'
 
 // TODO: conectar y recuperar de db
 const income = 0

@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import {BrowserRouter as Router} from 'react-router-dom'
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
 import {Navbar} from './modules/authenticated/components/navbar'
 import {Header} from './modules/authenticated/components/header'
-import {Overview} from './modules/overview/components/overview'
-import {Movements} from './modules/movements/movements'
+import {Routes} from './modules/authenticated/components/routes'
 
 const Grid = ({children}) => (
   <main
@@ -29,17 +29,18 @@ const Grid = ({children}) => (
 )
 
 Grid.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.element.isRequired,
 }
 
 const Authenticated = () => {
   const user = {name: 'Marcos Bertilotti'}
   return (
     <Grid>
-      <Navbar />
-      <Header user={user} />
-      {/* <Overview /> */}
-      <Movements />
+      <Router>
+        <Navbar />
+        <Header user={user} />
+        <Routes />
+      </Router>
     </Grid>
   )
 }

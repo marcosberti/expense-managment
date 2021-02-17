@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import * as React from 'react'
+import {Link, useLocation} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
 import {useDimentions} from 'hooks'
 import * as mq from 'media-queries'
 import {MenuIcon, DeclineIcon} from 'icons'
-import {Button, Small} from 'common-components'
+import {Button} from 'common-components'
 
 const Nav = styled.nav`
   background-color: var(--background-color-light);
@@ -34,33 +35,48 @@ const Navbar = styled.ul`
 
 const NavbarItem = styled.li`
   font-weight: 500;
-  letter-spacing: 1px;
   margin-top: 0.5rem;
-  padding: 1rem;
-  ${({isActive = false}) =>
-    isActive
-      ? `color: #fff;
-         background-color: var(--primary-400);
-         border-radius: var(--border-radius);`
+  transition: transform 0.25s ease;
+  border-radius: var(--border-radius);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:first-of-type {
+    margin-top: 150px;
+  }
+
+  & > * {
+    letter-spacing: 1px;
+    padding: 1rem;
+    display: block;
+    text-decoration: none;
+    color: var(--text-color);
+  }
+
+  ${({active = false}) =>
+    active
+      ? `
+          background-color: var(--primary-400);
+          & > a {
+            color: #fff;
+          }
+         `
       : null};
   ${({disabled = false}) =>
     disabled
       ? `
-    color: var(--neutral-300);
-    cursor: default;
-  `
-      : `    
-    cursor: pointer;
-    transition: transform 0.25s ease;
-  
-    &:hover {
-      transform: translateY(-2px);
-    }
+          & > * {
+            color: var(--neutral-300);
+            cursor: default;
 
-    &:first-of-type {
-      margin-top: 150px;
-    }    
-  `}
+          } 
+          &:hover {
+            transform: none;
+          }
+        `
+      : null}
 `
 
 const MobileMenuButton = ({navRef}) => {
@@ -108,18 +124,35 @@ MobileMenuButton.propTypes = {
   navRef: PropTypes.object.isRequired,
 }
 
+const routes = [
+  {path: '/', text: 'Overview'},
+  {path: '/movements', text: 'Movimientos'},
+  {path: '/reports', text: 'Reportes'},
+]
+
 const NavbarContainer = () => {
   const navRef = React.useRef()
   const {isMobile} = useDimentions()
+  const {pathname} = useLocation()
 
   return (
     <>
       {isMobile ? <MobileMenuButton navRef={navRef} /> : null}
       <Nav ref={navRef}>
         <Navbar>
-          <NavbarItem isActive>Overview</NavbarItem>
-          <NavbarItem>Movimientos</NavbarItem>
-          <NavbarItem disabled>Reportes</NavbarItem>
+          {routes.map(route => (
+            <NavbarItem
+              key={route.path}
+              active={route.path === pathname}
+              disabled={route.path === '/reports'}
+            >
+              {route.path === '/reports' ? (
+                <span>{route.text}</span>
+              ) : (
+                <Link to={route.path}>{route.text}</Link>
+              )}
+            </NavbarItem>
+          ))}
         </Navbar>
       </Nav>
     </>
