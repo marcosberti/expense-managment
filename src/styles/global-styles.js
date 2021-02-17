@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {Global as EmotionGlobal, css} from '@emotion/react'
 import emotionNormalize from 'emotion-normalize'
-import {primary, primaryOpacity, secondary, neutral} from 'colors'
+import {primary, secondary, neutral} from 'colors'
 import * as mq from 'media-queries'
 
 const GlobalStyles = () => (
@@ -10,22 +10,42 @@ const GlobalStyles = () => (
       ${emotionNormalize}
 
       html {
+        /* background */
         --background-color-light: #fff;
-        --background-color: ${neutral[200]};
-        --text-color: ${neutral[600]};
-        --text-color-light: ${neutral[400]};
+        --background-color: var(--neutral-200);
+
+        /* text */
+        --text-color: var(--neutral-600);
+        --text-color-light: var(--neutral-400);
+
+        /* primary colors */
         --primary-300: ${primary[300]};
         --primary-400: ${primary[400]};
+        --primary-400-op: ${primary[400]}54;
         --primary-600: ${primary[600]};
-        --primary-400-opacity: ${primaryOpacity};
+
+        /* secondaty colors */
         --secondary-300: ${secondary[300]};
         --secondary-400: ${secondary[400]};
+        --secondary-400-op: ${secondary[400]}54;
         --secondary-500: ${secondary[500]};
+
+        /* neutral colors */
+        --neutral-200: ${neutral[200]};
+        --neutral-300: ${neutral[300]};
+        --neutral-400: ${neutral[400]};
+        --neutral-500: ${neutral[500]};
+        --neutral-600: ${neutral[600]};
+
+        /* font */
         --font-size-sm: 0.7rem;
         --font-size-lg: 1rem;
         --font-size-xl: 1.75rem;
+
+        /* != box sizes */
         --border-radius: 10px;
         --scroll-size: 8px;
+        --header-size: 6rem;
 
         font-family: 'Poppins', sans-serif;
         color: var(--text-color);

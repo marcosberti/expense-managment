@@ -11,4 +11,19 @@ const options = {style: 'currency', currency: 'ARS'}
 
 const formatAmount = ammount => ammount.toLocaleString('es-AR', options)
 
-export {formatDate, formatAmount}
+const MONTHS = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+]
+
+export {MONTHS, formatDate, formatAmount}

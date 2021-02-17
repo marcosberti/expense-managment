@@ -17,7 +17,7 @@ const Grid = ({children}) => (
       ${mq.large} {
         display: grid;
         grid-template-columns: 15rem 1fr;
-        grid-template-rows: 6rem 1fr;
+        grid-template-rows: var(--header-size) 1fr;
         grid-template-areas:
           'navbar header'
           'navbar content';

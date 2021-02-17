@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {scaleLinear, scaleBand, range, select, axisBottom} from 'd3'
-import {MONTHS} from '../utils/utils'
+import {MONTHS} from 'common-utils'
 
 const d3 = {
   scaleLinear,

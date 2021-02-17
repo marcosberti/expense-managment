@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {axisLeft, axisBottom, scaleLinear, scaleBand, max, select} from 'd3'
-import {formatAmount} from 'common-utils'
-import {MONTHS} from '../utils/utils'
+import {MONTHS, formatAmount} from 'common-utils'
 
 const d3 = {
   axisLeft,

@@ -3,14 +3,29 @@ import * as mq from 'media-queries'
 
 const buttonVariants = {
   icon: {
-    width: '70px',
-    height: '70px',
-    borderRadius: '50%',
+    padding: '0.5rem',
+    opacity: '0.5',
+    transition: 'opacity 0.25s ease',
+
+    '&:hover': {
+      opacity: '1',
+    },
+  },
+  primary: {
+    color: 'var(--background-color-light)',
+    backgroundColor: 'var(--primary-400)',
+    opacity: '1',
+    transition: 'opacity 0.5s ease',
+
+    '&:hover': {
+      opacity: '0.75',
+    },
   },
 }
 
 const Button = styled.button`
-  background-color: inherit;
+  border-radius: var(--border-radius);
+  padding: 1rem;
   ${({variant}) => ({...buttonVariants[variant]})}
 `
 

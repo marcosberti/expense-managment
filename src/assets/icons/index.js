@@ -231,6 +231,47 @@ const DownArrowIcon = props => (
   </IconSVG>
 )
 
+const AddIcon = props => (
+  <IconSVG {...props}>
+    <g>
+      <rect fill="none" height="24" width="24" />
+    </g>
+    <g>
+      <g>
+        <path d="M18,13h-5v5c0,0.55-0.45,1-1,1l0,0c-0.55,0-1-0.45-1-1v-5H6c-0.55,0-1-0.45-1-1l0,0c0-0.55,0.45-1,1-1h5V6 c0-0.55,0.45-1,1-1l0,0c0.55,0,1,0.45,1,1v5h5c0.55,0,1,0.45,1,1l0,0C19,12.55,18.55,13,18,13z" />
+      </g>
+    </g>
+  </IconSVG>
+)
+
+const FilterIcon = props => (
+  <IconSVG {...props}>
+    <g>
+      <rect fill="none" height="24" width="24" />
+    </g>
+    <g>
+      <g>
+        <path d="M11,18h2c0.55,0,1-0.45,1-1l0,0c0-0.55-0.45-1-1-1h-2c-0.55,0-1,0.45-1,1l0,0C10,17.55,10.45,18,11,18z M3,7L3,7 c0,0.55,0.45,1,1,1h16c0.55,0,1-0.45,1-1l0,0c0-0.55-0.45-1-1-1H4C3.45,6,3,6.45,3,7z M7,13h10c0.55,0,1-0.45,1-1l0,0 c0-0.55-0.45-1-1-1H7c-0.55,0-1,0.45-1,1l0,0C6,12.55,6.45,13,7,13z" />
+      </g>
+    </g>
+  </IconSVG>
+)
+
+const SortIcon = props => (
+  <IconSVG {...props}>
+    <g>
+      <path d="M0,0h24v24H0V0z" fill="none" />
+    </g>
+    <g>
+      <g>
+        <g>
+          <path d="M12,5.83l2.46,2.46c0.39,0.39,1.02,0.39,1.41,0l0,0c0.39-0.39,0.39-1.02,0-1.41L12.7,3.7c-0.39-0.39-1.02-0.39-1.41,0 L8.12,6.88c-0.39,0.39-0.39,1.02,0,1.41l0,0c0.39,0.39,1.02,0.39,1.41,0L12,5.83z M12,18.17l-2.46-2.46 c-0.39-0.39-1.02-0.39-1.41,0l0,0c-0.39,0.39-0.39,1.02,0,1.41l3.17,3.18c0.39,0.39,1.02,0.39,1.41,0l3.17-3.17 c0.39-0.39,0.39-1.02,0-1.41l0,0c-0.39-0.39-1.02-0.39-1.41,0L12,18.17z" />
+        </g>
+      </g>
+    </g>
+  </IconSVG>
+)
+
 export {
   MenuIcon,
   DeclineIcon,
@@ -245,6 +286,7 @@ export {
   MoneyBalanceIcon,
   UpArrowIcon,
   DownArrowIcon,
-  // NavigationBackIcon,
-  // NavigationNextIcon,
+  AddIcon,
+  FilterIcon,
+  SortIcon,
 }
