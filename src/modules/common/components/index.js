@@ -1,15 +1,25 @@
 import styled from '@emotion/styled'
 import * as mq from 'media-queries'
 
+const iconDefaults = {
+  padding: '0.5rem',
+  opacity: '0.5',
+  transition: 'opacity 0.25s ease',
+
+  '&:hover': {
+    opacity: '1',
+  },
+}
+
 const buttonVariants = {
   icon: {
-    padding: '0.5rem',
-    opacity: '0.5',
-    transition: 'opacity 0.25s ease',
-
-    '&:hover': {
-      opacity: '1',
-    },
+    ...iconDefaults,
+  },
+  mobileMenuIcon: {
+    ...iconDefaults,
+    zIndex: 1,
+    opacity: 1,
+    padding: '.75rem',
   },
   primary: {
     color: 'var(--background-color-light)',

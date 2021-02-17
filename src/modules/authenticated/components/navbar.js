@@ -6,7 +6,7 @@ import styled from '@emotion/styled'
 import {useDimentions} from 'hooks'
 import * as mq from 'media-queries'
 import {MenuIcon, DeclineIcon} from 'icons'
-import {Button} from 'common-components'
+import {Button, Small} from 'common-components'
 
 const Nav = styled.nav`
   background-color: var(--background-color-light);
@@ -30,32 +30,37 @@ const Navbar = styled.ul`
   flex-direction: column;
   height: 100%;
   padding: 1rem;
-
-  & > li {
-    margin-top: 0.5rem;
-    padding: 1rem;
-    cursor: pointer;
-    transition: transform 0.25s ease;
-  }
-
-  & > li:hover {
-    transform: translateY(-2px);
-  }
-
-  & > li:first-of-type {
-    margin-top: 150px;
-  }
 `
 
 const NavbarItem = styled.li`
   font-weight: 500;
   letter-spacing: 1px;
+  margin-top: 0.5rem;
+  padding: 1rem;
   ${({isActive = false}) =>
     isActive
       ? `color: #fff;
          background-color: var(--primary-400);
          border-radius: var(--border-radius);`
-      : null}
+      : null};
+  ${({disabled = false}) =>
+    disabled
+      ? `
+    color: var(--neutral-300);
+    cursor: default;
+  `
+      : `    
+    cursor: pointer;
+    transition: transform 0.25s ease;
+  
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:first-of-type {
+      margin-top: 150px;
+    }    
+  `}
 `
 
 const MobileMenuButton = ({navRef}) => {
@@ -71,7 +76,7 @@ const MobileMenuButton = ({navRef}) => {
 
   return isOpen ? (
     <Button
-      variant="icon"
+      variant="mobileMenuIcon"
       css={css`
         position: absolute;
         top: 1rem;
@@ -84,13 +89,13 @@ const MobileMenuButton = ({navRef}) => {
     </Button>
   ) : (
     <Button
-      variant="icon"
+      variant="mobileMenuIcon"
       css={css`
         position: absolute;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        background-color: #21bf73;
-        color: #fff;
+        bottom: 1rem;
+        right: 1rem;
+        background-color: var(--primary-400);
+        box-shadow: 0px 0px 5px 3px #0000005c;
       `}
       onClick={handleClick}
     >
@@ -114,7 +119,7 @@ const NavbarContainer = () => {
         <Navbar>
           <NavbarItem isActive>Overview</NavbarItem>
           <NavbarItem>Movimientos</NavbarItem>
-          <NavbarItem>Reportes</NavbarItem>
+          <NavbarItem disabled>Reportes</NavbarItem>
         </Navbar>
       </Nav>
     </>
