@@ -7,8 +7,8 @@ import {DetailOverview} from './components/detail-overview'
 import {Categories} from './components/categories'
 
 // TODO: conectar y recuperar de db
-const income = 0
-const spent = 0
+const income = 100000
+const spent = 90000
 
 const Charts = () => {
   const {isMobile} = useDimentions()

@@ -36,7 +36,7 @@ const Navbar = styled.ul`
 const NavbarItem = styled.li`
   font-weight: 500;
   margin-top: 0.5rem;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, background-color 0.5s ease, color 0.25s ease;
   border-radius: var(--border-radius);
 
   &:hover {

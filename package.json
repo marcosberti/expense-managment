@@ -18,15 +18,18 @@
     "common-utils": "0.0.2",
     "d3": "^6.5.0",
     "emotion-normalize": "^11.0.1",
+    "gotrue-js": "^0.9.29",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-error-boundary": "^3.1.0",
+    "react-hook-form": "^6.15.4",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
+    "@babel/plugin-transform-runtime": "^7.13.6",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
     "@emotion/babel-plugin": "^11.1.2",
@@ -47,6 +50,7 @@
     "prettier": "^2.1.1"
   },
   "alias": {
+    "context": "./src/context/",
     "media-queries": "./src/styles/media-queries.js",
     "colors": "./src/styles/colors.js",
     "icons": "./src/assets/icons/index.js",

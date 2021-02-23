@@ -1,4 +1,10 @@
 import ReactDOM from 'react-dom'
+import {Providers} from './context'
 import {App} from './app'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(
+  <Providers>
+    <App />
+  </Providers>,
+  document.getElementById('root')
+)

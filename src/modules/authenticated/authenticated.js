@@ -3,9 +3,9 @@ import {BrowserRouter as Router} from 'react-router-dom'
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
-import {Navbar} from './modules/authenticated/components/navbar'
-import {Header} from './modules/authenticated/components/header'
-import {Routes} from './modules/authenticated/components/routes'
+import {Navbar} from './components/navbar'
+import {Header} from './components/header'
+import {Routes} from './components/routes'
 
 const Grid = ({children}) => (
   <main
