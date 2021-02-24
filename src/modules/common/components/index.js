@@ -72,4 +72,43 @@ const AbsoluteBox = styled.div`
     ${({position}) => position.desktop}
   }
 `
-export {AbsoluteBox, Big, Bigger, Button, Small, TextCenter}
+
+const Label = styled.label`
+  position: absolute;
+  left: -1000vw;
+  width: 1px;
+  height: 1px;
+`
+
+const Input = styled.input`
+  border: 1px solid var(--background-color);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  outline: none;
+
+  ::placeholder {
+    transition: color 0.25s ease;
+  }
+
+  &:focus {
+    ::placeholder {
+      color: transparent;
+    }
+  }
+`
+
+const FormError = styled(Small)`
+  color: #dc0c0c;
+`
+
+export {
+  AbsoluteBox,
+  Big,
+  Bigger,
+  Button,
+  FormError,
+  Input,
+  Label,
+  Small,
+  TextCenter,
+}

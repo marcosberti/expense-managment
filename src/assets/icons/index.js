@@ -175,48 +175,6 @@ const MoneyBalanceIcon = props => (
   </IconSVG>
 )
 
-// const NavigationBackIcon = (props) => (
-//   <sv {...props}g
-//     xmlns="http://www.w3.org/2000/svg"
-//     viewBox="0 0 24 24"
-//     fill={fill}
-//     width={size}
-//     height={size}
-//   >
-//     <g>
-//       <rect fill="none" height="24" width="24" />
-//     </g>
-//     <g>
-//       <g>
-//         <g>
-//           <path d="M15.29,15.46l-3.88-3.88l3.88-3.88c0.39-0.39,0.39-1.02,0-1.41l0,0c-0.39-0.39-1.02-0.39-1.41,0l-4.59,4.59 c-0.39,0.39-0.39,1.02,0,1.41l4.59,4.59c0.39,0.39,1.02,0.39,1.41,0l0,0C15.67,16.49,15.68,15.85,15.29,15.46z" />
-//         </g>
-//       </g>
-//     </g>
-//   </sv>
-// )
-
-// const NavigationNextIcon = (props) => (
-//   <sv {...props}g
-//     xmlns="http://www.w3.org/2000/svg"
-//     viewBox="0 0 24 24"
-//     fill={fill}
-//     width={size}
-//     height={size}
-//   >
-//     <g>
-//       <rect fill="none" height="24" width="24" />
-//     </g>
-//     <g>
-//       <g>
-//         <g>
-//           <path d="M9.29,15.46l3.88-3.88L9.29,7.7c-0.39-0.39-0.39-1.02,0-1.41l0,0c0.39-0.39,1.02-0.39,1.41,0l4.59,4.59 c0.39,0.39,0.39,1.02,0,1.41l-4.59,4.59c-0.39,0.39-1.02,0.39-1.41,0l0,0C8.91,16.49,8.9,15.85,9.29,15.46z" />
-//         </g>
-//       </g>
-//     </g>
-//   </sv>
-// )
-
 const UpArrowIcon = props => (
   <IconSVG {...props}>
     <rect fill="none" height="24" width="24" />

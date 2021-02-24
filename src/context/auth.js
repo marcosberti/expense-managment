@@ -8,28 +8,31 @@ const auth = new GoTrue({
   APIUrl: process.env.NETLIFY_IDENTITY_URL,
 })
 
-const statusCodes = {
-  resolved: 'resolved',
-  pending: 'pending',
-  error: 'error',
+const STATUS_RESOLVED = 'resolved'
+const STATUS_PENDING = 'pending'
+const STATUS_ERROR = 'error'
+
+const getUserInfo = user => {
+  const {
+    user_metadata: {full_name: name},
+    app_metadata: {roles},
+  } = user
+
+  return {name, roles}
 }
 
 const AuthProvider = ({children}) => {
   const [user, setUser] = React.useState()
-  const [status, setStatus] = React.useState(statusCodes.resolved)
+  const [{status, error}, setStatus] = React.useState(STATUS_RESOLVED)
 
   const login = React.useCallback(async (username, password) => {
     try {
-      setStatus(statusCodes.pending)
-      const {
-        user_metadata: {full_name: name},
-        app_metadata: {roles},
-      } = await auth.login(username, password)
-      setUser({name, roles})
-      setStatus(statusCodes.resolved)
+      setStatus({status: STATUS_PENDING})
+      const userData = await auth.login(username, password, true)
+      setUser(getUserInfo(userData))
+      setStatus({status: STATUS_RESOLVED})
     } catch (e) {
-      console.error('error', e)
-      setStatus(statusCodes.error)
+      setStatus({status: STATUS_ERROR, error: e})
     }
   }, [])
 
@@ -41,7 +44,13 @@ const AuthProvider = ({children}) => {
     [user, login]
   )
 
-  if (status === statusCodes.pending || status === statusCodes.error) {
+  const currUser = auth.currentUser()
+  if (currUser && !user) {
+    setUser(getUserInfo(currUser))
+  }
+
+  if (status === STATUS_PENDING || status === STATUS_ERROR) {
+    console.error('error', error, 'que hago con los errores al loguearse')
     return null
   }
 
