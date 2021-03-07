@@ -39,33 +39,33 @@ const Authenticated = () => {
 
   // console.log('user', user)
 
-  // React.useEffect(() => {
-  //   const run = async () => {
-  //     const endpoint = `${process.env.NETLIFY_FUNCTIONS_ENDPOINT_LOCAL}/get-data`
-  //     try {
-  //       const response = await fetch(endpoint, {
-  //         headers: {
-  //           Authorization: `Bearer ${user.token}`,
-  //         },
-  //       })
-  //       if (!response.ok) {
-  //         throw response
-  //       }
-  //       console.log('response', response)
-  //     } catch (e) {
-  //       console.log('error', e, e)
-  //       // const reader = e.body.getReader()
-  //       // reader.read().then(({done, value}) => {
-  //       //   console.log('value', value)
-  //       //   if (done) {
-  //       //     return
-  //       //   }
-  //       // })
-  //     }
-  //   }
+  React.useEffect(() => {
+    const run = async () => {
+      const endpoint = `${process.env.NETLIFY_FUNCTIONS_ENDPOINT}/get-data`
+      try {
+        const response = await fetch(endpoint, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        if (!response.ok) {
+          throw response
+        }
+        console.log('response', response)
+      } catch (e) {
+        console.log('error', e, e)
+        // const reader = e.body.getReader()
+        // reader.read().then(({done, value}) => {
+        //   console.log('value', value)
+        //   if (done) {
+        //     return
+        //   }
+        // })
+      }
+    }
 
-  //   run()
-  // }, [])
+    run()
+  }, [])
 
   return (
     <Grid>

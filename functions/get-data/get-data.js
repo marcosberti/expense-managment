@@ -46,7 +46,22 @@ const query = `
     }
 `
 
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers':
+    'Origin, X-Requested-With, Content-Type, Accept',
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Methods': 'GET',
+}
+
 const handler = async event => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers,
+    }
+  }
+
   const {authorization} = event.headers
   const current = new Date()
   const initial = new Date(current.getFullYear(), current.getMonth())
