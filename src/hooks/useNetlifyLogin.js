@@ -27,9 +27,7 @@ const useNetlifyLogin = () => {
     try {
       setStatus({status: STATUS_PENDING})
       const userData = await auth.login(username, password, true)
-      console.log('userData', userData)
       setUser(getUserInfo(userData))
-
       setStatus({status: STATUS_RESOLVED})
     } catch (e) {
       setStatus({status: STATUS_ERROR, error: e})
