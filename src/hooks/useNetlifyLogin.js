@@ -10,7 +10,6 @@ const STATUS_PENDING = 'pending'
 const STATUS_ERROR = 'error'
 
 const getUserInfo = user => {
-  console.log('use', user)
   const {
     email: mail,
     token: {access_token: token},
@@ -41,9 +40,15 @@ const useNetlifyLogin = () => {
     }
   }, [])
 
+  const logout = React.useCallback(async () => {
+    await auth.currentUser().logout()
+    setUser(null)
+  }, [])
+
   return {
     user,
     login,
+    logout,
     error,
     isPending: status === STATUS_PENDING,
     isRejected: status === STATUS_ERROR,

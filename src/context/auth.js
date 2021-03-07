@@ -6,9 +6,13 @@ const AuthContext = React.createContext()
 AuthContext.displayName = 'AuthContext'
 
 const AuthProvider = ({children}) => {
-  const {user, login, error, isPending, isRejected} = useNetlifyLogin()
+  const {user, login, logout, error, isPending, isRejected} = useNetlifyLogin()
 
-  const value = React.useMemo(() => ({user, login}), [login, user])
+  const value = React.useMemo(() => ({user, login, logout}), [
+    login,
+    user,
+    logout,
+  ])
 
   if (isRejected) {
     console.error('error', error, 'que hago con los errores al loguearse')
