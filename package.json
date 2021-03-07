@@ -14,8 +14,6 @@
   "dependencies": {
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
-    "common": "^0.2.5",
-    "common-utils": "0.0.2",
     "d3": "^6.5.0",
     "emotion-normalize": "^11.0.1",
     "gotrue-js": "^0.9.29",
