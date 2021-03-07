@@ -1,5 +1,8 @@
 const handler = async e => {
   const {user} = JSON.parse(e.body)
+
+  console.log(user)
+
   return {
     statusCode: 200,
     body: JSON.stringify({
