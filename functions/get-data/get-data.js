@@ -79,7 +79,7 @@ const handler = async event => {
         },
       }),
       headers: {
-        Authorization: `${authorization}123`,
+        Authorization: authorization,
       },
     }).then(response => response.json())
 
@@ -89,6 +89,7 @@ const handler = async event => {
 
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify(data),
     }
   } catch (e) {
@@ -96,6 +97,7 @@ const handler = async event => {
 
     return {
       statusCode: code,
+      headers,
       body: JSON.stringify(e),
     }
   }
