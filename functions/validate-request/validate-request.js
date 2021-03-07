@@ -11,12 +11,9 @@ const handler = async (e, ctx) => {
     }
   }
 
-  console.log('user', user)
-  console.log('ctx', ctx.clientContext)
-
   return {
     statusCode: 401,
-    body: `user ${user}`,
+    body: `Unauthorized`,
   }
 }
 

@@ -10,17 +10,24 @@ const STATUS_PENDING = 'pending'
 const STATUS_ERROR = 'error'
 
 const getUserInfo = user => {
+  console.log('use', user)
   const {
+    email: mail,
+    token: {access_token: token},
     user_metadata: {full_name: name},
     app_metadata: {roles},
   } = user
 
-  return {name, roles}
+  return {name, roles, mail, token}
+}
+const getCurrentUser = () => {
+  const user = auth.currentUser()
+  return user ? getUserInfo(user) : null
 }
 
 const useNetlifyLogin = () => {
-  const currentUser = auth.currentUser()
-  const [user, setUser] = React.useState(currentUser)
+  const current = getCurrentUser()
+  const [user, setUser] = React.useState(current)
   const [{status, error}, setStatus] = React.useState(STATUS_RESOLVED)
 
   const login = React.useCallback(async (username, password) => {

@@ -6,8 +6,6 @@ import {Unauthenticated} from './modules/unauthenticated/unauthenticated'
 const App = () => {
   const {user} = useAuth()
 
-  console.log('user', user)
-
   return (
     <>
       <GlobalStyles />
