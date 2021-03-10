@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import * as React from 'react'
 import {BrowserRouter as Router} from 'react-router-dom'
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
 import {useAuth} from 'context/auth'
+import * as React from 'react'
 import {Navbar} from './components/navbar'
 import {Header} from './components/header'
 import {Routes} from './components/routes'
@@ -37,30 +37,28 @@ Grid.propTypes = {
 const Authenticated = () => {
   const {user} = useAuth()
 
-  // console.log('user', user)
-
   React.useEffect(() => {
     const run = async () => {
-      const endpoint = `${process.env.NETLIFY_FUNCTIONS_ENDPOINT}/get-data`
+      const dateISO = new Date().toISOString()
       try {
-        const response = await fetch(endpoint, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
+        const res = await fetch(
+          `http://localhost:8888/.netlify/functions/get-overview?date=${dateISO}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        ).then(r => {
+          if (!r.ok) {
+            throw r
+          }
+          return r.json()
         })
-        if (!response.ok) {
-          throw response
-        }
-        console.log('response', response)
+
+        console.log(res)
       } catch (e) {
-        console.log('error', e, e)
-        // const reader = e.body.getReader()
-        // reader.read().then(({done, value}) => {
-        //   console.log('value', value)
-        //   if (done) {
-        //     return
-        //   }
-        // })
+        const msg = await e.json()
+        console.log(e, msg)
       }
     }
 
@@ -71,7 +69,7 @@ const Authenticated = () => {
     <Grid>
       <Router>
         <Navbar />
-        <Header user={user} />
+        <Header />
         <Routes />
       </Router>
     </Grid>

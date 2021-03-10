@@ -19,20 +19,7 @@ const margins = {
 }
 
 // TODO: only for UI development
-const monthlyIncome = [
-  {month: 0, income: 80000, expenses: 50000},
-  {month: 1, income: 80000, expenses: 30000},
-  {month: 2, income: 80000, expenses: 25000},
-  {month: 3, income: 88000, expenses: 64000},
-  {month: 4, income: 88000, expenses: 30000},
-  {month: 5, income: 88000, expenses: 55000},
-  {month: 6, income: 94000, expenses: 70000},
-  {month: 7, income: 94000, expenses: 45000},
-  {month: 8, income: 94000, expenses: 45000},
-  {month: 9, income: 105000, expenses: 77000},
-  {month: 10, income: 105000, expenses: 80000},
-  {month: 11, income: 105000, expenses: 20000},
-]
+const monthlyIncome = []
 
 const YearBalanceChart = ({width, height, chartRef}) => {
   const xScale = d3

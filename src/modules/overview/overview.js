@@ -7,11 +7,12 @@ import {DetailOverview} from './components/detail-overview'
 import {Categories} from './components/categories'
 
 // TODO: conectar y recuperar de db
-const income = 100000
-const spent = 90000
+
+const getData = () => ({income: 0, spent: 0})
 
 const Charts = () => {
   const {isMobile} = useDimentions()
+  const {income, spent} = getData()
 
   return (
     <div
