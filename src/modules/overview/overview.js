@@ -1,36 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import * as mq from 'media-queries'
-import {useDimentions} from 'hooks'
 import {MainOverview} from './components/main-overview'
 import {DetailOverview} from './components/detail-overview'
 import {Categories} from './components/categories'
 
-// TODO: conectar y recuperar de db
+const Charts = () => (
+  <div
+    css={css`
+      border-radius: var(--border-radius);
+      background-color: var(--background-color-light);
 
-const getData = () => ({income: 0, spent: 0})
-
-const Charts = () => {
-  const {isMobile} = useDimentions()
-  const {income, spent} = getData()
-
-  return (
-    <div
-      css={css`
-        border-radius: var(--border-radius);
-        background-color: var(--background-color-light);
-
-        ${mq.large} {
-          display: flex;
-          flex-direction: row;
-        }
-      `}
-    >
-      {!isMobile ? <DetailOverview income={income} spent={spent} /> : null}
-      <MainOverview income={income} spent={spent} />
-    </div>
-  )
-}
+      ${mq.large} {
+        display: flex;
+        flex-direction: row;
+      }
+    `}
+  >
+    <DetailOverview />
+    <MainOverview />
+  </div>
+)
 
 const Overview = () => (
   <div

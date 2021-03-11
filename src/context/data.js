@@ -51,9 +51,7 @@ const DataProvider = ({children}) => {
     )
   }
 
-  console.log('data', data)
-
-  return <DataContext.Provider value={{}}>{children}</DataContext.Provider>
+  return <DataContext.Provider value={data}>{children}</DataContext.Provider>
 }
 
 DataProvider.propTypes = {

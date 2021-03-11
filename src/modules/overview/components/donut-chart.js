@@ -18,14 +18,14 @@ const DonutChart = ({
   width = 100,
   height = 100,
   isMobile = false,
-  income,
-  spent,
+  ingreso,
+  gasto,
 }) => {
   const donutRef = React.useRef()
   const radius = Math.min(width, height) / 2 - margins
   const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([100, 0])
   const arcGenerator = d3.arc().innerRadius(radius).outerRadius(radius)
-  const spentPer = income ? Math.floor((spent * 100) / income) : spent
+  const spentPer = ingreso ? Math.floor((gasto * 100) / ingreso) : gasto
   const translateHeight = height / 3 + (isMobile ? 24 : 0)
   const strokeWidth = defaultStrokeWidth * (isMobile || width < 200 ? 0.6 : 1)
 
@@ -76,8 +76,8 @@ DonutChart.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   isMobile: PropTypes.bool,
-  income: PropTypes.number.isRequired,
-  spent: PropTypes.number.isRequired,
+  ingreso: PropTypes.number.isRequired,
+  gasto: PropTypes.number.isRequired,
 }
 
 export {DonutChart}

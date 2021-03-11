@@ -57,7 +57,7 @@ const saveToStorage = (path, data) =>
 const useClient = () => {
   const {user} = useAuth()
   const [{state, error, data}, setState] = React.useState({
-    state: STATE_RESOLVED,
+    state: STATE_PENDING,
   })
 
   const run = React.useCallback(
