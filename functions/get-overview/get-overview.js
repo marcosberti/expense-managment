@@ -17,9 +17,6 @@ const getPromises = dateISO => {
   const date = new Date(dateISO)
   const {beginDate, endDate} = getMonthDates(date)
 
-  console.log('beg', beginDate)
-  console.log('end', endDate)
-
   const ingresosQuery = q.Map(
     q.Filter(
       q.Paginate(q.Documents(q.Collection('ingresos'))),
@@ -92,15 +89,22 @@ const getPromises = dateISO => {
   return [ingresosQuery, variablesQuery, cuotasQuery, fijosQuery].map(query =>
     client.query(query)
   )
-
-  //   return client.query(ingresosQuery)
 }
+
+const keys = ['ingresos', 'variables', 'cuotas', 'fijos']
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
   const {
-    queryStringParameters: {date: dateISO},
+    queryStringParameters: {dateISO},
   } = event
+
+  if (!dateISO) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({message: 'A date in ISO format is required'}),
+    }
+  }
 
   if (!user || user.email !== process.env.EXPMAN_VALID_EMAIL) {
     return {
@@ -108,19 +112,25 @@ const handler = async (event, ctx) => {
     }
   }
 
-  const promises = getPromises(dateISO)
-
   try {
+    const promises = getPromises(dateISO)
     const result = await Promise.all(promises)
-    console.log(result)
+
+    console.log('result', result)
+
+    const data = result.reduce((acc, r, i) => {
+      const key = keys[i]
+      acc[key] = r.data
+      return acc
+    }, {})
     return {
       statusCode: 200,
-      body: JSON.stringify(result),
+      body: JSON.stringify(data),
     }
   } catch (e) {
     return {
       statusCode: 500,
-      body: JSON.stringify(e),
+      body: JSON.stringify({message: e.toString()}),
     }
   }
 }

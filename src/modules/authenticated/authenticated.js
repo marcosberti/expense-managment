@@ -3,8 +3,7 @@ import {BrowserRouter as Router} from 'react-router-dom'
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
-import {useAuth} from 'context/auth'
-import * as React from 'react'
+import {DataProvider} from 'context/data'
 import {Navbar} from './components/navbar'
 import {Header} from './components/header'
 import {Routes} from './components/routes'
@@ -34,46 +33,16 @@ Grid.propTypes = {
   children: PropTypes.element.isRequired,
 }
 
-const Authenticated = () => {
-  const {user} = useAuth()
-
-  React.useEffect(() => {
-    const run = async () => {
-      const dateISO = new Date().toISOString()
-      try {
-        const res = await fetch(
-          `http://localhost:8888/.netlify/functions/get-overview?date=${dateISO}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        ).then(r => {
-          if (!r.ok) {
-            throw r
-          }
-          return r.json()
-        })
-
-        console.log(res)
-      } catch (e) {
-        const msg = await e.json()
-        console.log(e, msg)
-      }
-    }
-
-    run()
-  }, [])
-
-  return (
-    <Grid>
-      <Router>
-        <Navbar />
-        <Header />
+const Authenticated = () => (
+  <Grid>
+    <Router>
+      <Navbar />
+      <Header />
+      <DataProvider>
         <Routes />
-      </Router>
-    </Grid>
-  )
-}
+      </DataProvider>
+    </Router>
+  </Grid>
+)
 
 export {Authenticated}

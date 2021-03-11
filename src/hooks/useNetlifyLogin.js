@@ -42,6 +42,7 @@ const useNetlifyLogin = () => {
 
   const logout = React.useCallback(async () => {
     await auth.currentUser().logout()
+    localStorage.clear()
     setUser(null)
   }, [])
 
