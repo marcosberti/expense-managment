@@ -9,8 +9,11 @@ import {PaymentsChart} from './payments-chart'
 import {getYearlyData} from '../utils/utils'
 
 const DetailOverview = () => {
-  const yearData = getYearlyData(useData())
+  const data = useData()
+  const yearData = getYearlyData(data)
   const {isMobile} = useDimentions()
+
+  console.log('data', data)
 
   if (isMobile) {
     return null
@@ -34,7 +37,7 @@ const DetailOverview = () => {
           <YearBalanceChart yearData={yearData} />
         </Chart>
         <Chart id="detalle-cuotas">
-          <PaymentsChart />
+          <PaymentsChart paymentsData={data.cuotas} />
         </Chart>
       </ChartWrapper>
     </div>

@@ -74,10 +74,8 @@ const getQueries = dateISO => {
       q.Lambda(
         'cuotRef',
         q.LTE(
-          q.Time(
-            q.Select(['data', 'fechaUltimoPago'], q.Get(q.Var('cuotRef')))
-          ),
-          q.Time(lastOfMonth)
+          q.Time(lastOfMonth),
+          q.Time(q.Select(['data', 'fechaUltimoPago'], q.Get(q.Var('cuotRef'))))
         )
       )
     ),

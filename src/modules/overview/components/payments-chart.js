@@ -10,21 +10,41 @@ const d3 = {
   axisBottom,
 }
 
-const rawPaymentData = []
+const getPaymentDateData = fecha => ({
+  anio: Number(fecha.split('-')[0]),
+  mes: Number(fecha.split('-')[1]),
+  dia: Number(fecha.split('-')[2]),
+})
 
-// TODO: only for UI development
-const getPaymentsData = () => {
-  const currentDate = new Date()
-  const currentYear = String(currentDate.getFullYear())
-  const data = rawPaymentData.filter(p =>
-    p.lastPaymentMonth.includes(currentYear)
-  )
-  return data
+const checkPaymentYears = (fechaPrimerPago, fechaUltimoPago) => {
+  const primerPago = getPaymentDateData(fechaPrimerPago)
+  const ultimoPago = getPaymentDateData(fechaUltimoPago)
+  return primerPago.anio === ultimoPago.anio
 }
 
-const getPaymentMonth = paymentMonth => {
-  const monthIndex = Number(paymentMonth.split('-')[0])
-  return monthIndex
+const getLastPaymentMonth = (fechaPrimerPago, fechaUltimoPago) => {
+  const mismoAnio = checkPaymentYears(fechaPrimerPago, fechaUltimoPago)
+  const {mes} = getPaymentDateData(fechaUltimoPago)
+  // le sumamos 1 al mes para que se visualize mejor en el chart
+  return mismoAnio ? mes + 1 : 13
+}
+
+const getPaidPaymentsMonth = (pagos, fechaPrimerPago) => {
+  const pagosHechos = pagos.filter(p => p).length
+  const {anio, mes} = getPaymentDateData(fechaPrimerPago)
+  const fechaPagos = new Date(anio, mes - 1 + pagosHechos)
+  const {anio: anioPagos, mes: mesPagos} = getPaymentDateData(
+    fechaPagos.toISOString()
+  )
+  const mismoAnio = checkPaymentYears(fechaPrimerPago, fechaPagos.toISOString())
+
+  console.error('calc mes pagos para cuotas que vienen de anios anteriores')
+  console.error('calc mes pagos para cuotas que van a anios posteriores')
+
+  if (anioPagos > anio) {
+    return 13
+  }
+  return mismoAnio ? mesPagos : 0
 }
 
 const MIN_Y_DOMAIN_LENGTH = 6
@@ -36,12 +56,12 @@ const margins = {
   bottom: 64,
 }
 
-const PaymentsChart = ({width, height, chartRef}) => {
-  //   TODO: we will recieve this from props or make a hook
-  const paymentsData = getPaymentsData()
+const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
+  // se agregan dos valores al dominio para que haya un extra en cada
+  // extremo del chart
   const xScale = d3
     .scaleLinear()
-    .domain([0, 12])
+    .domain([0, 13])
     .range([margins.left, width - margins.right - margins.left])
 
   const yDomainLength =
@@ -80,34 +100,41 @@ const PaymentsChart = ({width, height, chartRef}) => {
 
     d3.select(chartRef.current)
       .selectAll('g rect')
-      .attr('x', margins.left)
+      .attr(
+        'x',
+        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+      )
       .attr('width', 0)
       .attr('height', yScale.bandwidth())
 
     payments
       .transition()
       .duration(500)
-      .attr('x', xScale(0))
+      .attr(
+        'x',
+        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+      )
       .attr(
         'width',
-        d => xScale(getPaymentMonth(d.lastPaymentMonth)) - xScale(0)
+        d =>
+          xScale(getLastPaymentMonth(d.fechaPrimerPago, d.fechaUltimoPago)) -
+          xScale(getPaymentDateData(d.fechaPrimerPago).mes)
       )
 
     paids
       .transition()
       .delay(250)
       .duration(500)
-      .attr('x', xScale(0))
+      .attr(
+        'x',
+        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+      )
       .attr('width', d => {
-        const unPaidPayments = d.paidPayments.filter(p => !p).length
-        const lastPaymentMonth = getPaymentMonth(d.lastPaymentMonth)
-        const currentYearPaidPayments = lastPaymentMonth - unPaidPayments
+        const mesPagos = getPaidPaymentsMonth(d.pagos, d.fechaPrimerPago)
 
-        // if currentYearPaidPayments is negative, it means that there is no
-        // paid payment this year. we return 0 instead of the negative value
-        return currentYearPaidPayments < 0
-          ? 0
-          : xScale(currentYearPaidPayments) - xScale(0)
+        return mesPagos
+          ? xScale(mesPagos) - xScale(getPaymentDateData(d.fechaPrimerPago).mes)
+          : 0
       })
   }, [chartRef, paymentsData, xScale, yScale])
 
@@ -121,12 +148,13 @@ const PaymentsChart = ({width, height, chartRef}) => {
       .selectAll('text')
       .data(paymentsData)
       .join('text')
-      .attr('x', xScale(0))
+      .attr(
+        'x',
+        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+      )
       .attr('y', (d, i) => yScale(i) - yScale.bandwidth() / 4)
       .attr('dy', '0.35em')
-      .text(
-        d => `${d.detail} ${d.paidPayments.filter(p => p).length}/${d.payments}`
-      )
+      .text(d => `${d.detalle} ${d.pagos.filter(p => p).length}/${d.cuotas}`)
       .attr('opacity', 0)
       .transition(500)
       .delay(250)
