@@ -13,8 +13,6 @@ const DetailOverview = () => {
   const yearData = getYearlyData(data)
   const {isMobile} = useDimentions()
 
-  console.log('data', data)
-
   if (isMobile) {
     return null
   }

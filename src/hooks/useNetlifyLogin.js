@@ -46,10 +46,16 @@ const useNetlifyLogin = () => {
     setUser(null)
   }, [])
 
+  const refresh = React.useCallback(async () => {
+    await auth.currentUser().jwt(true)
+    setUser(getCurrentUser())
+  }, [])
+
   return {
     user,
     login,
     logout,
+    refresh,
     error,
     isPending: status === STATUS_PENDING,
     isRejected: status === STATUS_ERROR,

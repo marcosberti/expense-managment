@@ -1,6 +1,11 @@
 import * as React from 'react'
 import {scaleLinear, scaleBand, range, select, axisBottom} from 'd3'
 import {MONTHS} from 'common-utils'
+import {
+  getFisrtPaymentMonth,
+  getLastPaymentMonth,
+  getPaidPaymentsMonth,
+} from '../utils/utils'
 
 const d3 = {
   scaleLinear,
@@ -8,43 +13,6 @@ const d3 = {
   range,
   select,
   axisBottom,
-}
-
-const getPaymentDateData = fecha => ({
-  anio: Number(fecha.split('-')[0]),
-  mes: Number(fecha.split('-')[1]),
-  dia: Number(fecha.split('-')[2]),
-})
-
-const checkPaymentYears = (fechaPrimerPago, fechaUltimoPago) => {
-  const primerPago = getPaymentDateData(fechaPrimerPago)
-  const ultimoPago = getPaymentDateData(fechaUltimoPago)
-  return primerPago.anio === ultimoPago.anio
-}
-
-const getLastPaymentMonth = (fechaPrimerPago, fechaUltimoPago) => {
-  const mismoAnio = checkPaymentYears(fechaPrimerPago, fechaUltimoPago)
-  const {mes} = getPaymentDateData(fechaUltimoPago)
-  // le sumamos 1 al mes para que se visualize mejor en el chart
-  return mismoAnio ? mes + 1 : 13
-}
-
-const getPaidPaymentsMonth = (pagos, fechaPrimerPago) => {
-  const pagosHechos = pagos.filter(p => p).length
-  const {anio, mes} = getPaymentDateData(fechaPrimerPago)
-  const fechaPagos = new Date(anio, mes - 1 + pagosHechos)
-  const {anio: anioPagos, mes: mesPagos} = getPaymentDateData(
-    fechaPagos.toISOString()
-  )
-  const mismoAnio = checkPaymentYears(fechaPrimerPago, fechaPagos.toISOString())
-
-  console.error('calc mes pagos para cuotas que vienen de anios anteriores')
-  console.error('calc mes pagos para cuotas que van a anios posteriores')
-
-  if (anioPagos > anio) {
-    return 13
-  }
-  return mismoAnio ? mesPagos : 0
 }
 
 const MIN_Y_DOMAIN_LENGTH = 6
@@ -102,7 +70,7 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .selectAll('g rect')
       .attr(
         'x',
-        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
       )
       .attr('width', 0)
       .attr('height', yScale.bandwidth())
@@ -112,13 +80,13 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .duration(500)
       .attr(
         'x',
-        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
       )
       .attr(
         'width',
         d =>
-          xScale(getLastPaymentMonth(d.fechaPrimerPago, d.fechaUltimoPago)) -
-          xScale(getPaymentDateData(d.fechaPrimerPago).mes)
+          xScale(getLastPaymentMonth(d.fechaUltimoPago)) -
+          xScale(getFisrtPaymentMonth(d.fechaPrimerPago))
       )
 
     paids
@@ -127,13 +95,13 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .duration(500)
       .attr(
         'x',
-        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
       )
       .attr('width', d => {
         const mesPagos = getPaidPaymentsMonth(d.pagos, d.fechaPrimerPago)
 
         return mesPagos
-          ? xScale(mesPagos) - xScale(getPaymentDateData(d.fechaPrimerPago).mes)
+          ? xScale(mesPagos) - xScale(getFisrtPaymentMonth(d.fechaPrimerPago))
           : 0
       })
   }, [chartRef, paymentsData, xScale, yScale])
@@ -150,7 +118,7 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .join('text')
       .attr(
         'x',
-        d => xScale(getPaymentDateData(d.fechaPrimerPago).mes) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
       )
       .attr('y', (d, i) => yScale(i) - yScale.bandwidth() / 4)
       .attr('dy', '0.35em')

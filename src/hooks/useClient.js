@@ -34,6 +34,14 @@ const request = async (path, method, headers, params) => {
     return {data: result, error: null}
   } catch (e) {
     const {status, statusText} = e
+    console.log('e', e)
+    /**
+     * if e.statusCode === 401
+     * await refresh() // comes from params
+     * // retry
+     * request(path,method, headers, params)
+     * else
+     */
     const {message} = await e.json()
     return {
       error: {

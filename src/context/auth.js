@@ -6,12 +6,21 @@ const AuthContext = React.createContext()
 AuthContext.displayName = 'AuthContext'
 
 const AuthProvider = ({children}) => {
-  const {user, login, logout, error, isPending, isRejected} = useNetlifyLogin()
+  const {
+    user,
+    login,
+    logout,
+    refresh,
+    error,
+    isPending,
+    isRejected,
+  } = useNetlifyLogin()
 
-  const value = React.useMemo(() => ({user, login, logout}), [
+  const value = React.useMemo(() => ({user, login, logout, refresh}), [
     login,
     user,
     logout,
+    refresh,
   ])
 
   if (isRejected) {
