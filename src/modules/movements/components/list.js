@@ -110,11 +110,25 @@ const List = ({movements}) => (
       overflow-y: auto;
     `}
   >
-    <ul>
-      {movements.map(movement => (
-        <Item key={movement.detail} movement={movement} />
-      ))}
-    </ul>
+    {movements.length ? (
+      <ul>
+        {movements.map(movement => (
+          <Item key={movement.detail} movement={movement} />
+        ))}
+      </ul>
+    ) : (
+      <div
+        css={css`
+          padding: 2rem;
+          border-radius: var(--border-radius);
+          background-color: var(--background-color-light);
+          text-align: center;
+        `}
+      >
+        <Big>Sin movimientos</Big>
+        <Small>para el mes seleccionado</Small>
+      </div>
+    )}
   </div>
 )
 

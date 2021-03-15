@@ -36,7 +36,7 @@ const buttonVariants = {
 const Button = styled.button`
   border-radius: var(--border-radius);
   padding: 1rem;
-  ${({variant}) => ({...buttonVariants[variant]})}
+  ${({variant = 'primary'}) => ({...buttonVariants[variant]})}
 `
 
 const Small = styled.small`
