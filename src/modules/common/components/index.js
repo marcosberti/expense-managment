@@ -31,6 +31,7 @@ const buttonVariants = {
       opacity: '0.75',
     },
   },
+  secondary: {},
 }
 
 const Button = styled.button`
@@ -72,28 +73,30 @@ const AbsoluteBox = styled.div`
     ${({position}) => position.desktop}
   }
 `
+const Form = styled.form`
+  & input,
+  & select {
+    border: 1px solid var(--background-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    outline: none;
 
-const Label = styled.label`
-  position: absolute;
-  left: -1000vw;
-  width: 1px;
-  height: 1px;
-`
+    ::placeholder {
+      transition: color 0.25s ease;
+    }
 
-const Input = styled.input`
-  border: 1px solid var(--background-color);
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  outline: none;
-
-  ::placeholder {
-    transition: color 0.25s ease;
+    &:focus {
+      ::placeholder {
+        color: transparent;
+      }
+    }
   }
 
-  &:focus {
-    ::placeholder {
-      color: transparent;
-    }
+  & label {
+    position: absolute;
+    left: -1000vw;
+    width: 1px;
+    height: 1px;
   }
 `
 
@@ -101,14 +104,4 @@ const FormError = styled(Small)`
   color: #dc0c0c;
 `
 
-export {
-  AbsoluteBox,
-  Big,
-  Bigger,
-  Button,
-  FormError,
-  Input,
-  Label,
-  Small,
-  TextCenter,
-}
+export {AbsoluteBox, Big, Bigger, Button, Form, FormError, Small, TextCenter}

@@ -2,7 +2,7 @@
 import {css} from '@emotion/react'
 import {useForm} from 'react-hook-form'
 import {useAuth} from 'context/auth'
-import {Button, Big, Input, Label, FormError} from 'common-components'
+import {Button, Big, Form, FormError} from 'common-components'
 import lgimg from './login-img.svg'
 
 const Login = () => (
@@ -27,7 +27,7 @@ const LoginForm = () => {
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit(onSubmit)}
       css={css`
         gap: 1rem;
@@ -36,8 +36,8 @@ const LoginForm = () => {
         margin-top: 4rem;
       `}
     >
-      <Label htmlFor="username">username</Label>
-      <Input
+      <label htmlFor="username">username</label>
+      <input
         id="username"
         type="email"
         name="username"
@@ -46,8 +46,8 @@ const LoginForm = () => {
         ref={register({required: 'Debe ingresar un usuario'})}
       />
       {errors.username && <FormError>{errors.username.message}</FormError>}
-      <Label htmlFor="password">password</Label>
-      <Input
+      <label htmlFor="password">password</label>
+      <input
         id="password"
         type="password"
         name="password"
@@ -58,7 +58,7 @@ const LoginForm = () => {
       <Button type="submit" variant="primary">
         Ingresar
       </Button>
-    </form>
+    </Form>
   )
 }
 
