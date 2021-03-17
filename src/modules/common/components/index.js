@@ -100,8 +100,22 @@ const Form = styled.form`
   }
 `
 
+const FormGroup = styled.div`
+  display: flex;
+`
+
 const FormError = styled(Small)`
   color: #dc0c0c;
 `
 
-export {AbsoluteBox, Big, Bigger, Button, Form, FormError, Small, TextCenter}
+export {
+  AbsoluteBox,
+  Big,
+  Bigger,
+  Button,
+  Form,
+  FormGroup,
+  FormError,
+  Small,
+  TextCenter,
+}
