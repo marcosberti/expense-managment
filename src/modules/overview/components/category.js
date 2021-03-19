@@ -8,7 +8,6 @@ import {primary} from 'colors'
 const Category = ({data: {name, ammount, icon: Icon}}) => {
   const {isMobile} = useDimentions()
   const iconSize = isMobile ? 60 : 84
-
   return (
     <li
       css={css`

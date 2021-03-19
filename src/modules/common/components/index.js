@@ -31,7 +31,19 @@ const buttonVariants = {
       opacity: '0.75',
     },
   },
-  secondary: {},
+  category: {
+    width: '100%',
+    padding: '0.5rem',
+    backgroundColor: '#fff',
+
+    '&:hover': {
+      backgroundColor: 'var(--primary-400)',
+    },
+
+    '&:hover *': {
+      color: '#fff',
+    },
+  },
 }
 
 const Button = styled.button`
@@ -100,6 +112,12 @@ const Form = styled.form`
   }
 `
 
+const MovementForm = styled(Form)`
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+`
+
 const FormGroup = styled.div`
   display: flex;
 `
@@ -114,6 +132,7 @@ export {
   Bigger,
   Button,
   Form,
+  MovementForm,
   FormGroup,
   FormError,
   Small,
