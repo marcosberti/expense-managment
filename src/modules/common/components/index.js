@@ -77,14 +77,14 @@ const Bigger = styled.div`
   font-weight: 700;
 `
 
-const CustomSVG = ({icon}) => {
+const CustomSVG = ({icon, fill, size}) => {
   const iconRef = React.useRef()
 
   React.useEffect(() => {
     iconRef.current.innerHTML = icon
   }, [])
 
-  return <IconSVG iconRef={iconRef} />
+  return <IconSVG iconRef={iconRef} fill={fill} size={size} />
 }
 
 const Form = styled.form`

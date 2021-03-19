@@ -95,6 +95,11 @@ const useClient = () => {
     [user.token]
   )
 
+  const setData = React.useCallback((path, newData) => {
+    saveToStorage(path, newData)
+    setState(prev => ({...prev, data: {...newData}}))
+  }, [])
+
   return {
     isPending: state === STATE_PENDING,
     isRejected: state === STATE_REJECTED,
@@ -102,6 +107,7 @@ const useClient = () => {
     data,
     error,
     run,
+    setData,
   }
 }
 

@@ -2,7 +2,7 @@
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
-import {Button, Small} from 'common-components'
+import {Button, CustomSVG, Small} from 'common-components'
 
 const AddCategoryButton = styled(Button)`
   padding: 0;
@@ -26,24 +26,27 @@ const AddCategoryButtonInner = styled.div`
   transform: translate(-50%, -50%);
 `
 
-const ItemIcon = ({icon: Icon, size = 24, description}) => (
+const ItemIcon = ({icon, size = 24, color, description}) => (
   <div
     css={css`
       padding: 0.5rem;
       border-radius: var(--border-radius);
-      background-color: var(--primary-400-op);
-      border: 1px solid var(--primary-400);
+      /* background-color: var(--primary-400-op);
+      border: 1px solid var(--primary-400); */
+      background-color: ${color}54;
+      border: 1px solid ${color};
       height: 100%;
     `}
   >
-    <Icon fill="var(--primary-400)" size={size} />
+    <CustomSVG fill={color} size={size} icon={icon} />
     {description && <Small>{description}</Small>}
   </div>
 )
 
 ItemIcon.propTypes = {
-  icon: PropTypes.func.isRequired,
+  icon: PropTypes.string.isRequired,
   size: PropTypes.number,
+  color: PropTypes.string.isRequired,
   description: PropTypes.string,
 }
 

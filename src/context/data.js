@@ -28,16 +28,37 @@ const getPathParams = (path, search) => {
 }
 
 const DataProvider = ({children}) => {
-  const {isPending, isRejected, error, data, run} = useClient()
+  const {isPending, isRejected, error, data, setData, run} = useClient()
   const location = useLocation()
 
   React.useEffect(() => {
+    console.log('on data effect')
     const path = paths[location.pathname]
     const params = getPathParams(path, location.search)
     run(path, {
       params,
     })
   }, [location, run])
+
+  const addCategory = React.useCallback(
+    categoria => {
+      setData(paths['/movements'], {
+        ...data,
+        categorias: [...data.categorias, categoria],
+      })
+    },
+    [data, setData]
+  )
+
+  console.log('data', data)
+
+  const value = React.useMemo(
+    () => ({
+      ...data,
+      addCategory,
+    }),
+    [data, addCategory]
+  )
 
   if (isPending) {
     return <div>pending</div>
@@ -51,7 +72,7 @@ const DataProvider = ({children}) => {
     )
   }
 
-  return <DataContext.Provider value={data}>{children}</DataContext.Provider>
+  return <DataContext.Provider value={value}>{children}</DataContext.Provider>
 }
 
 DataProvider.propTypes = {

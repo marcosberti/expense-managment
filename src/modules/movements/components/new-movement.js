@@ -41,7 +41,7 @@ const AddCategory = ({onAddCat}) => {
     }
   }, [isAdding, listener])
 
-  const cat = categorias.map(c => c.name)
+  const cat = categorias.map(c => c.nombre)
 
   return (
     <div
@@ -80,13 +80,18 @@ const MovementCategories = ({fields, onAddCat}) => (
   >
     {fields.map(f => (
       <li
-        key={f.name}
+        key={f.nombre}
         css={css`
           width: var(--category-size);
           height: var(--category-size);
         `}
       >
-        <ItemIcon icon={f.icon} size={32} description={f.name} />
+        <ItemIcon
+          icon={f.icon}
+          size={32}
+          description={f.nombre}
+          color={f.color}
+        />
       </li>
     ))}
     <AddCategory onAddCat={onAddCat} />
@@ -99,6 +104,7 @@ MovementCategories.propTypes = {
 }
 
 const MovementForm = () => {
+  const {categorias} = useData()
   const {
     register,
     handleSubmit,
@@ -116,13 +122,15 @@ const MovementForm = () => {
   })
 
   const onAddCat = catName => {
-    const {name, icon} = categorias.find(c => c.name === catName)
-    const exist = Boolean(fields.find(f => f.name === name))
+    const categoria = categorias.find(c => c.nombre === catName)
+    const exist = Boolean(fields.find(f => f.nombre === categoria.nombre))
     if (exist) {
-      setError('categoria', {message: `Categoria ${name} ya ha sido agregada`})
+      setError('categoria', {
+        message: `Categoria ${categoria.nombre} ya ha sido agregada`,
+      })
       return
     }
-    append({name, icon})
+    append(categoria)
     clearErrors('categoria')
   }
 
