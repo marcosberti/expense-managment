@@ -1,5 +1,19 @@
+import * as React from 'react'
 import styled from '@emotion/styled'
 import * as mq from 'media-queries'
+import {IconSVG} from 'icons'
+
+const AbsoluteBox = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  ${({position}) => position.mobile}
+
+  ${mq.large} {
+    ${({position}) => position.desktop}
+  }
+`
 
 const iconDefaults = {
   padding: '0.5rem',
@@ -31,13 +45,13 @@ const buttonVariants = {
       opacity: '0.75',
     },
   },
-  category: {
+  modal: {
     width: '100%',
     padding: '0.5rem',
     backgroundColor: '#fff',
 
     '&:hover': {
-      backgroundColor: 'var(--primary-400)',
+      backgroundColor: 'var(--secondary-400)',
     },
 
     '&:hover *': {
@@ -52,13 +66,6 @@ const Button = styled.button`
   ${({variant = 'primary'}) => ({...buttonVariants[variant]})}
 `
 
-const Small = styled.small`
-  font-size: var(--font-size-sm);
-  color: var(
-    ${props => (props.clear ? '--background-color' : '--text-color-light')}
-  );
-`
-
 const Big = styled.div`
   color: var(--text-color-light);
   font-weight: 600;
@@ -70,28 +77,24 @@ const Bigger = styled.div`
   font-weight: 700;
 `
 
-const TextCenter = styled.div`
-  text-align: center;
-`
+const CustomSVG = ({icon}) => {
+  const iconRef = React.useRef()
 
-const AbsoluteBox = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  ${({position}) => position.mobile}
+  React.useEffect(() => {
+    iconRef.current.innerHTML = icon
+  }, [])
 
-  ${mq.large} {
-    ${({position}) => position.desktop}
-  }
-`
+  return <IconSVG iconRef={iconRef} />
+}
+
 const Form = styled.form`
   & input,
   & select {
-    border: 1px solid var(--background-color);
+    outline: none;
     padding: 1rem;
     border-radius: var(--border-radius);
-    outline: none;
+    border: 1px solid var(--background-color);
+    background-color: var(--background-color-light);
 
     ::placeholder {
       transition: color 0.25s ease;
@@ -104,26 +107,40 @@ const Form = styled.form`
     }
   }
 
+  & input[type='color'] {
+    padding: 0.5rem;
+  }
+
   & label {
-    position: absolute;
-    left: -1000vw;
     width: 1px;
     height: 1px;
+    left: -1000vw;
+    position: absolute;
   }
-`
 
-const MovementForm = styled(Form)`
-  gap: 0.5rem;
-  display: flex;
-  flex-direction: column;
+  & > * {
+    width: 100%;
+    min-height: 3rem;
+  }
 `
 
 const FormGroup = styled.div`
   display: flex;
 `
 
+const Small = styled.small`
+  font-size: var(--font-size-sm);
+  color: var(
+    ${props => (props.clear ? '--background-color' : '--text-color-light')}
+  );
+`
+
 const FormError = styled(Small)`
   color: #dc0c0c;
+`
+
+const TextCenter = styled.div`
+  text-align: center;
 `
 
 export {
@@ -131,8 +148,8 @@ export {
   Big,
   Bigger,
   Button,
+  CustomSVG,
   Form,
-  MovementForm,
   FormGroup,
   FormError,
   Small,

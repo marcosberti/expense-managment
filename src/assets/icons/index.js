@@ -1,7 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/prop-types */
 
-const IconSVG = ({fill = '#fff', size = 24, align = 'middle', children}) => (
+const IconSVG = ({
+  fill = '#fff',
+  size = 24,
+  align = 'middle',
+  iconRef,
+  children,
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -11,6 +17,7 @@ const IconSVG = ({fill = '#fff', size = 24, align = 'middle', children}) => (
     style={{
       verticalAlign: align,
     }}
+    ref={iconRef}
   >
     {children}
   </svg>
@@ -231,6 +238,7 @@ const SortIcon = props => (
 )
 
 export {
+  IconSVG,
   MenuIcon,
   DeclineIcon,
   SchoolIcon,

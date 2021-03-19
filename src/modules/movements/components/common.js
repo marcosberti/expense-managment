@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
-import {Big, Button, Small} from 'common-components'
+import PropTypes from 'prop-types'
+import {Button, Small} from 'common-components'
 
 const AddCategoryButton = styled(Button)`
   padding: 0;
@@ -25,17 +26,6 @@ const AddCategoryButtonInner = styled.div`
   transform: translate(-50%, -50%);
 `
 
-const CategoriesWrapper = styled.div`
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  z-index: 1;
-  width: 6rem;
-  background-color: var(--background-color);
-  padding: 0.5rem;
-  border-radius: var(--border-radius);
-`
-
 const ItemIcon = ({icon: Icon, size = 24, description}) => (
   <div
     css={css`
@@ -51,15 +41,10 @@ const ItemIcon = ({icon: Icon, size = 24, description}) => (
   </div>
 )
 
-const MovementTitle = styled(Big)`
-  margin-bottom: 1.5rem;
-  border-bottom: 4px solid var(--primary-400);
-`
-
-export {
-  AddCategoryButton,
-  AddCategoryButtonInner,
-  CategoriesWrapper,
-  ItemIcon,
-  MovementTitle,
+ItemIcon.propTypes = {
+  icon: PropTypes.func.isRequired,
+  size: PropTypes.number,
+  description: PropTypes.string,
 }
+
+export {AddCategoryButton, AddCategoryButtonInner, ItemIcon}

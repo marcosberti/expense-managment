@@ -3,61 +3,20 @@ import * as React from 'react'
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import {useForm, useFieldArray} from 'react-hook-form'
-import {
-  Button,
-  MovementForm as Form,
-  FormGroup,
-  FormError,
-  Small,
-} from 'common-components'
-import {AddIcon, RentIcon, FitnessIcon, SchoolIcon} from 'icons'
-import {
-  AddCategoryButton,
-  AddCategoryButtonInner,
-  CategoriesWrapper,
-  ItemIcon,
-  MovementTitle,
-} from './common'
-
-const categorias = [
-  {
-    name: 'Alquiler',
-    icon: RentIcon,
-  },
-  {name: 'Deporte', icon: FitnessIcon},
-  {name: 'Cursos', icon: SchoolIcon},
-]
-
-const Categories = ({handleAddCategory}) => (
-  <CategoriesWrapper>
-    <ul>
-      {categorias.map((c, i) => (
-        <li key={c.name}>
-          <Button
-            id={`add-category-${c.name}`}
-            variant="category"
-            onClick={handleAddCategory}
-            data-cat-index={i}
-          >
-            <Small>{c.name}</Small>
-          </Button>
-        </li>
-      ))}
-    </ul>
-  </CategoriesWrapper>
-)
-
-Categories.propTypes = {
-  handleAddCategory: PropTypes.func.isRequired,
-}
+import {Button, FormGroup, FormError} from 'common-components'
+import {useData} from 'context/data'
+import {AddIcon} from 'icons'
+import {AddCategoryButton, AddCategoryButtonInner, ItemIcon} from './common'
+import {Modal, ModalBackdrop, ModalForm, ModalTitle, ModalMenu} from './modal'
 
 const AddCategory = ({onAddCat}) => {
+  const {categorias} = useData()
   const [isAdding, setIsAdding] = React.useState(false)
 
   const handleAddCategory = e => {
     e.preventDefault()
-    const {catIndex} = e.currentTarget.dataset
-    onAddCat(catIndex)
+    const {value} = e.currentTarget.dataset
+    onAddCat(value)
     setIsAdding(false)
   }
 
@@ -82,13 +41,23 @@ const AddCategory = ({onAddCat}) => {
     }
   }, [isAdding, listener])
 
+  const cat = categorias.map(c => c.name)
+
   return (
     <div
       css={css`
         position: relative;
       `}
     >
-      {isAdding && <Categories handleAddCategory={handleAddCategory} />}
+      {isAdding && (
+        <ModalMenu
+          id="add-category"
+          options={cat}
+          handleOption={handleAddCategory}
+          top="1rem"
+          left="1rem"
+        />
+      )}
       <AddCategoryButton variant="icon" onClick={handleIsAdding}>
         <AddCategoryButtonInner>
           <AddIcon size={24} fill="#000" />
@@ -146,8 +115,8 @@ const MovementForm = () => {
     name: 'categorias',
   })
 
-  const onAddCat = catIndex => {
-    const {name, icon} = categorias[catIndex]
+  const onAddCat = catName => {
+    const {name, icon} = categorias.find(c => c.name === catName)
     const exist = Boolean(fields.find(f => f.name === name))
     if (exist) {
       setError('categoria', {message: `Categoria ${name} ya ha sido agregada`})
@@ -166,7 +135,7 @@ const MovementForm = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <ModalForm onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="detalle">detalle</label>
       <input
         id="detalle"
@@ -213,25 +182,22 @@ const MovementForm = () => {
       <MovementCategories fields={fields} onAddCat={onAddCat} />
       {errors.categoria && <FormError>{errors.categoria.message}</FormError>}
       <Button type="submit">Guardar</Button>
-    </Form>
+    </ModalForm>
   )
 }
 
 const NewMovement = () => (
-  <div
-    css={css`
-      --category-size: 5rem;
-
-      height: 100%;
-      padding: 2rem;
-      max-width: 400px;
-      border-radius: var(--border-radius);
-      background-color: var(--background-color-light);
-    `}
-  >
-    <MovementTitle>Nuevo movimiento</MovementTitle>
-    <MovementForm />
-  </div>
+  <>
+    <ModalBackdrop />
+    <Modal
+      css={css`
+        --category-size: 5rem;
+      `}
+    >
+      <ModalTitle>Nuevo movimiento</ModalTitle>
+      <MovementForm />
+    </Modal>
+  </>
 )
 
 export {NewMovement}

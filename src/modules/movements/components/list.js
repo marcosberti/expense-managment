@@ -6,23 +6,7 @@ import {Button, Big, Small} from 'common-components'
 import {formatAmount} from 'common-utils'
 import {UpArrowIcon, DownArrowIcon, DeclineIcon} from 'icons'
 import * as mq from 'media-queries'
-
-const ItemIcon = ({icon: Icon}) => (
-  <div
-    css={css`
-      padding: 0.5rem;
-      border-radius: var(--border-radius);
-      background-color: var(--primary-400-op);
-      border: 1px solid var(--primary-400);
-    `}
-  >
-    <Icon fill="var(--primary-400)" size={24} />
-  </div>
-)
-
-ItemIcon.propTypes = {
-  icon: PropTypes.func,
-}
+import {ItemIcon} from './common'
 
 const ItemDetail = ({detail, date}) => (
   <div>
