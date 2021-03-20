@@ -113,4 +113,10 @@ const getOverviewQueries = dateISO => {
   )
 }
 
-export {getOverviewQueries}
+const getMovementsQueries = () => {
+  const categoriasQuery = getCategoriasQuery()
+
+  return [categoriasQuery].map(query => client.query(query))
+}
+
+module.exports = {getOverviewQueries, getMovementsQueries}

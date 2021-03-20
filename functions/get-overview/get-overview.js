@@ -1,6 +1,6 @@
-import {getOverviewQueries} from '../queries'
+const {getOverviewQueries} = require('../queries')
 
-const keys = ['ingresos', 'gastos', 'cuotas']
+const keys = ['ingresos', 'gastos', 'cuotas', 'categorias']
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext

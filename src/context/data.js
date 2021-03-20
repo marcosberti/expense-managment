@@ -29,6 +29,7 @@ const DataProvider = ({children}) => {
 
   React.useLayoutEffect(() => {
     const path = location.state?.endpoint
+    console.log('path', path)
     if (path) {
       const params = getPathParams(path, location.search)
       pageRef.current = location.pathname
