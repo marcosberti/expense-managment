@@ -45,11 +45,15 @@ const Movements = () => {
         max-height: calc(100vh - var(--header-size));
       `}
     >
-      {/* {openModal === 'movimiento' && <NewMovement />} */}
       <CategoryModal isOpen={openModal === 'categoria'} onClose={onModal} />
       <MovementModal isOpen={openModal === 'movimiento'} onClose={onModal} />
       <Actions onModal={onModal} />
-      <List listProps={{}} items={movimientos} listNoItems={<NoMovements />} />
+      <List
+        listProps={{}}
+        items={movimientos}
+        itemComponent={() => {}}
+        listNoItems={<NoMovements />}
+      />
     </div>
   )
 }

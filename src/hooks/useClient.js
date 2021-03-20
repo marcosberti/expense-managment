@@ -68,8 +68,8 @@ const useClient = () => {
     state: STATE_PENDING,
   })
 
-  const run = React.useCallback(
-    async (path, {method = 'GET', headers = {}, params} = {}) => {
+  const get = React.useCallback(
+    async (path, {headers = {}, params} = {}) => {
       const storageData = getFromStorage(path)
       if (storageData) {
         setState({state: STATE_RESOLVED, data: storageData})
@@ -82,7 +82,7 @@ const useClient = () => {
         ...headers,
       }
 
-      const result = await request(path, method, _headers, params)
+      const result = await request(path, 'GET', _headers, params)
       if (!result.error) {
         saveToStorage(path, result.data)
       }
@@ -95,14 +95,39 @@ const useClient = () => {
     [user.token]
   )
 
+  const post = React.useCallback(
+    async (path, {headers = {}, params}, getPath, onUpdate) => {
+      setState({state: STATE_PENDING})
+      const _headers = {
+        Authorization: `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
+        ...headers,
+      }
+
+      const result = await request(path, 'POST', _headers, params)
+      if (result.error) {
+        setState({
+          state: STATE_REJECTED,
+          error: result.error,
+        })
+        return
+      }
+
+      const cacheData = getFromStorage(getPath)
+      const _data = onUpdate(cacheData)
+      saveToStorage(getPath, _data)
+      setState({
+        state: STATE_RESOLVED,
+        data: _data,
+      })
+    },
+    [user.token]
+  )
+
   const setData = React.useCallback((path, newData) => {
     saveToStorage(path, newData)
     setState(prev => ({...prev, data: {...newData}}))
   }, [])
-
-  const setPending = React.useCallback(() => setState({state: STATE_PENDING}), [
-    setState,
-  ])
 
   return {
     isPending: state === STATE_PENDING,
@@ -110,9 +135,9 @@ const useClient = () => {
     isResolved: state === STATE_RESOLVED,
     data,
     error,
-    run,
+    get,
+    post,
     setData,
-    setPending,
   }
 }
 

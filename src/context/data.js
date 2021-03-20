@@ -1,19 +1,14 @@
 import * as React from 'react'
-import {useLocation, useHistory, bro} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {useClient} from 'hooks'
 
 const DataContext = React.createContext()
 DataContext.displayName = 'DataContext'
 
-const paths = {
-  '/': 'get-overview',
-  '/movements': 'get-movements',
-}
-
 const getPathParams = (path, search) => {
   const date = new Date()
-  if (path === paths['/']) {
+  if (path === 'get-overview') {
     return {
       dateISO: date.toISOString(),
     }
@@ -28,35 +23,33 @@ const getPathParams = (path, search) => {
 }
 
 const DataProvider = ({children}) => {
-  const {
-    isPending,
-    isRejected,
-    data,
-    setData,
-    setPending,
-    error,
-    run,
-  } = useClient()
-  const history = useHistory()
+  const {isPending, isRejected, data, error, get, post} = useClient()
   const location = useLocation()
+  const pageRef = React.useRef()
 
   React.useLayoutEffect(() => {
-    const path = paths[location.pathname]
-    const params = getPathParams(path, location.search)
-    run(path, {
-      params,
-    })
-  }, [location, run])
-  console.log(location.state)
+    const path = location.state?.endpoint
+    if (path) {
+      const params = getPathParams(path, location.search)
+      pageRef.current = location.pathname
+      get(path, {
+        params,
+      })
+    }
+  }, [location, get])
 
   const addCategory = React.useCallback(
     categoria => {
-      setData(paths['/movements'], {
-        ...data,
-        categorias: [...data.categorias, categoria],
-      })
+      post(
+        'post-category',
+        {
+          params: categoria,
+        },
+        location.state.endpoint,
+        prev => ({...prev, categorias: [...prev.categorias, categoria]})
+      )
     },
-    [data, setData]
+    [location, post]
   )
 
   const value = React.useMemo(
@@ -67,7 +60,7 @@ const DataProvider = ({children}) => {
     [data, addCategory]
   )
 
-  if (isPending || location.state === 'state test') {
+  if (isPending || !pageRef.current || pageRef.current !== location.pathname) {
     return <div>pending</div>
   }
 

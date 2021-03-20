@@ -125,8 +125,8 @@ MobileMenuButton.propTypes = {
 }
 
 const routes = [
-  {path: '/', text: 'Overview'},
-  {path: '/movements', text: 'Movimientos'},
+  {path: '/', text: 'Overview', endpoint: 'get-overview'},
+  {path: '/movements', text: 'Movimientos', endpoint: 'get-movements'},
   {path: '/reports', text: 'Reportes'},
 ]
 
@@ -151,7 +151,9 @@ const NavbarContainer = () => {
               ) : (
                 <Link
                   to={{
-                    // state: 'state test',
+                    state: {
+                      endpoint: route.endpoint,
+                    },
                     pathname: route.path,
                   }}
                 >

@@ -7,7 +7,6 @@ import {Button, Modal, ModalBackdrop, Small} from 'common-components'
 import {MONTHS} from 'common-utils'
 import {FilterIcon, SortIcon, AddIcon} from 'icons'
 import * as mq from 'media-queries'
-// import {ModalMenu} from './modal'
 
 const actionVariants = {
   action: {
@@ -104,8 +103,6 @@ const ActionsWrapper = styled.div`
   }
 `
 
-const iconSize = 24
-
 const AddButton = ({onModal}) => {
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -159,11 +156,15 @@ const AddButton = ({onModal}) => {
         </Modal>
 
         <Button onClick={handleModal}>
-          <AddIcon size={iconSize} />
+          <AddIcon />
         </Button>
       </div>
     </>
   )
+}
+
+AddButton.propTypes = {
+  onModal: PropTypes.func.isRequired,
 }
 
 const Actions = ({onModal}) => (
@@ -171,18 +172,18 @@ const Actions = ({onModal}) => (
     <Dropdown />
     <ActionButton variant="actionActive">
       <ActionText>Categoria</ActionText>
-      <SortIcon size={iconSize} />
+      <SortIcon />
     </ActionButton>
     <ActionButton variant="action">
       <ActionText>Fecha</ActionText>
-      <SortIcon size={iconSize} />
+      <SortIcon />
     </ActionButton>
     <ActionButton variant="action">
       <ActionText>Valor</ActionText>
-      <SortIcon size={iconSize} />
+      <SortIcon />
     </ActionButton>
     <ActionButton variant="action">
-      <FilterIcon size={iconSize} />
+      <FilterIcon />
     </ActionButton>
     <AddButton onModal={onModal} />
   </ActionsWrapper>

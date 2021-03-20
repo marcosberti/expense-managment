@@ -61,6 +61,12 @@ const getCuotasQuery = lastOfMonth =>
     q.Lambda('cuotRef', q.Select(['data'], q.Get(q.Var('cuotRef'))))
   )
 
+const getCategoriasQuery = () =>
+  q.Map(
+    q.Paginate(q.Documents(q.Collection('categorias'))),
+    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+  )
+
 // const variablesQuery = q.Map(
 //   q.Filter(
 //     q.Paginate(q.Documents(q.Collection('gastos_variables'))),
@@ -100,8 +106,9 @@ const getOverviewQueries = dateISO => {
   const ingresosQuery = getIngresosQuery(firstOfYear, lastOfYear)
   const gastosQuery = getGastosQuery(String(year))
   const cuotasQuery = getCuotasQuery(lastOfMonth)
+  const categoriasQuery = getCategoriasQuery()
 
-  return [ingresosQuery, gastosQuery, cuotasQuery].map(query =>
+  return [ingresosQuery, gastosQuery, cuotasQuery, categoriasQuery].map(query =>
     client.query(query)
   )
 }
