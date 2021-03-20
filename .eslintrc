@@ -2,6 +2,7 @@
   "extends": ["wesbos"],
   "rules": {
     "react/jsx-uses-react": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/react-in-jsx-scope": "off",
     "import/no-unresolved": "off",
     "jsx-a11y/label-has-associated-control": [

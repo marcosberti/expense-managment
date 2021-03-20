@@ -1,12 +1,31 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
+import styled from '@emotion/styled'
 import {useData} from 'context/data'
-import {AbsoluteBox, Small, Big, Bigger, TextCenter} from 'common-components'
+import {Big, Bigger, DesktopOnly, Small} from 'common-components'
 import {formatAmount} from 'common-utils'
 import * as mq from 'media-queries'
 import {getMainData} from '../utils/utils'
 import {ChartWrapper} from './chart-wrapper'
 import {DonutChart} from './donut-chart'
+
+const AbsoluteBox = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  ${({position}) => position.mobile}
+
+  ${mq.large} {
+    ${({position}) => position.desktop}
+  }
+`
+
+const TextCenter = styled.div`
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+`
 
 const MainOverview = () => {
   const {ingreso, gasto} = getMainData(useData())
@@ -37,15 +56,17 @@ const MainOverview = () => {
         <Small>Gastos</Small>
         <Big>{formatAmount(gasto)}</Big>
       </AbsoluteBox>
-      <ChartWrapper
-        wrapperId="donutchart-wrapper"
-        css={css`
-          min-height: 12rem;
-          min-width: 12rem;
-        `}
-      >
-        <DonutChart ingreso={ingreso} gasto={gasto} />
-      </ChartWrapper>
+      <DesktopOnly>
+        <ChartWrapper
+          wrapperId="donutchart-wrapper"
+          css={css`
+            min-height: 12rem;
+            min-width: 12rem;
+          `}
+        >
+          <DonutChart ingreso={ingreso} gasto={gasto} />
+        </ChartWrapper>
+      </DesktopOnly>
       <TextCenter>
         <Small>Disponible</Small>
         <Bigger>{formatAmount(ingreso - gasto)}</Bigger>

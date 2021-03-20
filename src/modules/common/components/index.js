@@ -1,19 +1,8 @@
 import * as React from 'react'
 import styled from '@emotion/styled'
-import * as mq from 'media-queries'
+import PropTypes from 'prop-types'
+import {useDimentions} from 'hooks'
 import {IconSVG} from 'icons'
-
-const AbsoluteBox = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  ${({position}) => position.mobile}
-
-  ${mq.large} {
-    ${({position}) => position.desktop}
-  }
-`
 
 const iconDefaults = {
   padding: '0.5rem',
@@ -66,32 +55,48 @@ const Button = styled.button`
   ${({variant = 'primary'}) => ({...buttonVariants[variant]})}
 `
 
-const Big = styled.div`
-  color: var(--text-color-light);
+const Big = styled.span`
   font-weight: 600;
+  display: inline-block;
+  color: var(--text-color-light);
   font-size: var(--font-size-lg);
 `
-const Bigger = styled.div`
+const Bigger = styled.span`
+  font-weight: 700;
+  display: inline-block;
   color: var(--text-color-light);
   font-size: var(--font-size-xl);
-  font-weight: 700;
 `
 
-const CustomSVG = ({icon, fill, size}) => {
+const CustomSVG = ({icon, ...props}) => {
   const iconRef = React.useRef()
 
   React.useEffect(() => {
     iconRef.current.innerHTML = icon
-  }, [])
+  }, [icon])
 
-  return <IconSVG iconRef={iconRef} fill={fill} size={size} />
+  return <IconSVG iconRef={iconRef} {...props} />
+}
+CustomSVG.propTypes = {
+  icon: PropTypes.string.isRequired,
+}
+
+const DesktopOnly = ({children}) => {
+  const {isMobile} = useDimentions()
+
+  return !isMobile ? children : null
 }
 
 const Form = styled.form`
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+
   & input,
   & select {
     outline: none;
     padding: 1rem;
+    min-height: 3rem;
     border-radius: var(--border-radius);
     border: 1px solid var(--background-color);
     background-color: var(--background-color-light);
@@ -120,7 +125,6 @@ const Form = styled.form`
 
   & > * {
     width: 100%;
-    min-height: 3rem;
   }
 `
 
@@ -139,19 +143,22 @@ const FormError = styled(Small)`
   color: #dc0c0c;
 `
 
-const TextCenter = styled.div`
-  text-align: center;
+const Title = styled(Big)`
+  margin-bottom: 1.5rem;
+  border-bottom: 4px solid var(--primary-400);
 `
 
+export * from './modal'
+export * from './list'
 export {
-  AbsoluteBox,
   Big,
   Bigger,
   Button,
   CustomSVG,
+  DesktopOnly,
   Form,
   FormGroup,
   FormError,
   Small,
-  TextCenter,
+  Title,
 }

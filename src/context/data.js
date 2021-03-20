@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useLocation} from 'react-router-dom'
+import {useLocation, useHistory, bro} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {useClient} from 'hooks'
 
@@ -28,17 +28,26 @@ const getPathParams = (path, search) => {
 }
 
 const DataProvider = ({children}) => {
-  const {isPending, isRejected, error, data, setData, run} = useClient()
+  const {
+    isPending,
+    isRejected,
+    data,
+    setData,
+    setPending,
+    error,
+    run,
+  } = useClient()
+  const history = useHistory()
   const location = useLocation()
 
-  React.useEffect(() => {
-    console.log('on data effect')
+  React.useLayoutEffect(() => {
     const path = paths[location.pathname]
     const params = getPathParams(path, location.search)
     run(path, {
       params,
     })
   }, [location, run])
+  console.log(location.state)
 
   const addCategory = React.useCallback(
     categoria => {
@@ -50,8 +59,6 @@ const DataProvider = ({children}) => {
     [data, setData]
   )
 
-  console.log('data', data)
-
   const value = React.useMemo(
     () => ({
       ...data,
@@ -60,7 +67,7 @@ const DataProvider = ({children}) => {
     [data, addCategory]
   )
 
-  if (isPending) {
+  if (isPending || location.state === 'state test') {
     return <div>pending</div>
   }
 

@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import {useDimentions} from 'hooks'
-import {Button, Big, Small} from 'common-components'
+import {Button, Big, DesktopOnly, Small} from 'common-components'
 import {formatAmount} from 'common-utils'
 import {UpArrowIcon, DownArrowIcon, DeclineIcon} from 'icons'
 import * as mq from 'media-queries'
@@ -45,38 +44,37 @@ ItemAmount.propTypes = {
   amount: PropTypes.number,
 }
 
-const Item = ({movement}) => {
-  const {isMobile} = useDimentions()
-  return (
-    <li
-      css={css`
-        border-radius: var(--border-radius);
-        background-color: var(--background-color-light);
-        padding: 1rem;
-        margin-bottom: 0.5rem;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 1rem;
+const Item = ({movement}) => (
+  <li
+    css={css`
+      gap: 1rem;
+      display: flex;
+      padding: 1rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      justify-content: flex-start;
+      border-radius: var(--border-radius);
+      background-color: var(--background-color-light);
 
-        &:last-of-type {
-          margin-bottom: 0;
-        }
+      &:last-of-type {
+        margin-bottom: 0;
+      }
 
-        ${mq.large} {
-          padding: 2rem;
-        }
-      `}
-    >
-      {!isMobile ? <ItemIcon icon={movement.icon} /> : null}
-      <ItemDetail detail={movement.detail} date={movement.date} />
-      <ItemAmount type={movement.type} amount={movement.amount} />
-      <Button type="button" variant="icon">
-        <DeclineIcon fill="#555" />
-      </Button>
-    </li>
-  )
-}
+      ${mq.large} {
+        padding: 2rem;
+      }
+    `}
+  >
+    <DesktopOnly>
+      <ItemIcon icon={movement.icon} />
+    </DesktopOnly>
+    <ItemDetail detail={movement.detail} date={movement.date} />
+    <ItemAmount type={movement.type} amount={movement.amount} />
+    <Button type="button" variant="icon">
+      <DeclineIcon fill="#555" />
+    </Button>
+  </li>
+)
 
 Item.propTypes = {
   movement: PropTypes.shape({
@@ -104,9 +102,9 @@ const List = ({movements}) => (
       <div
         css={css`
           padding: 2rem;
+          text-align: center;
           border-radius: var(--border-radius);
           background-color: var(--background-color-light);
-          text-align: center;
         `}
       >
         <Big>Sin movimientos</Big>

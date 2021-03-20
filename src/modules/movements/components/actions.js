@@ -3,12 +3,11 @@ import * as React from 'react'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
-import {useDimentions} from 'hooks'
-import {Button, Small} from 'common-components'
+import {Button, Modal, ModalBackdrop, Small} from 'common-components'
 import {MONTHS} from 'common-utils'
 import {FilterIcon, SortIcon, AddIcon} from 'icons'
 import * as mq from 'media-queries'
-import {ModalMenu} from './modal'
+// import {ModalMenu} from './modal'
 
 const actionVariants = {
   action: {
@@ -105,66 +104,92 @@ const ActionsWrapper = styled.div`
   }
 `
 
-const Actions = ({onOpenModal}) => {
-  const [isAdding, setIsAdding] = React.useState(false)
-  const {isMobile} = useDimentions()
-  const iconSize = isMobile ? 16 : 24
+const iconSize = 24
+
+const AddButton = ({onModal}) => {
+  const [isOpen, setIsOpen] = React.useState(false)
 
   const handleOption = e => {
     e.preventDefault()
     const {value} = e.currentTarget.dataset
-    onOpenModal(value)
-    setIsAdding(false)
+    onModal(value)
+    setIsOpen(false)
   }
 
-  const handleAdding = e => {
+  const handleModal = e => {
     e.preventDefault()
-    setIsAdding(!isAdding)
+    setIsOpen(!isOpen)
   }
 
   return (
-    <ActionsWrapper>
-      <Dropdown />
-      <ActionButton type="button" variant="actionActive">
-        <ActionText>Categoria</ActionText>
-        <SortIcon size={iconSize} />
-      </ActionButton>
-      <ActionButton type="button" variant="action">
-        <ActionText>Fecha</ActionText>
-        <SortIcon size={iconSize} />
-      </ActionButton>
-      <ActionButton type="button" variant="action">
-        <ActionText>Valor</ActionText>
-        <SortIcon size={iconSize} />
-      </ActionButton>
-      <ActionButton type="button" variant="action">
-        <FilterIcon size={iconSize} />
-      </ActionButton>
+    <>
+      {isOpen && <ModalBackdrop noBackground onClick={handleModal} />}
       <div
         css={css`
           position: relative;
         `}
       >
-        {isAdding && (
-          <ModalMenu
-            id="modal-options"
-            options={['categoria', 'movimiento']}
-            handleOption={handleOption}
-            top="4rem"
-            right="0"
-            width="7rem"
-          />
-        )}
-        <Button type="button" variant="primary" onClick={handleAdding}>
+        <Modal
+          isOpen={isOpen}
+          onClose={handleModal}
+          withBackdrop={false}
+          modalProps={{
+            right: '0',
+            top: '4rem',
+            width: '7rem',
+            padding: '0.5rem',
+            border: '1px solid var(--secondary-400)',
+            borderRadius: 'var(--border-radius)',
+            backgroundColor: 'var(--secondary-400-op)',
+          }}
+        >
+          <ul>
+            {['categoria', 'movimiento'].map(item => (
+              <li key={item}>
+                <Button
+                  variant="modal"
+                  onClick={handleOption}
+                  data-value={item}
+                >
+                  <Small>{item}</Small>
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </Modal>
+
+        <Button onClick={handleModal}>
           <AddIcon size={iconSize} />
         </Button>
       </div>
-    </ActionsWrapper>
+    </>
   )
 }
 
+const Actions = ({onModal}) => (
+  <ActionsWrapper>
+    <Dropdown />
+    <ActionButton variant="actionActive">
+      <ActionText>Categoria</ActionText>
+      <SortIcon size={iconSize} />
+    </ActionButton>
+    <ActionButton variant="action">
+      <ActionText>Fecha</ActionText>
+      <SortIcon size={iconSize} />
+    </ActionButton>
+    <ActionButton variant="action">
+      <ActionText>Valor</ActionText>
+      <SortIcon size={iconSize} />
+    </ActionButton>
+    <ActionButton variant="action">
+      <FilterIcon size={iconSize} />
+    </ActionButton>
+    <AddButton onModal={onModal} />
+  </ActionsWrapper>
+)
+
 Actions.propTypes = {
-  onOpenModal: PropTypes.func.isRequired,
+  onModal: PropTypes.func.isRequired,
 }
 
 export {Actions}

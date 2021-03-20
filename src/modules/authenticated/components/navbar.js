@@ -149,7 +149,14 @@ const NavbarContainer = () => {
               {route.path === '/reports' ? (
                 <span>{route.text}</span>
               ) : (
-                <Link to={route.path}>{route.text}</Link>
+                <Link
+                  to={{
+                    // state: 'state test',
+                    pathname: route.path,
+                  }}
+                >
+                  {route.text}
+                </Link>
               )}
             </NavbarItem>
           ))}

@@ -31,8 +31,6 @@ const ItemIcon = ({icon, size = 24, color, description}) => (
     css={css`
       padding: 0.5rem;
       border-radius: var(--border-radius);
-      /* background-color: var(--primary-400-op);
-      border: 1px solid var(--primary-400); */
       background-color: ${color}54;
       border: 1px solid ${color};
       height: 100%;

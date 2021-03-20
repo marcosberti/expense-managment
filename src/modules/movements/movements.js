@@ -2,32 +2,39 @@
 import * as React from 'react'
 import {css} from '@emotion/react'
 import {useData} from 'context/data'
-import {List} from './components/list'
+import {Big, List, Small} from 'common-components'
 import {Actions} from './components/actions'
-import {NewMovement} from './components/new-movement'
-import {NewCategory} from './components/new-category'
+import {CategoryModal} from './components/category-modal'
+import {MovementModal} from './components/movement-modal'
+
+const NoMovements = () => (
+  <div
+    css={css`
+      display: flex;
+      padding: 2rem;
+      text-align: center;
+      flex-direction: column;
+      border-radius: var(--border-radius);
+      background-color: var(--background-color-light);
+    `}
+  >
+    <Big>Sin movimientos</Big>
+    <Small>para el mes seleccionado</Small>
+  </div>
+)
 
 const Movements = () => {
-  const {movimientos} = useData()
+  const data = useData()
+  const {movimientos} = data
   const [openModal, setOpenModal] = React.useState(null)
-  // console.log('data', data)
-  const onOpenModal = modal => {
-    setOpenModal(modal)
+
+  const onModal = modal => {
+    setOpenModal(modal ?? null)
   }
-  const listener = React.useCallback(e => {
-    const {id} = e.target
-    if (id?.includes('modal-backdrop')) {
-      setOpenModal(null)
-    }
-  }, [])
 
   React.useEffect(() => {
-    if (openModal) {
-      document.addEventListener('click', listener)
-    } else {
-      document.removeEventListener('click', listener)
-    }
-  }, [openModal, listener])
+    setOpenModal(null)
+  }, [data])
 
   return (
     <div
@@ -38,10 +45,11 @@ const Movements = () => {
         max-height: calc(100vh - var(--header-size));
       `}
     >
-      {openModal === 'movimiento' && <NewMovement />}
-      {openModal === 'categoria' && <NewCategory />}
-      <Actions onOpenModal={onOpenModal} />
-      <List movements={movimientos} />
+      {/* {openModal === 'movimiento' && <NewMovement />} */}
+      <CategoryModal isOpen={openModal === 'categoria'} onClose={onModal} />
+      <MovementModal isOpen={openModal === 'movimiento'} onClose={onModal} />
+      <Actions onModal={onModal} />
+      <List listProps={{}} items={movimientos} listNoItems={<NoMovements />} />
     </div>
   )
 }

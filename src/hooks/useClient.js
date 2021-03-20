@@ -100,6 +100,10 @@ const useClient = () => {
     setState(prev => ({...prev, data: {...newData}}))
   }, [])
 
+  const setPending = React.useCallback(() => setState({state: STATE_PENDING}), [
+    setState,
+  ])
+
   return {
     isPending: state === STATE_PENDING,
     isRejected: state === STATE_REJECTED,
@@ -108,6 +112,7 @@ const useClient = () => {
     error,
     run,
     setData,
+    setPending,
   }
 }
 
