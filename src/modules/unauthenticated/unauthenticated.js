@@ -8,7 +8,10 @@ import lgimg from './login-img.svg'
 const Login = () => (
   <div
     css={css`
+      gap: 4rem;
+      display: flex;
       flex-basis: 40%;
+      flex-direction: column;
     `}
   >
     <Big>Expense Manager</Big>
@@ -27,15 +30,7 @@ const LoginForm = () => {
   }
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      css={css`
-        gap: 1rem;
-        display: flex;
-        flex-direction: column;
-        margin-top: 4rem;
-      `}
-    >
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="username">username</label>
       <input
         id="username"
@@ -65,9 +60,9 @@ const LoginForm = () => {
 const Unauthenticated = () => (
   <div
     css={css`
-      padding: 2rem;
       width: 100vw;
       height: 100vh;
+      padding: 2rem;
     `}
   >
     <div
@@ -75,8 +70,8 @@ const Unauthenticated = () => (
         gap: 1.5rem;
         display: flex;
         padding: 2rem;
-        width: calc(100vw / 1.25);
         margin: 5rem auto;
+        width: calc(100vw / 1.25);
         border-radius: var(--border-radius);
         background-color: var(--background-color-light);
       `}
@@ -85,8 +80,8 @@ const Unauthenticated = () => (
         src={lgimg}
         alt="login"
         css={css`
-          max-width: 60%;
           height: auto;
+          max-width: 60%;
         `}
       />
       <Login />

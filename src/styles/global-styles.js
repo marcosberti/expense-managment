@@ -17,6 +17,7 @@ const GlobalStyles = () => (
         /* text */
         --text-color: var(--neutral-600);
         --text-color-light: var(--neutral-400);
+        --text-color-error: #dc0c0c;
 
         /* primary colors */
         --primary-300: ${primary[300]};

@@ -6,23 +6,32 @@ import * as mq from 'media-queries'
 import {CategoryItem, DesktopOnly, List, Small} from 'common-components'
 import {MainOverview} from './components/main-overview'
 import {DetailOverview} from './components/detail-overview'
+import {getMainData, getYearlyData} from './utils/utils'
 
-const Charts = () => (
-  <div
-    css={css`
-      border-radius: var(--border-radius);
-      background-color: var(--background-color-light);
+const Charts = () => {
+  const data = useData()
+  const yearData = getYearlyData(data)
+  const mainData = getMainData(data)
 
-      ${mq.large} {
-        display: flex;
-        flex-direction: row;
-      }
-    `}
-  >
-    <DetailOverview />
-    <MainOverview />
-  </div>
-)
+  return (
+    <div
+      css={css`
+        border-radius: var(--border-radius);
+        background-color: var(--background-color-light);
+
+        ${mq.large} {
+          display: flex;
+          flex-direction: row;
+        }
+      `}
+    >
+      <DesktopOnly>
+        <DetailOverview yearData={yearData} cuotas={data.cuotas} />
+      </DesktopOnly>
+      <MainOverview mainData={mainData} />
+    </div>
+  )
+}
 
 const NoCategories = () => (
   <div
@@ -40,10 +49,20 @@ const NoCategories = () => (
     </div>
     <Small>
       Puede crear categorias en la sección{' '}
-      <Link to="/movements">'Movimientos'</Link>
+      <Link
+        to={{
+          pathname: '/movements',
+          state: {
+            endpoint: 'get-movements',
+          },
+        }}
+      >
+        'Movimientos'
+      </Link>
     </Small>
   </div>
 )
+
 const Categories = () => {
   // const {categorias} = useData()
   const catMasGastos = []

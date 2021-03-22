@@ -1,3 +1,4 @@
+import {BrowserRouter as Router} from 'react-router-dom'
 import {GlobalStyles} from './styles/global-styles'
 import {useAuth} from './context/auth'
 import {Authenticated} from './modules/authenticated/authenticated'
@@ -9,7 +10,13 @@ const App = () => {
   return (
     <>
       <GlobalStyles />
-      {user ? <Authenticated /> : <Unauthenticated />}
+      {user ? (
+        <Router>
+          <Authenticated />
+        </Router>
+      ) : (
+        <Unauthenticated />
+      )}
     </>
   )
 }

@@ -4,10 +4,9 @@ import {Link, useLocation} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
-import {useDimentions} from 'hooks'
 import * as mq from 'media-queries'
 import {MenuIcon, DeclineIcon} from 'icons'
-import {Button} from 'common-components'
+import {Button, MobileOnly} from 'common-components'
 
 const Nav = styled.nav`
   background-color: var(--background-color-light);
@@ -127,26 +126,27 @@ MobileMenuButton.propTypes = {
 const routes = [
   {path: '/', text: 'Overview', endpoint: 'get-overview'},
   {path: '/movements', text: 'Movimientos', endpoint: 'get-movements'},
-  {path: '/reports', text: 'Reportes'},
+  {path: '/reports', text: 'Reportes', disabled: true},
 ]
 
 const NavbarContainer = () => {
   const navRef = React.useRef()
-  const {isMobile} = useDimentions()
   const {pathname} = useLocation()
 
   return (
     <>
-      {isMobile ? <MobileMenuButton navRef={navRef} /> : null}
+      <MobileOnly>
+        <MobileMenuButton navRef={navRef} />
+      </MobileOnly>
       <Nav ref={navRef}>
         <Navbar>
           {routes.map(route => (
             <NavbarItem
               key={route.path}
               active={route.path === pathname}
-              disabled={route.path === '/reports'}
+              disabled={route.disabled}
             >
-              {route.path === '/reports' ? (
+              {route.disabled ? (
                 <span>{route.text}</span>
               ) : (
                 <Link

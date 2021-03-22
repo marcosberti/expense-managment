@@ -1,45 +1,38 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
+import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
-import {useData} from 'context/data'
-import {useDimentions} from 'hooks'
 import {ChartWrapper, Chart} from './chart-wrapper'
 import {YearBalanceChart} from './year-balance-chart'
 import {PaymentsChart} from './payments-chart'
-import {getYearlyData} from '../utils/utils'
 
-const DetailOverview = () => {
-  const data = useData()
-  const yearData = getYearlyData(data)
-  const {isMobile} = useDimentions()
+const DetailOverview = ({yearData, cuotas}) => (
+  <div
+    css={css`
+      display: none;
 
-  if (isMobile) {
-    return null
-  }
+      ${mq.large} {
+        flex-grow: 1;
+        width: 20rem;
+        display: flex;
+        flex-direction: column;
+      }
+    `}
+  >
+    <ChartWrapper wrapperId="chart-wrapper">
+      <Chart id="detalle-anual">
+        <YearBalanceChart yearData={yearData} />
+      </Chart>
+      <Chart id="detalle-cuotas">
+        <PaymentsChart paymentsData={cuotas} />
+      </Chart>
+    </ChartWrapper>
+  </div>
+)
 
-  return (
-    <div
-      css={css`
-        display: none;
-
-        ${mq.large} {
-          display: flex;
-          flex-grow: 1;
-          flex-direction: column;
-          width: 20rem;
-        }
-      `}
-    >
-      <ChartWrapper wrapperId="chart-wrapper">
-        <Chart id="detalle-anual">
-          <YearBalanceChart yearData={yearData} />
-        </Chart>
-        <Chart id="detalle-cuotas">
-          <PaymentsChart paymentsData={data.cuotas} />
-        </Chart>
-      </ChartWrapper>
-    </div>
-  )
+DetailOverview.propTypes = {
+  yearData: PropTypes.array.isRequired,
+  cuotas: PropTypes.array.isRequired,
 }
 
 export {DetailOverview}

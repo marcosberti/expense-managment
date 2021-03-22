@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import {BrowserRouter as Router} from 'react-router-dom'
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
@@ -30,18 +29,16 @@ const Grid = ({children}) => (
 )
 
 Grid.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.array.isRequired,
 }
 
 const Authenticated = () => (
   <Grid>
-    <Router>
-      <Navbar />
-      <Header />
-      <DataProvider>
-        <Routes />
-      </DataProvider>
-    </Router>
+    <Navbar />
+    <Header />
+    <DataProvider>
+      <Routes />
+    </DataProvider>
   </Grid>
 )
 

@@ -1,5 +1,15 @@
+/** @jsxImportSource @emotion/react */
+import {css} from '@emotion/react'
 import {useForm} from 'react-hook-form'
-import {Button, Form, FormError, Title, Modal} from 'common-components'
+import {
+  Button,
+  Form,
+  FormGroup,
+  FormError,
+  LabelText,
+  Title,
+  Modal,
+} from 'common-components'
 import {useData} from 'context/data'
 
 const CategoryForm = () => {
@@ -14,27 +24,45 @@ const CategoryForm = () => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="nombre">categoria</label>
-      <input
-        id="nombre"
-        name="nombre"
-        type="text"
-        placeholder="Categoría"
-        autoComplete="off"
-        ref={register({required: 'Debe ingresar el nombre de la categoría'})}
-      />
+      <label htmlFor="nombre">
+        <LabelText>categoria</LabelText>
+        <input
+          id="nombre"
+          name="nombre"
+          type="text"
+          placeholder="Categoría"
+          autoComplete="off"
+          ref={register({required: 'Debe ingresar el nombre de la categoría'})}
+        />
+      </label>
       {errors.nombre && <FormError>{errors.nombre.message}</FormError>}
-      <label htmlFor="icon">icono</label>
-      <input
-        id="icon"
-        name="icon"
-        type="text"
-        placeholder="Icono"
-        autoComplete="off"
-        ref={register({required: 'Debe ingresar el ícono'})}
-      />
-      <label htmlFor="color">color</label>
-      <input id="color" name="color" type="color" ref={register} />
+      <FormGroup>
+        <label
+          htmlFor="icon"
+          css={css`
+            flex-basis: 75%;
+          `}
+        >
+          <LabelText>icono</LabelText>
+          <input
+            id="icon"
+            name="icon"
+            type="text"
+            placeholder="Icono"
+            autoComplete="off"
+            ref={register({required: 'Debe ingresar el ícono'})}
+          />
+        </label>
+        <label
+          htmlFor="color"
+          css={css`
+            flex-basis: 25%;
+          `}
+        >
+          <LabelText>color</LabelText>
+          <input id="color" name="color" type="color" ref={register} />
+        </label>
+      </FormGroup>
       <Button type="submit">Guardar</Button>
     </Form>
   )

@@ -54,17 +54,17 @@ const ActionText = styled(Small)`
 
 const Dropdown = () => (
   <select
-    name="months"
     id="months"
+    name="months"
     css={css`
-      margin-right: auto;
-      color: var(--text-color-light);
-      border-color: var(--neutral-300);
-      border-radius: var(--border-radius);
-      font-size: var(--font-size-sm);
       font-weight: 600;
       min-height: 3rem;
+      margin-right: auto;
       background-color: inherit;
+      color: var(--text-color-light);
+      font-size: var(--font-size-sm);
+      border-color: var(--neutral-300);
+      border-radius: var(--border-radius);
     `}
   >
     {MONTHS.map(month => (
@@ -76,11 +76,11 @@ const Dropdown = () => (
 )
 
 const ActionsWrapper = styled.div`
+  gap: 0.5rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
   margin-bottom: 1rem;
+  justify-content: center;
 
   & > :first-child,
   & > :last-child {
@@ -92,8 +92,8 @@ const ActionsWrapper = styled.div`
   }
 
   ${mq.large} {
-    justify-content: flex-end;
     gap: 1rem;
+    justify-content: flex-end;
 
     & > *,
     & > :first-child,
@@ -135,8 +135,8 @@ const AddButton = ({onModal}) => {
             top: '4rem',
             width: '7rem',
             padding: '0.5rem',
-            border: '1px solid var(--secondary-400)',
             borderRadius: 'var(--border-radius)',
+            border: '1px solid var(--secondary-400)',
             backgroundColor: 'var(--secondary-400-op)',
           }}
         >

@@ -87,6 +87,12 @@ const DesktopOnly = ({children}) => {
   return !isMobile ? children : null
 }
 
+const MobileOnly = ({children}) => {
+  const {isMobile} = useDimentions()
+
+  return isMobile ? children : null
+}
+
 const Form = styled.form`
   gap: 0.5rem;
   display: flex;
@@ -94,9 +100,12 @@ const Form = styled.form`
 
   & input,
   & select {
+    width: 100%;
+    height: 100%;
     outline: none;
     padding: 1rem;
-    min-height: 3rem;
+    max-height: 3.25rem;
+    font-size: 0.75rem;
     border-radius: var(--border-radius);
     border: 1px solid var(--background-color);
     background-color: var(--background-color-light);
@@ -113,19 +122,26 @@ const Form = styled.form`
   }
 
   & input[type='color'] {
+    height: 3.25rem;
     padding: 0.5rem;
   }
 
   & label {
-    width: 1px;
-    height: 1px;
-    left: -1000vw;
-    position: absolute;
+    margin-top: 0.5rem;
   }
 
   & > * {
     width: 100%;
   }
+`
+
+const LabelText = styled.span`
+  font-weight: 600;
+  font-size: 0.6rem;
+  padding-left: 0.5rem;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  text-transform: uppercase;
 `
 
 const FormGroup = styled.div`
@@ -135,13 +151,20 @@ const FormGroup = styled.div`
 const Small = styled.small`
   font-size: var(--font-size-sm);
   color: var(
-    ${props => (props.clear ? '--background-color' : '--text-color-light')}
+    ${({clear = false}) =>
+      clear ? '--background-color' : '--text-color-light'}
   );
+  ${({error = false}) =>
+    error
+      ? {
+          color: 'var(--text-color-error)',
+          paddingLeft: '0.5rem',
+        }
+      : null};
 `
 
-const FormError = styled(Small)`
-  color: #dc0c0c;
-`
+const FormError = ({message}) =>
+  message ? <Small error>{message}</Small> : null
 
 const Title = styled(Big)`
   margin-bottom: 1.5rem;
@@ -159,6 +182,8 @@ export {
   Form,
   FormGroup,
   FormError,
+  LabelText,
+  MobileOnly,
   Small,
   Title,
 }

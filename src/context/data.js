@@ -22,18 +22,46 @@ const getPathParams = (path, search) => {
   )
 }
 
+const formatMovement = movement => {
+  if (movement['tipo-egreso'] === 'fijo') {
+    return {
+      ...movement,
+      fechaAlta: new Date().toISOString(),
+    }
+  }
+  if (movement['tipo-egreso'] === 'cuotas') {
+    const fecha = new Date(`${movement.fechaPrimerPago}T00:00:00`)
+    const anio = fecha.getFullYear()
+    const mes = fecha.getMonth()
+    return {
+      ...movement,
+      montoCuota: movement.monto / movement.cuotas,
+      fechaUltimoPago: new Date(
+        anio,
+        mes + Number(movement.cuotas),
+        0,
+        0,
+        0,
+        0
+      ).toISOString(),
+    }
+  }
+
+  return movement
+}
+
 const DataProvider = ({children}) => {
   const {isPending, isRejected, data, error, get, post} = useClient()
   const location = useLocation()
   const pageRef = React.useRef()
 
   React.useLayoutEffect(() => {
-    const path = location.state?.endpoint
-    console.log('path', path)
-    if (path) {
-      const params = getPathParams(path, location.search)
+    const endpoint = location.state?.endpoint
+    console.log('endpoint', endpoint)
+    if (endpoint) {
+      const params = getPathParams(endpoint, location.search)
       pageRef.current = location.pathname
-      get(path, {
+      get(endpoint, {
         params,
       })
     }
@@ -53,12 +81,20 @@ const DataProvider = ({children}) => {
     [location, post]
   )
 
+  const addMovement = React.useCallback(movement => {
+    const formatted = formatMovement(movement)
+    console.log('mov', formatted)
+  }, [])
+
+  console.log('loc', location)
+
   const value = React.useMemo(
     () => ({
       ...data,
       addCategory,
+      addMovement,
     }),
-    [data, addCategory]
+    [data, addCategory, addMovement]
   )
 
   if (isPending || !pageRef.current || pageRef.current !== location.pathname) {
