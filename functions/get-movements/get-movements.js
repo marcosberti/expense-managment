@@ -1,9 +1,26 @@
-const {getMovementsQueries} = require('../queries')
+const {getQueries} = require('../queries')
 
-const keys = ['categorias']
+const keys = [
+  'gastosCuotas',
+  'categorias',
+  'movimientos',
+  'opciones',
+  'gastosFijos',
+]
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
+  const {
+    queryStringParameters: {dateISO, queryKeys},
+  } = event
+
+  if (!dateISO) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({message: 'A date in ISO format is required'}),
+    }
+  }
+
   if (!user || user.email !== process.env.EXPMAN_VALID_EMAIL) {
     return {
       statusCode: 401,
@@ -11,18 +28,21 @@ const handler = async (event, ctx) => {
   }
 
   try {
-    const queries = getMovementsQueries()
+    const queries = getQueries(dateISO, queryKeys)
     const result = await Promise.all(queries)
 
     const data = result.reduce((acc, r, i) => {
       const key = keys[i]
-      acc[key] = r.data
+      acc[key] =
+        key === 'opciones'
+          ? r.data.reduce((opciones, opcion) => ({...opciones, ...opcion}), {})
+          : r.data
       return acc
     }, {})
 
     return {
       statusCode: 200,
-      body: JSON.stringify({...data, movimientos: []}),
+      body: JSON.stringify(data),
     }
   } catch (e) {
     return {

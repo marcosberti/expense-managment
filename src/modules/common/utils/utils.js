@@ -6,8 +6,8 @@ const getTime = date => {
 const getMonthDates = (date = new Date()) => {
   const year = date.getFullYear()
   const month = date.getMonth()
-  const firstOfMonth = new Date(year, month)
-  const lastOfMonth = new Date(year, month + 1, 0)
+  const firstOfMonth = new Date(year, month, 1, 0, 0, 0)
+  const lastOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
   return {
     firstOfMonth,
     lastOfMonth,
@@ -15,6 +15,8 @@ const getMonthDates = (date = new Date()) => {
     year,
   }
 }
+
+const formatDateToISO = date => (date ? `${date}T00:00:00` : null)
 
 const formatDate = date => {
   const time = date.getTime ? date.getTime() : date
@@ -25,8 +27,8 @@ const formatDate = date => {
   return formattedDate
 }
 
-const formatAmount = ammount =>
-  ammount.toLocaleString('es-AR', {style: 'currency', currency: 'ARS'})
+const formatAmount = (ammount, currency) =>
+  new Intl.NumberFormat('es-AR', {style: 'currency', currency}).format(ammount)
 
 const MONTHS = [
   'Enero',
@@ -43,4 +45,11 @@ const MONTHS = [
   'Diciembre',
 ]
 
-export {MONTHS, formatDate, formatAmount, getTime, getMonthDates}
+export {
+  MONTHS,
+  formatDate,
+  formatDateToISO,
+  formatAmount,
+  getTime,
+  getMonthDates,
+}

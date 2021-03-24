@@ -44,11 +44,13 @@ const MainOverview = ({mainData: {ingreso, gasto}}) => (
   >
     <TextCenter>
       <Small>Ingresos</Small>
-      <Big>{formatAmount(ingreso)}</Big>
+      <Big>{formatAmount(ingreso, 'ars')}</Big>
     </TextCenter>
     <AbsoluteBox position={{mobile: {top: '6.5rem'}, desktop: {top: '11rem'}}}>
-      <Small>Gastos</Small>
-      <Big>{formatAmount(gasto)}</Big>
+      <TextCenter>
+        <Small>Gastos</Small>
+        <Big>{formatAmount(gasto, 'ars')}</Big>
+      </TextCenter>
     </AbsoluteBox>
     <DesktopOnly>
       <ChartWrapper
@@ -63,7 +65,7 @@ const MainOverview = ({mainData: {ingreso, gasto}}) => (
     </DesktopOnly>
     <TextCenter>
       <Small>Disponible</Small>
-      <Bigger>{formatAmount(ingreso - gasto)}</Bigger>
+      <Bigger>{formatAmount(ingreso - gasto, 'ars')}</Bigger>
     </TextCenter>
   </div>
 )

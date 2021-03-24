@@ -5,118 +5,148 @@ const client = new faunadb.Client({
   secret: process.env.FAUNA_SERVER_SECRET,
 })
 
-const getMonthDates = date => {
+const getDate = date => (typeof date === 'string' ? new Date(date) : date)
+
+const getMonthDates = dateParam => {
+  const date = getDate(dateParam)
   const year = date.getFullYear()
   const month = date.getMonth()
-  const firstOfYear = new Date(year, 0)
+  const firstOfYear = new Date(year, 0, 1, 0, 0, 0)
   const lastOfYear = new Date(year, 11, 31, 23, 59, 59)
   const lastOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
+
   return {
-    year,
+    year: String(year),
     firstOfYear: firstOfYear.toISOString(),
     lastOfYear: lastOfYear.toISOString(),
     lastOfMonth: lastOfMonth.toISOString(),
   }
 }
 
-const getIngresosQuery = (firstOfYear, lastOfYear) =>
-  q.Map(
+const getIngresosQuery = (firstOfYear, lastOfYear) => ({
+  query: q.Map(
     q.Filter(
-      q.Paginate(q.Documents(q.Collection('ingresos'))),
+      q.Paginate(q.Match(q.Index('get_movimientos_by_type'), 'ingreso')),
       q.Lambda(
-        'ingRef',
+        'ref',
         q.And(
           q.GTE(
-            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ingRef')))),
+            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
             q.Time(firstOfYear)
           ),
           q.LTE(
-            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ingRef')))),
+            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
             q.Time(lastOfYear)
           )
         )
       )
     ),
-    q.Lambda('ingRef', q.Select(['data'], q.Get(q.Var('ingRef'))))
-  )
-
-const getGastosQuery = year =>
-  q.Map(
-    q.Paginate(q.Match(q.Index('get_gastos_mensual_by_year'), year)),
     q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
-  )
+  ),
+  name: 'ingresos',
+})
 
-const getCuotasQuery = lastOfMonth =>
-  q.Map(
+const getMovimientosQuery = (firstOfYear, lastOfYear) => ({
+  query: q.Map(
     q.Filter(
-      q.Paginate(q.Documents(q.Collection('gastos_cuotas'))),
+      q.Paginate(q.Documents(q.Collection('movimientos'))),
       q.Lambda(
-        'cuotRef',
-        q.LTE(
-          q.Time(lastOfMonth),
-          q.Time(q.Select(['data', 'fechaUltimoPago'], q.Get(q.Var('cuotRef'))))
+        'ref',
+        q.And(
+          q.GTE(
+            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
+            q.Time(firstOfYear)
+          ),
+          q.LTE(
+            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
+            q.Time(lastOfYear)
+          )
         )
       )
     ),
-    q.Lambda('cuotRef', q.Select(['data'], q.Get(q.Var('cuotRef'))))
-  )
+    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+  ),
+  name: 'movimientos',
+})
 
-const getCategoriasQuery = () =>
-  q.Map(
+const getGastosMensualQuery = year => ({
+  query: q.Map(
+    q.Paginate(q.Match(q.Index('get_gastos_mensual_by_year'), year)),
+    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+  ),
+  name: 'gastosMensual',
+})
+
+const getGastosCuotasQuery = lastOfMonth => ({
+  query: q.Map(
+    q.Filter(
+      q.Paginate(q.Documents(q.Collection('gastos_cuotas'))),
+      q.Lambda(
+        'ref',
+        q.LTE(
+          q.Time(lastOfMonth),
+          q.Time(q.Select(['data', 'fechaUltimoPago'], q.Get(q.Var('ref'))))
+        )
+      )
+    ),
+    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+  ),
+  name: 'gastosCuotas',
+})
+
+const getCategoriasQuery = () => ({
+  query: q.Map(
     q.Paginate(q.Documents(q.Collection('categorias'))),
     q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
-  )
+  ),
+  name: 'categorias',
+})
 
-// const variablesQuery = q.Map(
-//   q.Filter(
-//     q.Paginate(q.Documents(q.Collection('gastos_variables'))),
-//     q.Lambda(
-//       'varRef',
-//       q.And(
-//         q.GTE(
-//           q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('varRef')))),
-//           q.Time(beginDate)
-//         ),
-//         q.LTE(
-//           q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('varRef')))),
-//           q.Time(endDate)
-//         )
-//       )
-//     )
-//   ),
-//   q.Lambda('ingRef', q.Select(['data'], q.Get(q.Var('ingRef'))))
-// )
+const getOpcionesQuery = () => ({
+  query: q.Map(
+    q.Paginate(q.Documents(q.Collection('opciones'))),
+    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+  ),
+  name: 'opciones',
+})
 
-// const fijosQuery = q.Map(
-//   q.Filter(
-//     q.Paginate(q.Documents(q.Collection('gastos_fijos'))),
-//     q.Lambda(
-//       'fijRef',
-//       q.IsNull(
-//         q.Select(['data', 'montos', 'fechaInactivo'], q.Get(q.Var('fijRef')))
-//       )
-//     )
-//   ),
-//   q.Lambda('fijRef', q.Select(['data'], q.Get(q.Var('fijRef'))))
-// )
+const getGastosFijosQuery = () => ({
+  query: q.Map(
+    q.Filter(
+      q.Paginate(q.Documents(q.Collection('gastos_fijos'))),
+      q.Lambda(
+        'fijRef',
+        q.IsNull(
+          q.Select(['data', 'montos', 'fechaInactivo'], q.Get(q.Var('fijRef')))
+        )
+      )
+    ),
+    q.Lambda('fijRef', q.Select(['data'], q.Get(q.Var('fijRef'))))
+  ),
+  name: 'gastosFijos',
+})
 
-const getOverviewQueries = dateISO => {
-  const date = new Date(dateISO)
-  const {year, firstOfYear, lastOfYear, lastOfMonth} = getMonthDates(date)
+const getQueries = (dateISO, queryKeys) => {
+  const {year, firstOfYear, lastOfYear, lastOfMonth} = getMonthDates(dateISO)
   const ingresosQuery = getIngresosQuery(firstOfYear, lastOfYear)
-  const gastosQuery = getGastosQuery(String(year))
-  const cuotasQuery = getCuotasQuery(lastOfMonth)
+  const gastosMensualQuery = getGastosMensualQuery(year)
+  const gastosCuotasQuery = getGastosCuotasQuery(lastOfMonth)
   const categoriasQuery = getCategoriasQuery()
+  const movimientosQuery = getMovimientosQuery(firstOfYear, lastOfYear)
+  const opcionesQuery = getOpcionesQuery()
+  const gastosFijosQuery = getGastosFijosQuery()
 
-  return [ingresosQuery, gastosQuery, cuotasQuery, categoriasQuery].map(query =>
-    client.query(query)
-  )
+  return [
+    ingresosQuery,
+    gastosMensualQuery,
+    gastosCuotasQuery,
+    categoriasQuery,
+    movimientosQuery,
+    opcionesQuery,
+    gastosFijosQuery,
+  ]
+    .filter(({name}) => queryKeys.includes(name))
+    .map(({query}) => client.query(query))
 }
 
-const getMovementsQueries = () => {
-  const categoriasQuery = getCategoriasQuery()
-
-  return [categoriasQuery].map(query => client.query(query))
-}
-
-module.exports = {getOverviewQueries, getMovementsQueries}
+module.exports = {getQueries}

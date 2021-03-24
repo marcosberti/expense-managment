@@ -121,6 +121,11 @@ const Form = styled.form`
     }
   }
 
+  select {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+
   & input[type='color'] {
     height: 3.25rem;
     padding: 0.5rem;

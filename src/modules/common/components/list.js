@@ -133,7 +133,9 @@ ItemIcon.propTypes = {
   description: PropTypes.string,
 }
 
-const CategoryItem = ({item: {nombre, icon, monto, color = '#1f33ad'}}) => (
+const CategoryItem = ({
+  item: {nombre, icon, monto, moneda, color = '#1f33ad'},
+}) => (
   <div
     css={css`
       width: 12rem;
@@ -153,7 +155,7 @@ const CategoryItem = ({item: {nombre, icon, monto, color = '#1f33ad'}}) => (
   >
     <CustomSVG icon={icon} fill={color} size={80} />
     {nombre && <p>{nombre}</p>}
-    {icon && <Big>{formatAmount(monto)}</Big>}
+    {icon && <Big>{formatAmount(monto, moneda)}</Big>}
   </div>
 )
 
@@ -162,6 +164,7 @@ CategoryItem.propTypes = {
     nombre: PropTypes.string,
     icon: PropTypes.string.isRequired,
     monto: PropTypes.number,
+    moneda: PropTypes.string,
     color: PropTypes.string.isRequired,
   }),
 }

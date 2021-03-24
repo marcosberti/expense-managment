@@ -1,11 +1,11 @@
-const {getOverviewQueries} = require('../queries')
+const {getQueries} = require('../queries')
 
-const keys = ['ingresos', 'gastos', 'cuotas', 'categorias']
+const keys = ['ingresos', 'gastosMensual', 'gastosCuotas', 'categorias']
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
   const {
-    queryStringParameters: {dateISO},
+    queryStringParameters: {dateISO, queryKeys},
   } = event
 
   if (!dateISO) {
@@ -22,7 +22,7 @@ const handler = async (event, ctx) => {
   }
 
   try {
-    const queries = getOverviewQueries(dateISO)
+    const queries = getQueries(dateISO, queryKeys)
     const result = await Promise.all(queries)
 
     const data = result.reduce((acc, r, i) => {

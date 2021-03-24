@@ -3,7 +3,12 @@ import {useAuth} from 'context/auth'
 
 const objectToQueryString = obj =>
   Object.keys(obj)
-    .map(key => `${key}=${obj[key]}`)
+    .map(
+      key =>
+        `${key}=${
+          typeof obj[key] === 'string' ? obj[key] : JSON.stringify(obj[key])
+        }`
+    )
     .join('&')
 
 const request = async (path, method, headers, params) => {
@@ -53,51 +58,109 @@ const request = async (path, method, headers, params) => {
   }
 }
 
-const STATE_PENDING = 'pending'
-const STATE_REJECTED = 'rejected'
-const STATE_RESOLVED = 'resolved'
+const STATUS_PENDING = 'pending'
+const STATUS_REJECTED = 'rejected'
+const STATUS_RESOLVED = 'resolved'
+const STATUS_CREATED = 'created'
+const STATUS_STORAGE = 'storage'
+const STORAGE_KEY = 'expman-data'
 
 const getFromStorage = path => JSON.parse(localStorage.getItem(path))
 
 const saveToStorage = (path, data) =>
   localStorage.setItem(path, JSON.stringify(data))
 
+const reducer = (state, action) => {
+  if (action.type === STATUS_PENDING) {
+    return {
+      status: STATUS_PENDING,
+      data: state.data,
+    }
+  }
+  if (action.type === STATUS_REJECTED) {
+    return {
+      status: STATUS_REJECTED,
+      error: action.error,
+    }
+  }
+  if (action.type === STATUS_RESOLVED) {
+    const data = {...state.data, ...action.data}
+    saveToStorage(STORAGE_KEY, data)
+    return {
+      status: STATUS_RESOLVED,
+      data,
+    }
+  }
+  if (action.type === STATUS_STORAGE) {
+    return {
+      status: STATUS_RESOLVED,
+      data: action.data,
+    }
+  }
+  if (action.type === STATUS_CREATED) {
+    const data = {
+      ...state.data,
+      [action.updateKey]: [...state.data[action.updateKey], action.data],
+    }
+    saveToStorage(STORAGE_KEY, data)
+
+    return {
+      status: STATUS_RESOLVED,
+      data,
+    }
+  }
+
+  throw new Error('Unhandled action')
+}
+
+const initialState = {
+  status: STATUS_PENDING,
+  data: {},
+}
+
 const useClient = () => {
   const {user} = useAuth()
-  const [{state, error, data}, setState] = React.useState({
-    state: STATE_PENDING,
-  })
+  const [state, dispatch] = React.useReducer(reducer, initialState)
+
+  const {data, status, error} = state
 
   const get = React.useCallback(
-    async (path, {headers = {}, params} = {}) => {
-      const storageData = getFromStorage(path)
-      if (storageData) {
-        setState({state: STATE_RESOLVED, data: storageData})
+    async (endpoint, {headers = {}, params} = {}) => {
+      const alreadyFetched = getFromStorage(endpoint)
+      if (alreadyFetched) {
+        const storageData = getFromStorage(STORAGE_KEY)
+        dispatch({type: STATUS_STORAGE, data: storageData})
         return
       }
-      setState({state: STATE_PENDING})
+
+      dispatch({type: STATUS_PENDING})
       const _headers = {
         Authorization: `Bearer ${user.token}`,
         'Content-Type': 'application/json',
         ...headers,
       }
 
-      const result = await request(path, 'GET', _headers, params)
-      if (!result.error) {
-        saveToStorage(path, result.data)
+      const result = await request(endpoint, 'GET', _headers, params)
+      if (result.error) {
+        dispatch({
+          type: STATUS_REJECTED,
+          error: result.error,
+        })
+        return
       }
 
-      setState({
-        state: result.error ? STATE_REJECTED : STATE_RESOLVED,
-        ...result,
+      saveToStorage(endpoint, true)
+      dispatch({
+        type: STATUS_RESOLVED,
+        data: result.data,
       })
     },
     [user.token]
   )
 
   const post = React.useCallback(
-    async (path, {headers = {}, params}, getPath, onUpdate) => {
-      setState({state: STATE_PENDING})
+    async (path, {headers = {}, params}, updateKey) => {
+      dispatch({type: STATUS_PENDING})
       const _headers = {
         Authorization: `Bearer ${user.token}`,
         'Content-Type': 'application/json',
@@ -106,38 +169,30 @@ const useClient = () => {
 
       const result = await request(path, 'POST', _headers, params)
       if (result.error) {
-        setState({
-          state: STATE_REJECTED,
+        dispatch({
+          type: STATUS_REJECTED,
           error: result.error,
         })
         return
       }
 
-      const cacheData = getFromStorage(getPath)
-      const _data = onUpdate(cacheData)
-      saveToStorage(getPath, _data)
-      setState({
-        state: STATE_RESOLVED,
-        data: _data,
+      dispatch({
+        type: STATUS_CREATED,
+        data: result.data,
+        updateKey,
       })
     },
     [user.token]
   )
 
-  const setData = React.useCallback((path, newData) => {
-    saveToStorage(path, newData)
-    setState(prev => ({...prev, data: {...newData}}))
-  }, [])
-
   return {
-    isPending: state === STATE_PENDING,
-    isRejected: state === STATE_REJECTED,
-    isResolved: state === STATE_RESOLVED,
+    isPending: status === STATUS_PENDING,
+    isRejected: status === STATUS_REJECTED,
+    isResolved: status === STATUS_RESOLVED,
     data,
     error,
     get,
     post,
-    setData,
   }
 }
 

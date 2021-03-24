@@ -6,6 +6,7 @@ import {Big, List, Small} from 'common-components'
 import {Actions} from './components/actions'
 import {CategoryModal} from './components/category-modal'
 import {MovementModal} from './components/movement-modal/movement-modal'
+import {ExpenseModal} from './components/expense-modal'
 
 const NoMovements = () => (
   <div
@@ -45,12 +46,13 @@ const Movements = () => {
         max-height: calc(100vh - var(--header-size));
       `}
     >
-      <CategoryModal isOpen={openModal === 'categoria'} onClose={onModal} />
       <MovementModal isOpen={openModal === 'movimiento'} onClose={onModal} />
+      <ExpenseModal isOpen={openModal === 'gasto'} onClose={onModal} />
+      <CategoryModal isOpen={openModal === 'categoria'} onClose={onModal} />
       <Actions onModal={onModal} />
       <List
         listProps={{}}
-        items={movimientos}
+        items={[]}
         itemComponent={() => {}}
         listNoItems={<NoMovements />}
       />

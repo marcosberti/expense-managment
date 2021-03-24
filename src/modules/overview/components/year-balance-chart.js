@@ -45,7 +45,7 @@ const YearBalanceChart = ({width, height, chartRef, yearData}) => {
       .attr('fill', 'var(--secondary-500)')
       .attr('transform', `translate(${xScale.bandwidth() / 4})`)
 
-    incomeRects.append('title').text(d => formatAmount(d.ingreso))
+    incomeRects.append('title').text(d => formatAmount(d.ingreso, d.moneda))
 
     const expensesRects = chartGroup
       .selectAll('rect.expenses')
@@ -55,7 +55,7 @@ const YearBalanceChart = ({width, height, chartRef, yearData}) => {
       .attr('fill', 'var(--secondary-300)')
       .attr('transform', `translate(${xScale.bandwidth() / 2})`)
 
-    expensesRects.append('title').text(d => formatAmount(d.gasto))
+    expensesRects.append('title').text(d => formatAmount(d.gasto, d.moneda))
 
     d3.select(chartRef.current)
       .selectAll('g rect')

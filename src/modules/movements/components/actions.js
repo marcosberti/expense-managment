@@ -141,7 +141,7 @@ const AddButton = ({onModal}) => {
           }}
         >
           <ul>
-            {['categoria', 'movimiento'].map(item => (
+            {['movimiento', 'gasto', 'categoria'].map(item => (
               <li key={item}>
                 <Button
                   variant="modal"
