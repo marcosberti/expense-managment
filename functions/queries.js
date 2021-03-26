@@ -11,40 +11,19 @@ const getMonthDates = dateParam => {
   const date = getDate(dateParam)
   const year = date.getFullYear()
   const month = date.getMonth()
+  const firstOfMonth = new Date(year, month, 1, 0, 0, 0)
+  const lastOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
   const firstOfYear = new Date(year, 0, 1, 0, 0, 0)
   const lastOfYear = new Date(year, 11, 31, 23, 59, 59)
-  const lastOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
 
   return {
     year: String(year),
+    firstOfMonth: firstOfMonth.toISOString(),
+    lastOfMonth: lastOfMonth.toISOString(),
     firstOfYear: firstOfYear.toISOString(),
     lastOfYear: lastOfYear.toISOString(),
-    lastOfMonth: lastOfMonth.toISOString(),
   }
 }
-
-const getIngresosQuery = (firstOfYear, lastOfYear) => ({
-  query: q.Map(
-    q.Filter(
-      q.Paginate(q.Match(q.Index('get_movimientos_by_type'), 'ingreso')),
-      q.Lambda(
-        'ref',
-        q.And(
-          q.GTE(
-            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
-            q.Time(firstOfYear)
-          ),
-          q.LTE(
-            q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
-            q.Time(lastOfYear)
-          )
-        )
-      )
-    ),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
-  ),
-  name: 'ingresos',
-})
 
 const getMovimientosQuery = (firstOfYear, lastOfYear) => ({
   query: q.Map(
@@ -69,12 +48,12 @@ const getMovimientosQuery = (firstOfYear, lastOfYear) => ({
   name: 'movimientos',
 })
 
-const getGastosMensualQuery = year => ({
+const getMovimientosMensualesQuery = year => ({
   query: q.Map(
-    q.Paginate(q.Match(q.Index('get_gastos_mensual_by_year'), year)),
+    q.Paginate(q.Match(q.Index('get_movimientos_mensuales_by_year'), year)),
     q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
   ),
-  name: 'gastosMensual',
+  name: 'movimientosMensuales',
 })
 
 const getGastosCuotasQuery = lastOfMonth => ({
@@ -112,33 +91,23 @@ const getOpcionesQuery = () => ({
 
 const getGastosFijosQuery = () => ({
   query: q.Map(
-    q.Filter(
-      q.Paginate(q.Documents(q.Collection('gastos_fijos'))),
-      q.Lambda(
-        'fijRef',
-        q.IsNull(
-          q.Select(['data', 'montos', 'fechaInactivo'], q.Get(q.Var('fijRef')))
-        )
-      )
-    ),
-    q.Lambda('fijRef', q.Select(['data'], q.Get(q.Var('fijRef'))))
+    q.Paginate(q.Match(q.Index('get_fijo_activo'), false)),
+    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
   ),
   name: 'gastosFijos',
 })
 
 const getQueries = (dateISO, queryKeys) => {
-  const {year, firstOfYear, lastOfYear, lastOfMonth} = getMonthDates(dateISO)
-  const ingresosQuery = getIngresosQuery(firstOfYear, lastOfYear)
-  const gastosMensualQuery = getGastosMensualQuery(year)
+  const {firstOfMonth, lastOfMonth, year} = getMonthDates(dateISO)
+  const movimientosQuery = getMovimientosQuery(firstOfMonth, lastOfMonth)
+  const movimientosMensualesQuery = getMovimientosMensualesQuery(year)
   const gastosCuotasQuery = getGastosCuotasQuery(lastOfMonth)
-  const categoriasQuery = getCategoriasQuery()
-  const movimientosQuery = getMovimientosQuery(firstOfYear, lastOfYear)
-  const opcionesQuery = getOpcionesQuery()
   const gastosFijosQuery = getGastosFijosQuery()
+  const categoriasQuery = getCategoriasQuery()
+  const opcionesQuery = getOpcionesQuery()
 
   return [
-    ingresosQuery,
-    gastosMensualQuery,
+    movimientosMensualesQuery,
     gastosCuotasQuery,
     categoriasQuery,
     movimientosQuery,
@@ -146,7 +115,15 @@ const getQueries = (dateISO, queryKeys) => {
     gastosFijosQuery,
   ]
     .filter(({name}) => queryKeys.includes(name))
-    .map(({query}) => client.query(query))
+    .reduce(
+      (acc, {name, query}) => {
+        acc.queries.push(client.query(query))
+        acc.keys.push(name)
+
+        return acc
+      },
+      {queries: [], keys: []}
+    )
 }
 
 module.exports = {getQueries}

@@ -5,7 +5,7 @@ import {useData} from 'context/data'
 import {Big, List, Small} from 'common-components'
 import {Actions} from './components/actions'
 import {CategoryModal} from './components/category-modal'
-import {MovementModal} from './components/movement-modal/movement-modal'
+import {MovementModal} from './components/movement-modal'
 import {ExpenseModal} from './components/expense-modal'
 
 const NoMovements = () => (

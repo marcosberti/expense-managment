@@ -1,13 +1,5 @@
 const {getQueries} = require('../queries')
 
-const keys = [
-  'gastosCuotas',
-  'categorias',
-  'movimientos',
-  'opciones',
-  'gastosFijos',
-]
-
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
   const {
@@ -28,7 +20,7 @@ const handler = async (event, ctx) => {
   }
 
   try {
-    const queries = getQueries(dateISO, queryKeys)
+    const {queries, keys} = getQueries(dateISO, queryKeys)
     const result = await Promise.all(queries)
 
     const data = result.reduce((acc, r, i) => {

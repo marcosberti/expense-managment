@@ -26,7 +26,7 @@ const TextCenter = styled.div`
   flex-direction: column;
 `
 
-const MainOverview = ({mainData: {ingreso, gasto}}) => (
+const MainOverview = ({mainData: {ingreso, egreso}}) => (
   <div
     css={css`
       height: 100%;
@@ -49,7 +49,7 @@ const MainOverview = ({mainData: {ingreso, gasto}}) => (
     <AbsoluteBox position={{mobile: {top: '6.5rem'}, desktop: {top: '11rem'}}}>
       <TextCenter>
         <Small>Gastos</Small>
-        <Big>{formatAmount(gasto, 'ars')}</Big>
+        <Big>{formatAmount(egreso, 'ars')}</Big>
       </TextCenter>
     </AbsoluteBox>
     <DesktopOnly>
@@ -60,12 +60,12 @@ const MainOverview = ({mainData: {ingreso, gasto}}) => (
           min-width: 12rem;
         `}
       >
-        <DonutChart ingreso={ingreso} gasto={gasto} />
+        <DonutChart ingreso={ingreso} gasto={egreso} />
       </ChartWrapper>
     </DesktopOnly>
     <TextCenter>
       <Small>Disponible</Small>
-      <Bigger>{formatAmount(ingreso - gasto, 'ars')}</Bigger>
+      <Bigger>{formatAmount(ingreso - egreso, 'ars')}</Bigger>
     </TextCenter>
   </div>
 )
@@ -73,7 +73,7 @@ const MainOverview = ({mainData: {ingreso, gasto}}) => (
 MainOverview.propTypes = {
   mainData: PropTypes.shape({
     ingreso: PropTypes.number.isRequired,
-    gasto: PropTypes.number.isRequired,
+    egreso: PropTypes.number.isRequired,
   }).isRequired,
 }
 

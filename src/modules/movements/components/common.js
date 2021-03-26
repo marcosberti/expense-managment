@@ -3,7 +3,7 @@ import * as React from 'react'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
-import {useFieldArray} from 'react-hook-form'
+import {useFieldArray, useFormContext} from 'react-hook-form'
 import {useData} from 'context/data'
 import {AddIcon} from 'icons'
 import {
@@ -86,46 +86,54 @@ FechaFijo.propTypes = {
   errors: PropTypes.object.isRequired,
 }
 
-const Montos = ({register, errors, monedas}) => (
-  <>
-    <FormGroup>
-      <label htmlFor="monto">
-        <LabelText>Monto</LabelText>
-        <input
-          id="monto"
-          name="monto"
-          type="number"
-          min="0"
-          placeholder="Monto"
-          step="0.01"
-          ref={register({required: 'Campo obligatorio'})}
-        />
-      </label>
-      <label htmlFor="moneda">
-        <LabelText>Moneda</LabelText>
-        <select
-          id="moneda"
-          name="moneda"
-          defaultValue={monedas[0]}
-          ref={register}
-        >
-          {monedas.map(m => (
-            <option key={m} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
-      </label>
-    </FormGroup>
-    <FormError message={errors?.monto?.message} />
-  </>
-)
+const Montos = () => {
+  const {register, errors} = useFormContext()
 
-Montos.propTypes = {
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  monedas: PropTypes.array.isRequired,
+  const {
+    opciones: {monedas},
+  } = useData()
+
+  return (
+    <>
+      <FormGroup>
+        <label htmlFor="monto">
+          <LabelText>Monto</LabelText>
+          <input
+            id="monto"
+            name="monto"
+            type="number"
+            min="0"
+            placeholder="Monto"
+            step="0.01"
+            ref={register({required: 'Campo obligatorio'})}
+          />
+        </label>
+        <label htmlFor="moneda">
+          <LabelText>Moneda</LabelText>
+          <select
+            id="moneda"
+            name="moneda"
+            defaultValue={monedas[0]}
+            ref={register}
+          >
+            {monedas.map(m => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </label>
+      </FormGroup>
+      <FormError message={errors?.monto?.message} />
+    </>
+  )
 }
+
+// Montos.propTypes = {
+//   register: PropTypes.func.isRequired,
+//   errors: PropTypes.object.isRequired,
+//   monedas: PropTypes.array.isRequired,
+// }
 
 const AddCategoryButton = styled(Button)`
   padding: 0;
@@ -215,9 +223,10 @@ AddCategory.propTypes = {
   onAddCat: PropTypes.func.isRequired,
 }
 
-const ModalCategories = ({control, setError, clearErrors}) => {
+const ModalCategories = () => {
   const {categorias} = useData()
-  const {fields, append} = useFieldArray({
+  const {catRef, control, setError, clearErrors} = useFormContext()
+  const {fields, append, remove} = useFieldArray({
     control,
     name: 'categorias',
   })
@@ -235,6 +244,13 @@ const ModalCategories = ({control, setError, clearErrors}) => {
     append(categoria)
     clearErrors('categoria')
   }
+
+  React.useEffect(() => {
+    remove()
+    if (catRef?.length) {
+      append(catRef)
+    }
+  }, [remove, catRef, append])
 
   return (
     <>
@@ -267,10 +283,10 @@ const ModalCategories = ({control, setError, clearErrors}) => {
   )
 }
 
-ModalCategories.propTypes = {
-  control: PropTypes.object.isRequired,
-  setError: PropTypes.func.isRequired,
-  clearErrors: PropTypes.func.isRequired,
-}
+// ModalCategories.propTypes = {
+//   control: PropTypes.object.isRequired,
+//   setError: PropTypes.func.isRequired,
+//   clearErrors: PropTypes.func.isRequired,
+// }
 
 export {FechaCuota, FechaFijo, ModalCategories, Montos}

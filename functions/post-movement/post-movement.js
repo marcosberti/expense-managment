@@ -7,21 +7,40 @@ const client = new faunadb.Client({
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
-
-  const category = JSON.parse(event.body)
-
   if (!user || user.email !== process.env.EXPMAN_VALID_EMAIL) {
     return {
       statusCode: 401,
     }
   }
 
+  const {movement, monthly, gastoCuota} = JSON.parse(event.body)
+  const queries = []
+
+  queries.push(
+    client.query(q.Create(q.Collection('movimientos'), {data: movement}))
+  )
+
+  if (monthly.method === 'POST') {
+    queries.push(
+      client.query(
+        q.Create(q.Collection('movimientosMensuales'), {data: monthly.data})
+      )
+    )
+  }
+  if (monthly.method === 'PUT') {
+    //   what?
+  }
+
+  if (gastoCuota) {
+    //   what?
+  }
+
   try {
-    await client.query(q.Create(q.Collection('categorias'), {data: category}))
+    await Promise.all(queries)
 
     return {
       statusCode: 201,
-      body: JSON.stringify(category),
+      body: JSON.stringify({message: 'ok'}),
     }
   } catch (e) {
     return {

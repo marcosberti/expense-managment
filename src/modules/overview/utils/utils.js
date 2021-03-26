@@ -1,41 +1,27 @@
-import {getMonthDates, getTime} from 'common-utils'
+import {getMonthDates} from 'common-utils'
 
-const getMainData = ({ingresos, gastosMensual}) => {
-  const {firstOfMonth, lastOfMonth, year, month} = getMonthDates()
-  const fomTime = getTime(firstOfMonth)
-  const eomTime = getTime(lastOfMonth)
-
-  const ingreso = ingresos.find(i => {
-    const ingTime = getTime(i.fecha)
-    return ingTime >= fomTime && ingTime <= eomTime
-  })
-
-  const gasto = gastosMensual.find(
-    g => g.anio === year.toString() && g.mes === month.toString()
-  )
+const getMainData = ({movimientosMensuales}) => {
+  const {month} = getMonthDates()
+  const {ingreso, egreso} =
+    movimientosMensuales.find(g => g.mes === String(month)) ?? {}
 
   return {
-    ingreso: ingreso?.monto ?? 0,
-    moneda: ingreso?.moneda,
-    gasto: gasto?.monto ?? 0,
+    ingreso: ingreso ?? 0,
+    moneda: 'ars',
+    egreso: egreso ?? 0,
   }
 }
 
-const getYearlyData = ({ingresos, gastosMensual}) => {
+const getYearlyData = ({movimientosMensuales}) => {
   const data = new Array(12).fill('').map((_, mes) => {
-    const ingreso = ingresos.find(i => {
-      const fecha = new Date(i.fecha)
-      const ingMes = fecha.getMonth()
-      return ingMes === mes
-    })
-
-    const gasto = gastosMensual.find(g => g.mes === mes.toString())
+    const {ingreso, egreso} =
+      movimientosMensuales.find(m => m.mes === String(mes)) ?? {}
 
     return {
       mes,
-      ingreso: ingreso?.monto ?? 0,
-      moneda: ingreso?.moneda ?? 'ars',
-      gasto: gasto?.monto ?? 0,
+      ingreso: ingreso ?? 0,
+      moneda: 'ars',
+      egreso: egreso ?? 0,
     }
   })
 

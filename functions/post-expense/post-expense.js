@@ -14,14 +14,13 @@ const handler = async (event, ctx) => {
   }
 
   const {data, tipo} = JSON.parse(event.body)
-  console.log(data, tipo)
 
   try {
     const collection = tipo === 'fijo' ? 'gastos_fijos' : 'gastos_cuotas'
     await client.query(q.Create(q.Collection(collection), {data}))
 
     return {
-      statusCode: 200,
+      statusCode: 201,
       body: JSON.stringify(data),
     }
   } catch (e) {
