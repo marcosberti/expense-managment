@@ -2,8 +2,11 @@ import {getMonthDates} from 'common-utils'
 
 const getMainData = ({movimientosMensuales}) => {
   const {month} = getMonthDates()
+  let formattedMonth = month + 1
+  formattedMonth =
+    formattedMonth <= 9 ? `0${formattedMonth}` : `${formattedMonth}`
   const {ingreso, egreso} =
-    movimientosMensuales.find(g => g.mes === String(month)) ?? {}
+    movimientosMensuales.find(g => g.mes === formattedMonth) ?? {}
 
   return {
     ingreso: ingreso ?? 0,
@@ -14,8 +17,11 @@ const getMainData = ({movimientosMensuales}) => {
 
 const getYearlyData = ({movimientosMensuales}) => {
   const data = new Array(12).fill('').map((_, mes) => {
+    let formattedMonth = mes + 1
+    formattedMonth =
+      formattedMonth <= 9 ? `0${formattedMonth}` : `${formattedMonth}`
     const {ingreso, egreso} =
-      movimientosMensuales.find(m => m.mes === String(mes)) ?? {}
+      movimientosMensuales.find(m => m.mes === formattedMonth) ?? {}
 
     return {
       mes,

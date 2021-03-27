@@ -31,6 +31,15 @@ const Header = () => {
         <h1>{user.name}</h1>
         <Small>{formatDate(Date.now())}</Small>
       </div>
+      <Button
+        onClick={() => {
+          localStorage.setItem('get-overview', null)
+          localStorage.setItem('get-movements', null)
+          localStorage.setItem('expman-data', null)
+        }}
+      >
+        clear
+      </Button>
       <Logout logout={logout} />
     </header>
   )

@@ -20,27 +20,50 @@ const handler = async (event, ctx) => {
     client.query(q.Create(q.Collection('movimientos'), {data: movement}))
   )
 
-  if (monthly.method === 'POST') {
+  const {ref: monthlyRef, ...monthlyData} = monthly
+  if (monthlyRef) {
     queries.push(
       client.query(
-        q.Create(q.Collection('movimientosMensuales'), {data: monthly.data})
+        q.Update(
+          q.Ref(q.Collection('movimientos_mensuales'), monthlyRef['@ref'].id),
+          {data: monthlyData}
+        )
+      )
+    )
+  } else {
+    queries.push(
+      client.query(
+        q.Create(q.Collection('movimientos_mensuales'), {data: monthlyData})
       )
     )
   }
-  if (monthly.method === 'PUT') {
-    //   what?
-  }
 
   if (gastoCuota) {
-    //   what?
+    const {ref, ...data} = gastoCuota
+    queries.push(
+      client.query(
+        q.Update(q.Ref(q.Collection('gastos_cuotas'), ref['@ref'].id), {data})
+      )
+    )
   }
 
   try {
-    await Promise.all(queries)
+    const response = await Promise.all(queries)
 
     return {
       statusCode: 201,
-      body: JSON.stringify({message: 'ok'}),
+      body: JSON.stringify(
+        response.map((r, i) => ({
+          ...r,
+          key:
+            // eslint-disable-next-line no-nested-ternary
+            i === 0
+              ? 'movimientos'
+              : i === 1
+              ? 'movimientosMensuales'
+              : 'gastosCuotas',
+        }))
+      ),
     }
   } catch (e) {
     return {

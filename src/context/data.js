@@ -18,6 +18,7 @@ const endpointKeys = {
   'get-overview': ['movimientosMensuales', 'gastosCuotas', 'categorias'],
   'get-movements': [
     'movimientos',
+    'movimientosMensuales',
     'categorias',
     'opciones',
     'gastosCuotas',
@@ -96,22 +97,21 @@ const formatExpense = expense => {
 
 const formatMonthly = (movimientosMensuales, movimiento) => {
   const [anio, mes] = movimiento.fecha.split('-')
-  let method = 'PUT'
   let data = movimientosMensuales.find(g => g.anio === anio && g.mes === mes)
   if (!data) {
-    method = 'POST'
     data = {
       anio,
       mes,
       ingreso: 0,
       egreso: 0,
+      ref: null,
     }
   }
   const monto = movimiento.tipoCambio
     ? movimiento.tipoCambio * movimiento.monto
     : movimiento.monto
   data[movimiento.tipo] += monto
-  return {data, method}
+  return data
 }
 
 const getMovementBody = (movimiento, movimientosMensuales, gastosCuotas) => {
@@ -159,44 +159,49 @@ const reducer = (state, action) => {
   }
 
   if (action.type === STATUS_UPDATED) {
-    const data = {
+    const updatedData = {
       ...state.data,
       // [action.key]: [...state.data[action.key], action.value],
     }
     if (action.key) {
-      data[action.key] = [...state.data[action.key], action.value]
+      updatedData[action.key] = [...state.data[action.key], action.value]
     }
     if (action.values) {
-      const {movement, monthly, gastoCuota} = action.values
-
-      data.movimientos.push(movement)
-
-      let movimientoMensual = data.movimientosMensuales.find(
-        m => m.mes === monthly.data.mes
-      )
-      if (!movimientoMensual) {
-        movimientoMensual = {
-          anio: monthly.data.anio,
-          mes: monthly.data.mes,
+      action.values.forEach(({data, ref, key}) => {
+        if (key === 'movimientos') {
+          updatedData.movimientos.push({ref, ...data})
         }
-        data.movimientosMensuales.push(movimientoMensual)
-      }
-      movimientoMensual.ingreso = monthly.data.ingreso
-      movimientoMensual.egreso = monthly.data.egreso
-
-      if (gastoCuota) {
-        const index = data.gastosCuotas.indexOf(
-          g => g.detalle === gastoCuota.detalle
-        )
-        data.gastosCuotas[index] = gastoCuota
-      }
+        if (key === 'movimientosMensuales') {
+          let movimientoMensual = updatedData.movimientosMensuales.find(
+            m => m.mes === data.mes
+          )
+          if (!movimientoMensual) {
+            movimientoMensual = {
+              anio: data.anio,
+              mes: data.mes,
+              ingreso: 0,
+              egreso: 0,
+              ref,
+            }
+            updatedData.movimientosMensuales.push(movimientoMensual)
+          }
+          movimientoMensual.ingreso += data.ingreso
+          movimientoMensual.egreso += data.egreso
+        }
+        if (key === 'gastosCuotas') {
+          const index = updatedData.gastosCuotas.indexOf(
+            g => g.detalle === data.detalle
+          )
+          updatedData.gastosCuotas[index] = data
+        }
+      })
     }
 
-    saveToStorage(STORAGE_KEY, data)
+    saveToStorage(STORAGE_KEY, updatedData)
 
     return {
       status: STATUS_RESOLVED,
-      data,
+      data: updatedData,
     }
   }
 
@@ -270,18 +275,22 @@ const DataProvider = ({children}) => {
   const addCategory = React.useCallback(
     async categoria => {
       dispatch({type: STATUS_PENDING})
-      const {error} = await client('post-category', {body: categoria})
-      if (error) {
-        dispatch({type: STATUS_REJECTED, error})
+      const response = await client('post-category', {body: categoria})
+      if (response.error) {
+        dispatch({type: STATUS_REJECTED, error: response.error})
         return
       }
 
-      dispatch({type: STATUS_UPDATED, key: 'categorias', value: categoria})
+      const {
+        data: {ref, data},
+      } = response
+
+      dispatch({type: STATUS_UPDATED, key: 'categorias', value: {ref, ...data}})
     },
     [client]
   )
 
-  console.log('data', status, data)
+  // console.log('data', status, data)
 
   /**
    * Add a new expense
@@ -290,14 +299,18 @@ const DataProvider = ({children}) => {
     async gasto => {
       dispatch({type: STATUS_PENDING})
       const expense = formatExpense(gasto)
-      const {error} = await client('post-expense', {body: expense})
-      if (error) {
-        dispatch({type: STATUS_REJECTED, error})
+      const response = await client('post-expense', {body: expense})
+      if (response.error) {
+        dispatch({type: STATUS_REJECTED, error: response.error})
         return
       }
 
+      const {
+        data: {ref, data},
+      } = response
+
       const key = expense.tipo === 'cuotas' ? 'gastosCuotas' : 'gastosFijos'
-      dispatch({type: STATUS_UPDATED, key, value: expense})
+      dispatch({type: STATUS_UPDATED, key, value: {ref, ...data}})
     },
     [client]
   )
@@ -313,17 +326,17 @@ const DataProvider = ({children}) => {
         movimientosMensuales,
         gastosCuotas
       )
-      // console.log('body', body)
-      // dispatch({type: STATUS_PENDING})
-      // const {error} = await client('post-movement', {body})
-      // if (error) {
-      //   dispatch({type: STATUS_REJECTED, error})
-      //   return
-      // }
+      console.log('body', body)
+      dispatch({type: STATUS_PENDING})
+      const response = await client('post-movement', {body})
+      if (response.error) {
+        dispatch({type: STATUS_REJECTED, error: response.error})
+        return
+      }
 
-      dispatch({type: STATUS_UPDATED, values: body})
+      dispatch({type: STATUS_UPDATED, values: response.data})
     },
-    [data]
+    [client, data]
   )
 
   /**

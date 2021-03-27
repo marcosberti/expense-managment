@@ -13,19 +13,15 @@ const getMonthDates = dateParam => {
   const month = date.getMonth()
   const firstOfMonth = new Date(year, month, 1, 0, 0, 0)
   const lastOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
-  const firstOfYear = new Date(year, 0, 1, 0, 0, 0)
-  const lastOfYear = new Date(year, 11, 31, 23, 59, 59)
 
   return {
     year: String(year),
     firstOfMonth: firstOfMonth.toISOString(),
     lastOfMonth: lastOfMonth.toISOString(),
-    firstOfYear: firstOfYear.toISOString(),
-    lastOfYear: lastOfYear.toISOString(),
   }
 }
 
-const getMovimientosQuery = (firstOfYear, lastOfYear) => ({
+const getMovimientosQuery = (firstOfMonth, lastOfMonth) => ({
   query: q.Map(
     q.Filter(
       q.Paginate(q.Documents(q.Collection('movimientos'))),
@@ -34,16 +30,16 @@ const getMovimientosQuery = (firstOfYear, lastOfYear) => ({
         q.And(
           q.GTE(
             q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
-            q.Time(firstOfYear)
+            q.Time(firstOfMonth)
           ),
           q.LTE(
             q.Time(q.Select(['data', 'fecha'], q.Get(q.Var('ref')))),
-            q.Time(lastOfYear)
+            q.Time(lastOfMonth)
           )
         )
       )
     ),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+    q.Lambda('ref', q.Get(q.Var('ref')))
   ),
   name: 'movimientos',
 })
@@ -51,7 +47,7 @@ const getMovimientosQuery = (firstOfYear, lastOfYear) => ({
 const getMovimientosMensualesQuery = year => ({
   query: q.Map(
     q.Paginate(q.Match(q.Index('get_movimientos_mensuales_by_year'), year)),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+    q.Lambda('ref', q.Get(q.Var('ref')))
   ),
   name: 'movimientosMensuales',
 })
@@ -68,7 +64,7 @@ const getGastosCuotasQuery = lastOfMonth => ({
         )
       )
     ),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+    q.Lambda('ref', q.Get(q.Var('ref')))
   ),
   name: 'gastosCuotas',
 })
@@ -76,7 +72,7 @@ const getGastosCuotasQuery = lastOfMonth => ({
 const getCategoriasQuery = () => ({
   query: q.Map(
     q.Paginate(q.Documents(q.Collection('categorias'))),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+    q.Lambda('ref', q.Get(q.Var('ref')))
   ),
   name: 'categorias',
 })
@@ -84,7 +80,7 @@ const getCategoriasQuery = () => ({
 const getOpcionesQuery = () => ({
   query: q.Map(
     q.Paginate(q.Documents(q.Collection('opciones'))),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+    q.Lambda('ref', q.Get(q.Var('ref')))
   ),
   name: 'opciones',
 })
@@ -92,7 +88,7 @@ const getOpcionesQuery = () => ({
 const getGastosFijosQuery = () => ({
   query: q.Map(
     q.Paginate(q.Match(q.Index('get_fijo_activo'), false)),
-    q.Lambda('ref', q.Select(['data'], q.Get(q.Var('ref'))))
+    q.Lambda('ref', q.Get(q.Var('ref')))
   ),
   name: 'gastosFijos',
 })

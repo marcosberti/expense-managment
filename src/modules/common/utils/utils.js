@@ -16,7 +16,7 @@ const getMonthDates = (date = new Date()) => {
   }
 }
 
-const formatDateToISO = date => (date ? `${date}T00:00:00` : null)
+const formatDateToISO = date => (date ? `${date}T00:00:00Z` : null)
 
 const formatDate = date => {
   const time = date.getTime ? date.getTime() : date

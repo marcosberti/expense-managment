@@ -107,7 +107,7 @@ const Form = styled.form`
     max-height: 3.25rem;
     font-size: 0.75rem;
     border-radius: var(--border-radius);
-    border: 1px solid var(--background-color);
+    border: 1px solid var(--neutral-200);
     background-color: var(--background-color-light);
 
     ::placeholder {
@@ -115,6 +115,7 @@ const Form = styled.form`
     }
 
     &:focus {
+      border: 1px solid var(--neutral-300);
       ::placeholder {
         color: transparent;
       }

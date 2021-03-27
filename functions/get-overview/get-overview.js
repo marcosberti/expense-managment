@@ -21,11 +21,11 @@ const handler = async (event, ctx) => {
 
   try {
     const {queries, keys} = getQueries(dateISO, queryKeys)
-    const result = await Promise.all(queries)
+    const response = await Promise.all(queries)
 
-    const data = result.reduce((acc, r, i) => {
+    const data = response.reduce((acc, r, i) => {
       const key = keys[i]
-      acc[key] = r.data
+      acc[key] = r.data.map(d => ({ref: d.ref, ...d.data}))
       return acc
     }, {})
 

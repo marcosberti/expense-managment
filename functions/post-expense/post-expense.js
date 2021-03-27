@@ -17,11 +17,13 @@ const handler = async (event, ctx) => {
 
   try {
     const collection = tipo === 'fijo' ? 'gastos_fijos' : 'gastos_cuotas'
-    await client.query(q.Create(q.Collection(collection), {data}))
+    const response = await client.query(
+      q.Create(q.Collection(collection), {data})
+    )
 
     return {
       statusCode: 201,
-      body: JSON.stringify(data),
+      body: JSON.stringify(response),
     }
   } catch (e) {
     return {

@@ -17,11 +17,13 @@ const handler = async (event, ctx) => {
   }
 
   try {
-    await client.query(q.Create(q.Collection('categorias'), {data: category}))
+    const response = await client.query(
+      q.Create(q.Collection('categorias'), {data: category})
+    )
 
     return {
       statusCode: 201,
-      body: JSON.stringify(category),
+      body: JSON.stringify(response),
     }
   } catch (e) {
     return {
