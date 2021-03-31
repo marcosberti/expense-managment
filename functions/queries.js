@@ -52,16 +52,13 @@ const getMovimientosMensualesQuery = year => ({
   name: 'movimientosMensuales',
 })
 
-const getGastosCuotasQuery = lastOfMonth => ({
+const getGastosCuotasQuery = () => ({
   query: q.Map(
     q.Filter(
       q.Paginate(q.Documents(q.Collection('gastos_cuotas'))),
       q.Lambda(
         'ref',
-        q.LTE(
-          q.Time(lastOfMonth),
-          q.Time(q.Select(['data', 'fechaUltimoPago'], q.Get(q.Var('ref'))))
-        )
+        q.Not(q.All(q.Select(['data', 'pagos'], q.Get(q.Var('ref')))))
       )
     ),
     q.Lambda('ref', q.Get(q.Var('ref')))
@@ -97,7 +94,7 @@ const getQueries = (dateISO, queryKeys) => {
   const {firstOfMonth, lastOfMonth, year} = getMonthDates(dateISO)
   const movimientosQuery = getMovimientosQuery(firstOfMonth, lastOfMonth)
   const movimientosMensualesQuery = getMovimientosMensualesQuery(year)
-  const gastosCuotasQuery = getGastosCuotasQuery(lastOfMonth)
+  const gastosCuotasQuery = getGastosCuotasQuery()
   const gastosFijosQuery = getGastosFijosQuery()
   const categoriasQuery = getCategoriasQuery()
   const opcionesQuery = getOpcionesQuery()

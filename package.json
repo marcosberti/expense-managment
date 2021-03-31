@@ -17,6 +17,7 @@
     "d3": "^6.5.0",
     "emotion-normalize": "^11.0.1",
     "faunadb": "^4.1.1",
+    "firebase-admin": "^9.6.0",
     "gotrue-js": "^0.9.29",
     "node-fetch": "^2.6.1",
     "prop-types": "^15.7.2",

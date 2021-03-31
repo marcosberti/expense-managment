@@ -12,58 +12,58 @@ import {FechaCuota, FechaFijo, ModalCategories, Montos} from './common'
 
 const ExpenseForm = () => {
   const {
-    opciones: {tipoGasto},
+    options: [{expenseTypes}],
     addExpense,
   } = useData()
   const methods = useForm()
 
   const {register, handleSubmit, watch, control, setError, errors} = methods
 
-  const tipo = watch('tipo', 'fijo')
-  const isFijo = tipo === 'fijo'
-  const isCuotas = tipo === 'cuotas'
+  const type = watch('type', 'fijo')
+  const isFijo = type === 'fijo'
+  const isCuotas = type === 'cuotas'
 
   const onSubmit = data => {
-    let {categorias} = control.fieldArrayValuesRef.current
-    if (!categorias.length) {
-      setError('categoria', {message: 'Debe haber al menos una categoria'})
+    let {categories} = control.fieldArrayValuesRef.current
+    if (!categories.length) {
+      setError('category', {message: 'Debe haber al menos una categoria'})
       return
     }
-    categorias = categorias.map(({id, ...rest}) => rest)
-    addExpense({...data, categorias})
+    categories = categories.map(({id, ...rest}) => rest)
+    addExpense({...data, categories})
   }
 
   return (
     <FormProvider {...methods}>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="detalle">
+        <label htmlFor="details">
           <LabelText>detalle</LabelText>
           <input
-            id="detalle"
-            name="detalle"
+            id="details"
+            name="details"
             type="text"
             placeholder="Detalle"
             autoComplete="off"
             ref={register({required: 'Campo obligatorio'})}
           />
         </label>
-        <FormError message={errors?.detalle?.message} />
-        <label htmlFor="tipo">
+        <FormError message={errors?.details?.message} />
+        <label htmlFor="type">
           <LabelText>tipo de gasto</LabelText>
-          <select name="tipo" id="tipo" ref={register}>
-            {tipoGasto.map(tg => (
-              <option key={tg} value={tg}>
-                {tg}
+          <select name="type" id="type" ref={register}>
+            {expenseTypes.map(exType => (
+              <option key={exType} value={exType}>
+                {exType}
               </option>
             ))}
           </select>
         </label>
-        <FormError message={errors?.tipo?.message} />
+        <FormError message={errors?.type?.message} />
         {isFijo && <FechaFijo {...{register, errors}} />}
         {isCuotas && <FechaCuota {...{register, errors}} />}
         <Montos />
         <ModalCategories />
-        <FormError message={errors?.categoria?.message} />
+        <FormError message={errors?.categories?.message} />
         <Button type="submit">Guardar</Button>
       </Form>
     </FormProvider>

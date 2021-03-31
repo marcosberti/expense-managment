@@ -33,9 +33,12 @@ const Header = () => {
       </div>
       <Button
         onClick={() => {
-          localStorage.setItem('get-overview', null)
-          localStorage.setItem('get-movements', null)
-          localStorage.setItem('expman-data', null)
+          const keys = Object.keys(localStorage)
+          keys
+            .filter(k => !k.includes('gotrue.user'))
+            .forEach(k => {
+              localStorage.setItem(k, null)
+            })
         }}
       >
         clear

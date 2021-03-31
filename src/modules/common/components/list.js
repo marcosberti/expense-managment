@@ -1,115 +1,125 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import {Big, CustomSVG, Small, Title} from 'common-components'
-import {formatAmount} from 'common-utils'
+import {
+  Big,
+  Button,
+  CustomSVG,
+  DesktopOnly,
+  Small,
+  Title,
+} from 'common-components'
+import {formatAmount, formatDate} from 'common-utils'
+import {UpArrowIcon, DownArrowIcon, DeclineIcon} from 'icons'
+import * as mq from 'media-queries'
 
-// const ItemDetail = ({detail, date}) => (
-//   <div>
-//     <Big>{detail}</Big>
-//     <Small>{date}</Small>
-//   </div>
-// )
+const ItemDetail = ({details, date}) => (
+  <div
+    css={css`
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    `}
+  >
+    <Big>{details}</Big>
+    <Small>{formatDate(date)}</Small>
+  </div>
+)
 
-// ItemDetail.propTypes = {
-//   detail: PropTypes.string,
-//   date: PropTypes.string,
-// }
+ItemDetail.propTypes = {
+  details: PropTypes.string,
+  date: PropTypes.string,
+}
 
-// const ItemAmount = ({type, amount}) => (
-//   <Big
-//     css={css`
-//       margin-left: auto;
-//       margin-right: 1rem;
+const ItemAmount = ({type, amount, currency, exchange}) => (
+  <div
+    css={css`
+      display: flex;
+      margin-left: auto;
+      margin-right: 1rem;
+      align-items: flex-end;
+      flex-direction: column;
+      justify-content: space-between;
 
-//       ${mq.large} {
-//         margin-right: 2rem;
-//       }
-//     `}
-//   >
-//     {type === 'e' ? (
-//       <DownArrowIcon fill="#d41d1d" size={16} />
-//     ) : (
-//       <UpArrowIcon fill="#25a525" size={16} align="baseline" />
-//     )}
-//     {formatAmount(amount)}
-//   </Big>
-// )
+      ${mq.large} {
+        margin-right: 2rem;
+      }
+    `}
+  >
+    <Big>
+      {type === 'egreso' ? (
+        <DownArrowIcon fill="#d41d1d" size={16} />
+      ) : (
+        <UpArrowIcon fill="#25a525" size={16} align="baseline" />
+      )}
+      {formatAmount(exchange ? amount * exchange : amount)}
+    </Big>
+    {exchange && (
+      <Small>
+        {formatAmount(amount, currency)} * {exchange}
+      </Small>
+    )}
+  </div>
+)
 
-// ItemAmount.propTypes = {
-//   type: PropTypes.string,
-//   amount: PropTypes.number,
-// }
+ItemAmount.propTypes = {
+  type: PropTypes.string,
+  amount: PropTypes.number,
+  exchange: PropTypes.number,
+  currency: PropTypes.string,
+}
 
-// const Item = ({movement}) => (
-//   <li
-//     css={css`
-//       gap: 1rem;
-//       display: flex;
-//       padding: 1rem;
-//       align-items: center;
-//       margin-bottom: 0.5rem;
-//       justify-content: flex-start;
-//       border-radius: var(--border-radius);
-//       background-color: var(--background-color-light);
+const MovementItem = ({
+  item: {details, date, type, amount, currency, exchange, categories},
+}) => (
+  <div
+    css={css`
+      gap: 1rem;
+      display: flex;
+      padding: 1rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      justify-content: flex-start;
+      border-radius: var(--border-radius);
+      background-color: var(--background-color-light);
 
-//       &:last-of-type {
-//         margin-bottom: 0;
-//       }
+      &:last-of-type {
+        margin-bottom: 0;
+      }
 
-//       ${mq.large} {
-//         padding: 2rem;
-//       }
-//     `}
-//   >
-//     <DesktopOnly>
-//       <ItemIcon icon={movement.icon} />
-//     </DesktopOnly>
-//     <ItemDetail detail={movement.detail} date={movement.date} />
-//     <ItemAmount type={movement.type} amount={movement.amount} />
-//     <Button type="button" variant="icon">
-//       <DeclineIcon fill="#555" />
-//     </Button>
-//   </li>
-// )
+      ${mq.large} {
+        padding: 2rem;
+      }
+    `}
+  >
+    <DesktopOnly>
+      <ItemIcon icon={categories[0].icon} color={categories[0].color} />
+    </DesktopOnly>
+    <ItemDetail details={details} date={date} />
+    <ItemAmount
+      type={type}
+      amount={amount}
+      currency={currency}
+      exchange={exchange}
+    />
+    <Button type="button" variant="icon">
+      <DeclineIcon fill="#555" />
+    </Button>
+  </div>
+)
 
-// Item.propTypes = {
-//   movement: PropTypes.shape({
-//     icon: PropTypes.func,
-//     detail: PropTypes.string,
-//     date: PropTypes.string,
-//     type: PropTypes.string,
-//     amount: PropTypes.number,
-//   }).isRequired,
-// }
-
-// const List = ({movements}) => (
-//   <div
-//     css={css`
-//       overflow-y: auto;
-//     `}
-//   >
-//     {movements.length ? (
-//       <ul>
-//         {movements.map(movement => (
-//           <Item key={movement.detail} movement={movement} />
-//         ))}
-//       </ul>
-//     ) : (
-//       <div
-//         css={css`
-//           padding: 2rem;
-//           text-align: center;
-//           border-radius: var(--border-radius);
-//           background-color: var(--background-color-light);
-//         `}
-//       >
-//         <Big>Sin movimientos</Big>
-//         <Small>para el mes seleccionado</Small>
-//       </div>
-//     )}
-//   </div>
-// )
+MovementItem.propTypes = {
+  item: PropTypes.shape({
+    icon: PropTypes.func,
+    details: PropTypes.string,
+    date: PropTypes.string,
+    type: PropTypes.string,
+    amount: PropTypes.number,
+    currency: PropTypes.string,
+    categories: PropTypes.array,
+    exchange: PropTypes.number,
+  }).isRequired,
+}
 
 const ItemIcon = ({icon, size = 24, color, description}) => (
   <div
@@ -134,7 +144,7 @@ ItemIcon.propTypes = {
 }
 
 const CategoryItem = ({
-  item: {nombre, icon, monto, moneda, color = '#1f33ad'},
+  item: {name, icon, amount, currency, color = '#1f33ad'},
 }) => (
   <div
     css={css`
@@ -154,17 +164,17 @@ const CategoryItem = ({
     `}
   >
     <CustomSVG icon={icon} fill={color} size={80} />
-    {nombre && <p>{nombre}</p>}
-    {icon && <Big>{formatAmount(monto, moneda)}</Big>}
+    {name && <p>{name}</p>}
+    {icon && <Big>{formatAmount(amount, currency)}</Big>}
   </div>
 )
 
 CategoryItem.propTypes = {
   item: PropTypes.shape({
-    nombre: PropTypes.string,
+    name: PropTypes.string,
     icon: PropTypes.string.isRequired,
-    monto: PropTypes.number,
-    moneda: PropTypes.string,
+    amount: PropTypes.number,
+    currency: PropTypes.string,
     color: PropTypes.string.isRequired,
   }),
 }
@@ -199,4 +209,4 @@ List.propTypes = {
   listNoItems: PropTypes.object.isRequired,
 }
 
-export {List, CategoryItem, ItemIcon}
+export {List, CategoryItem, ItemIcon, MovementItem}

@@ -24,11 +24,11 @@ const CategoryForm = () => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="nombre">
+      <label htmlFor="name">
         <LabelText>categoria</LabelText>
         <input
-          id="nombre"
-          name="nombre"
+          id="name"
+          name="name"
           type="text"
           placeholder="Categoría"
           autoComplete="off"

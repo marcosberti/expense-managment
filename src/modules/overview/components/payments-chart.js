@@ -70,7 +70,7 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .selectAll('g rect')
       .attr(
         'x',
-        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.firstPaymentDate)) - margins.left
       )
       .attr('width', 0)
       .attr('height', yScale.bandwidth())
@@ -80,13 +80,13 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .duration(500)
       .attr(
         'x',
-        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.firstPaymentDate)) - margins.left
       )
       .attr(
         'width',
         d =>
-          xScale(getLastPaymentMonth(d.fechaUltimoPago)) -
-          xScale(getFisrtPaymentMonth(d.fechaPrimerPago))
+          xScale(getLastPaymentMonth(d.lastPaymentDate)) -
+          xScale(getFisrtPaymentMonth(d.firstPaymentDate))
       )
 
     paids
@@ -95,13 +95,13 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .duration(500)
       .attr(
         'x',
-        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.firstPaymentDate)) - margins.left
       )
       .attr('width', d => {
-        const mesPagos = getPaidPaymentsMonth(d.pagos, d.fechaPrimerPago)
+        const mesPagos = getPaidPaymentsMonth(d.paids, d.firstPaymentDate)
 
         return mesPagos
-          ? xScale(mesPagos) - xScale(getFisrtPaymentMonth(d.fechaPrimerPago))
+          ? xScale(mesPagos) - xScale(getFisrtPaymentMonth(d.firstPaymentDate))
           : 0
       })
   }, [chartRef, paymentsData, xScale, yScale])
@@ -118,11 +118,11 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       .join('text')
       .attr(
         'x',
-        d => xScale(getFisrtPaymentMonth(d.fechaPrimerPago)) - margins.left
+        d => xScale(getFisrtPaymentMonth(d.firstPaymentDate)) - margins.left
       )
       .attr('y', (d, i) => yScale(i) - yScale.bandwidth() / 4)
       .attr('dy', '0.35em')
-      .text(d => `${d.detalle} ${d.pagos.filter(p => p).length}/${d.cuotas}`)
+      .text(d => `${d.detalle} ${d.paids.filter(p => p).length}/${d.payments}`)
       .attr('opacity', 0)
       .transition(500)
       .delay(250)

@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import * as React from 'react'
 import {css} from '@emotion/react'
+import {useLocation} from 'react-router-dom'
 import {useData} from 'context/data'
-import {Big, List, Small} from 'common-components'
+import {Big, List, Small, MovementItem} from 'common-components'
 import {Actions} from './components/actions'
 import {CategoryModal} from './components/category-modal'
 import {MovementModal} from './components/movement-modal'
 import {ExpenseModal} from './components/expense-modal'
+import {getMovements} from './utils'
 
 const NoMovements = () => (
   <div
@@ -26,7 +28,8 @@ const NoMovements = () => (
 
 const Movements = () => {
   const data = useData()
-  const {movimientos} = data
+  const location = useLocation()
+  const movements = getMovements(data, location)
   const [openModal, setOpenModal] = React.useState(null)
 
   const onModal = modal => {
@@ -51,9 +54,13 @@ const Movements = () => {
       <CategoryModal isOpen={openModal === 'categoria'} onClose={onModal} />
       <Actions onModal={onModal} />
       <List
-        listProps={{}}
-        items={[]}
-        itemComponent={() => {}}
+        listProps={{
+          gap: '0.5rem',
+          overflowY: 'auto',
+          flexDirection: 'column',
+        }}
+        items={movements}
+        itemComponent={MovementItem}
         listNoItems={<NoMovements />}
       />
     </div>

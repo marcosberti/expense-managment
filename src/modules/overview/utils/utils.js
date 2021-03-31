@@ -1,73 +1,67 @@
-import {getMonthDates} from 'common-utils'
-
-const getMainData = ({movimientosMensuales}) => {
-  const {month} = getMonthDates()
-  let formattedMonth = month + 1
-  formattedMonth =
-    formattedMonth <= 9 ? `0${formattedMonth}` : `${formattedMonth}`
-  const {ingreso, egreso} =
-    movimientosMensuales.find(g => g.mes === formattedMonth) ?? {}
+const getMainData = ({monthly}) => {
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
+  const {income, spent} =
+    monthly.find(g => g.month === month && g.year === year) ?? {}
 
   return {
-    ingreso: ingreso ?? 0,
-    moneda: 'ars',
-    egreso: egreso ?? 0,
+    income: income ?? 0,
+    spent: spent ?? 0,
   }
 }
 
-const getYearlyData = ({movimientosMensuales}) => {
-  const data = new Array(12).fill('').map((_, mes) => {
-    let formattedMonth = mes + 1
-    formattedMonth =
-      formattedMonth <= 9 ? `0${formattedMonth}` : `${formattedMonth}`
-    const {ingreso, egreso} =
-      movimientosMensuales.find(m => m.mes === formattedMonth) ?? {}
+const getYearlyData = ({monthly}) => {
+  const year = new Date().getFullYear()
+  return new Array(12).fill('').map((_, month) => {
+    const {income, spent} =
+      monthly.find(m => m.month === month && m.year === year) ?? {}
 
     return {
-      mes,
-      ingreso: ingreso ?? 0,
-      moneda: 'ars',
-      egreso: egreso ?? 0,
+      month,
+      income: income ?? 0,
+      spent: spent ?? 0,
     }
   })
-
-  return data
 }
 
-const getPaymentDateData = fecha => ({
-  anio: Number(fecha.split('-')[0]),
-  mes: Number(fecha.split('-')[1]),
-  dia: Number(fecha.split('-')[2]),
-})
+const getPaymentDateData = time => {
+  const date = new Date(time)
 
-const getFisrtPaymentMonth = fechaPrimerPago => {
-  const {anio, mes} = getPaymentDateData(fechaPrimerPago)
-  const currAnio = new Date().getFullYear()
-  return currAnio > anio ? 1 : mes
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    date: date.getDate(),
+  }
 }
 
-const getLastPaymentMonth = fechaUltimoPago => {
-  const {anio, mes} = getPaymentDateData(fechaUltimoPago)
-  const currAnio = new Date().getFullYear()
+const getFisrtPaymentMonth = firstPaymentDate => {
+  const {year, month} = getPaymentDateData(firstPaymentDate)
+  const currentYear = new Date().getFullYear()
+  return currentYear > year ? 1 : month
+}
+
+const getLastPaymentMonth = lastPaymentDate => {
+  const {year, month} = getPaymentDateData(lastPaymentDate)
+  const currentYear = new Date().getFullYear()
   // le sumamos 1 al mes para que se visualize mejor en el chart
-  return currAnio < anio ? 13 : mes + 1
+  return currentYear < year ? 13 : month + 1
 }
 
-const getPaidPaymentsMonth = (pagos, fechaPrimerPago) => {
-  const pagosHechos = pagos.filter(p => p).length
-  const {anio, mes} = getPaymentDateData(fechaPrimerPago)
-  const fechaPagos = new Date(anio, mes - 1 + pagosHechos)
-  const {anio: anioPagos, mes: mesPagos} = getPaymentDateData(
-    fechaPagos.toISOString()
-  )
-  const currAnio = new Date().getFullYear()
-  if (anioPagos < currAnio) {
+const getPaidPaymentsMonth = (paids, firstPaymentDate) => {
+  const paid = paids.filter(p => p).length
+  const {year, month} = getPaymentDateData(firstPaymentDate)
+  const paymentDate = new Date(year, month - 1 + paid)
+  const paymentYear = paymentDate.getFullYear()
+  const paymentMonth = paymentDate.getMonth()
+  const currentYear = new Date().getFullYear()
+
+  if (paymentYear < currentYear) {
     return 0
   }
-  if (anioPagos > currAnio) {
+  if (paymentYear > currentYear) {
     return 13
   }
-  return mesPagos
+  return paymentMonth
 }
 
 export {

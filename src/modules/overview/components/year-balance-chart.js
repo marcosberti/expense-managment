@@ -24,7 +24,7 @@ const YearBalanceChart = ({width, height, chartRef, yearData}) => {
     .domain(MONTHS)
     .range([margins.left, width - margins.right])
 
-  const yMax = d3.max(yearData, d => d.ingreso)
+  const yMax = d3.max(yearData, d => d.income)
 
   const yScale = d3
     .scaleLinear()
@@ -45,7 +45,7 @@ const YearBalanceChart = ({width, height, chartRef, yearData}) => {
       .attr('fill', 'var(--secondary-500)')
       .attr('transform', `translate(${xScale.bandwidth() / 4})`)
 
-    incomeRects.append('title').text(d => formatAmount(d.ingreso, d.moneda))
+    incomeRects.append('title').text(d => formatAmount(d.income))
 
     const expensesRects = chartGroup
       .selectAll('rect.expenses')
@@ -55,11 +55,11 @@ const YearBalanceChart = ({width, height, chartRef, yearData}) => {
       .attr('fill', 'var(--secondary-300)')
       .attr('transform', `translate(${xScale.bandwidth() / 2})`)
 
-    expensesRects.append('title').text(d => formatAmount(d.egreso, d.moneda))
+    expensesRects.append('title').text(d => formatAmount(d.spent))
 
     d3.select(chartRef.current)
       .selectAll('g rect')
-      .attr('x', d => xScale(MONTHS[d.mes]))
+      .attr('x', d => xScale(MONTHS[d.month]))
       .attr('width', xScale.bandwidth() / 4)
       .attr('y', height - margins.bottom)
       .attr('height', 0)
@@ -73,14 +73,14 @@ const YearBalanceChart = ({width, height, chartRef, yearData}) => {
     incomeRects
       .transition()
       .duration(500)
-      .attr('y', d => yScale(d.ingreso))
-      .attr('height', d => yScale(0) - yScale(d.ingreso))
+      .attr('y', d => yScale(d.income))
+      .attr('height', d => yScale(0) - yScale(d.income))
 
     expensesRects
       .transition()
       .duration(500)
-      .attr('y', d => yScale(d.egreso))
-      .attr('height', d => yScale(0) - yScale(d.egreso))
+      .attr('y', d => yScale(d.spent))
+      .attr('height', d => yScale(0) - yScale(d.spent))
 
     d3.select(chartRef.current)
       .append('g')

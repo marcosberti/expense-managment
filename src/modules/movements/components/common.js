@@ -18,11 +18,11 @@ import {
 
 const FechaCuota = ({register, errors}) => (
   <FormGroup>
-    <label htmlFor="fechaPrimerPago">
+    <label htmlFor="firstPaymentDate">
       <LabelText>fecha primer pago</LabelText>
       <input
-        id="fechaPrimerPago"
-        name="fechaPrimerPago"
+        id="firstPaymentDate"
+        name="firstPaymentDate"
         type="date"
         defaultValue={new Date().toISOString().split('T')[0]}
         ref={register({
@@ -30,12 +30,12 @@ const FechaCuota = ({register, errors}) => (
         })}
       />
     </label>
-    <FormError message={errors?.fechaPrimerPago?.message} />
-    <label htmlFor="cuotas">
+    <FormError message={errors?.firstPaymentDate?.message} />
+    <label htmlFor="payments">
       <LabelText>cuotas</LabelText>
       <input
-        id="cuotas"
-        name="cuotas"
+        id="payments"
+        name="payments"
         type="number"
         step="3"
         min="0"
@@ -43,7 +43,7 @@ const FechaCuota = ({register, errors}) => (
         ref={register({required: 'Campo obligatorio'})}
       />
     </label>
-    <FormError message={errors?.cuotas?.message} />
+    <FormError message={errors?.payments?.message} />
   </FormGroup>
 )
 
@@ -55,11 +55,11 @@ FechaCuota.propTypes = {
 const FechaFijo = ({register, errors}) => (
   <>
     <FormGroup>
-      <label htmlFor="fechaActivo">
+      <label htmlFor="activeDate">
         <LabelText>fecha activo</LabelText>
         <input
-          id="fechaActivo"
-          name="fechaActivo"
+          id="activeDate"
+          name="activeDate"
           type="date"
           defaultValue={new Date().toISOString().split('T')[0]}
           ref={register({
@@ -67,17 +67,17 @@ const FechaFijo = ({register, errors}) => (
           })}
         />
       </label>
-      <label htmlFor="fechaInactivo">
+      <label htmlFor="inactiveDate">
         <LabelText>fecha inactivo</LabelText>
         <input
-          id="fechaInactivo"
-          name="fechaInactivo"
+          id="inactiveDate"
+          name="inactiveDate"
           type="date"
           ref={register}
         />
       </label>
     </FormGroup>
-    <FormError message={errors?.fechaActivo?.message} />
+    <FormError message={errors?.activeDate?.message} />
   </>
 )
 
@@ -87,20 +87,21 @@ FechaFijo.propTypes = {
 }
 
 const Montos = () => {
-  const {register, errors} = useFormContext()
+  const {register, errors, watch, exchangeNeeded} = useFormContext()
 
   const {
-    opciones: {monedas},
+    options: [{currencies}],
   } = useData()
+  const currency = watch('currency', currencies[0])
 
   return (
     <>
       <FormGroup>
-        <label htmlFor="monto">
+        <label htmlFor="amount">
           <LabelText>Monto</LabelText>
           <input
-            id="monto"
-            name="monto"
+            id="amount"
+            name="amount"
             type="number"
             min="0"
             placeholder="Monto"
@@ -108,32 +109,42 @@ const Montos = () => {
             ref={register({required: 'Campo obligatorio'})}
           />
         </label>
-        <label htmlFor="moneda">
+        <label htmlFor="currency">
           <LabelText>Moneda</LabelText>
           <select
-            id="moneda"
-            name="moneda"
-            defaultValue={monedas[0]}
+            id="currency"
+            name="currency"
+            defaultValue={currencies[0]}
             ref={register}
           >
-            {monedas.map(m => (
-              <option key={m} value={m}>
-                {m}
+            {currencies.map(curr => (
+              <option key={curr} value={curr}>
+                {curr}
               </option>
             ))}
           </select>
         </label>
       </FormGroup>
-      <FormError message={errors?.monto?.message} />
+      {exchangeNeeded && currency !== 'ars' && (
+        <>
+          <label htmlFor="exchange">
+            <LabelText>Tipo de cambio</LabelText>
+            <input
+              id="exchange"
+              name="exchange"
+              type="number"
+              min="0"
+              placeholder="Tipo de cambio"
+              step="0.01"
+              ref={register({required: 'Campo obligatorio'})}
+            />
+          </label>
+        </>
+      )}
+      <FormError message={errors?.amount?.message} />
     </>
   )
 }
-
-// Montos.propTypes = {
-//   register: PropTypes.func.isRequired,
-//   errors: PropTypes.object.isRequired,
-//   monedas: PropTypes.array.isRequired,
-// }
 
 const AddCategoryButton = styled(Button)`
   padding: 0;
@@ -158,7 +169,7 @@ const AddCategoryButtonInner = styled.div`
 `
 
 const AddCategory = ({onAddCat}) => {
-  const {categorias} = useData()
+  const {categories} = useData()
   const [isAdding, setIsAdding] = React.useState(false)
 
   const handleAddCategory = e => {
@@ -196,14 +207,14 @@ const AddCategory = ({onAddCat}) => {
         }}
       >
         <ul>
-          {categorias.map(c => (
-            <li key={c.nombre}>
+          {categories.map(c => (
+            <li key={c.name}>
               <Button
                 variant="modal"
                 onClick={handleAddCategory}
-                data-value={c.nombre}
+                data-value={c.name}
               >
-                <Small>{c.nombre}</Small>
+                <Small>{c.name}</Small>
               </Button>
             </li>
           ))}
@@ -224,25 +235,25 @@ AddCategory.propTypes = {
 }
 
 const ModalCategories = () => {
-  const {categorias} = useData()
+  const {categories} = useData()
   const {catRef, control, setError, clearErrors} = useFormContext()
   const {fields, append, remove} = useFieldArray({
     control,
-    name: 'categorias',
+    name: 'categories',
   })
 
   const onAddCat = catName => {
-    const exist = Boolean(fields.find(f => f.nombre === catName))
+    const exist = Boolean(fields.find(f => f.name === catName))
     if (exist) {
-      setError('categoria', {
+      setError('category', {
         message: `Categoria ${catName} ya ha sido agregada`,
       })
       return
     }
 
-    const categoria = categorias.find(c => c.nombre === catName)
-    append(categoria)
-    clearErrors('categoria')
+    const category = categories.find(c => c.name === catName)
+    append(category)
+    clearErrors('category')
   }
 
   React.useEffect(() => {
@@ -263,7 +274,7 @@ const ModalCategories = () => {
       >
         {fields.map(f => (
           <li
-            key={f.nombre}
+            key={f.name}
             css={css`
               width: var(--category-size);
               height: var(--category-size);
@@ -272,7 +283,7 @@ const ModalCategories = () => {
             <ItemIcon
               icon={f.icon}
               size={32}
-              description={f.nombre}
+              description={f.name}
               color={f.color}
             />
           </li>
@@ -282,11 +293,5 @@ const ModalCategories = () => {
     </>
   )
 }
-
-// ModalCategories.propTypes = {
-//   control: PropTypes.object.isRequired,
-//   setError: PropTypes.func.isRequired,
-//   clearErrors: PropTypes.func.isRequired,
-// }
 
 export {FechaCuota, FechaFijo, ModalCategories, Montos}

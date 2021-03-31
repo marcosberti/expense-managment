@@ -71,9 +71,10 @@ const useClient = () => {
   const {user} = useAuth()
   const [client, setClient] = React.useState(() => getClient(user.token))
 
-  React.useEffect(() => {
-    setClient(() => getClient(user.token))
-  }, [user])
+  // React.useEffect(() => {
+  //   console.log('in client eff')
+  //   setClient(() => getClient(user.token))
+  // }, [user])
 
   return client
 }

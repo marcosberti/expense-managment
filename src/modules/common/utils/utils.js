@@ -1,5 +1,6 @@
 const getTime = date => {
-  const time = date.getTime ? date.getTime() : new Date(date).getTime()
+  const _d = typeof date === 'string' ? date.replace('Z', '') : date
+  const time = date.getTime ? date.getTime() : new Date(_d).getTime()
   return time
 }
 
@@ -19,7 +20,7 @@ const getMonthDates = (date = new Date()) => {
 const formatDateToISO = date => (date ? `${date}T00:00:00Z` : null)
 
 const formatDate = date => {
-  const time = date.getTime ? date.getTime() : date
+  const time = getTime(date)
   const formattedDate = new Intl.DateTimeFormat('es-AR', {
     dateStyle: 'long',
   }).format(time)
@@ -27,7 +28,7 @@ const formatDate = date => {
   return formattedDate
 }
 
-const formatAmount = (ammount, currency) =>
+const formatAmount = (ammount, currency = 'ars') =>
   new Intl.NumberFormat('es-AR', {style: 'currency', currency}).format(ammount)
 
 const MONTHS = [

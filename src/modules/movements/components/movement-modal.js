@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react'
 import {useForm, useFormContext, FormProvider} from 'react-hook-form'
 import {useData} from 'context/data'
@@ -14,9 +13,9 @@ import {ModalCategories, Montos} from './common'
 
 const FormEgreso = () => {
   const {
-    opciones: {tipoEgreso},
-    gastosFijos,
-    gastosCuotas,
+    options: [{spentTypes}],
+    fixed,
+    payments,
   } = useData()
   const {
     register,
@@ -27,127 +26,116 @@ const FormEgreso = () => {
     setCatRef,
   } = useFormContext()
   const [gastos, setGastos] = React.useState(null)
-  const egreso = watch('tipoEgreso', 'variable')
-  const gasto = watch('gastoRef')
+  const spentType = watch('spentType', 'variable')
+  const expense = watch('expenseRef')
 
   React.useEffect(() => {
-    const isVariable = egreso === 'variable'
-    const isCuotas = egreso === 'cuotas'
-    const isFijo = egreso === 'fijo'
+    const isVariable = spentType === 'variable'
+    const isCuotas = spentType === 'cuotas'
+    const isFijo = spentType === 'fijo'
     if (isVariable) {
       setGastos(null)
     }
 
     if (isFijo) {
       setGastos(
-        gastosFijos.map(g => ({
-          key: g.detalle,
-          value: g.detalle,
+        fixed.map(({detail}) => ({
+          key: detail,
+          value: detail,
         }))
       )
     }
 
     if (isCuotas) {
       setGastos(
-        gastosCuotas.map(g => ({
-          key: g.detalle,
-          value: `${g.detalle} (${g.pagos.filter(p => p).length + 1}/${
-            g.cuotas
-          })`,
+        payments.map(({details, padis, payments}) => ({
+          key: details,
+          value: `${details} (${padis.filter(p => p).length + 1}/${payments})`,
         }))
       )
     }
     setCatRef([])
-  }, [egreso, gastosCuotas, gastosFijos])
+  }, [fixed, payments, setCatRef, spentType])
 
   React.useEffect(() => {
-    console.log('gasto', gasto)
-    if (!gasto || gasto === 'default') {
-      setValue('detalle', '')
-      setValue('monto', '')
-      setValue('moneda', '')
+    if (!expense || expense === 'default') {
+      setValue('amount', '')
+      setValue('currency', 'ars')
       if (catRef.length) {
         setCatRef([])
       }
       return
     }
 
-    const isCuotas = egreso === 'cuotas'
-    const isFijo = egreso === 'fijo'
+    const isCuotas = spentType === 'cuotas'
+    const isFijo = spentType === 'fijo'
     let _gasto = {}
 
     if (isCuotas) {
-      _gasto = {...gastosCuotas.find(g => g.detalle === gasto)}
-      _gasto.monto = _gasto.montoCuota
-      _gasto.detalle = `${_gasto.detalle} (${
-        _gasto.pagos.filter(p => p).length + 1
-      }/${_gasto.cuotas})`
+      _gasto = {...payments.find(({details}) => details === expense)}
+      _gasto.amount = _gasto.paymentAmount
+      _gasto.details = `${_gasto.details} (${
+        _gasto.paids.filter(p => p).length + 1
+      }/${_gasto.payments})`
     }
 
     if (isFijo) {
-      _gasto = {...gastosFijos.find(g => g.detalle === gasto)}
-      const {monto} = {..._gasto.montos.find(m => !m.fechaInactivo)}
-      _gasto.monto = monto
+      _gasto = {...fixed.find(({details}) => details === expense)}
+      const {amount} = {..._gasto.amounts.find(m => !m.inactiveDate)}
+      _gasto.amount = amount
     }
 
     setValue('detalle', _gasto.detalle)
     setValue('monto', _gasto.monto)
     setValue('moneda', _gasto.moneda)
     setCatRef(_gasto.categorias)
-  }, [gasto])
+  }, [catRef, expense, fixed, payments, setCatRef, setValue, spentType])
 
   return (
     <>
-      <label htmlFor="tipoEgreso">
+      <label htmlFor="spentType">
         <LabelText>tipo de egreso</LabelText>
-        <select id="tipoEgreso" name="tipoEgreso" ref={register}>
-          {tipoEgreso.map(t => (
-            <option key={t} value={t}>
-              {t}
+        <select id="spentType" name="spentType" ref={register}>
+          {spentTypes.map(type => (
+            <option key={type} value={type}>
+              {type}
             </option>
           ))}
         </select>
       </label>
       {gastos && (
-        <label htmlFor="gastoRef">
+        <label htmlFor="expenseRef">
           <LabelText>Gasto a pagar</LabelText>
           <select
-            id="gastoRef"
-            name="gastoRef"
+            id="expenseRef"
+            name="expenseRef"
             ref={register({
               validate: val => val !== 'default',
             })}
           >
             <option value="default">Seleccione el gasto a pagar</option>
-            {gastos.map(g => (
-              <option key={g.key} value={g.key}>
-                {g.value}
+            {gastos.map(({key, value}) => (
+              <option key={key} value={key}>
+                {value}
               </option>
             ))}
           </select>
         </label>
       )}
-      <FormError message={errors?.gastoRef ? 'Campo obligatorio' : false} />
+      <FormError message={errors?.expenseRef ? 'Campo obligatorio' : false} />
     </>
   )
 }
 
-// FormEgreso.propTypes = {
-//   register: PropTypes.func.isRequired,
-//   errors: PropTypes.object.isRequired,
-//   watch: PropTypes.func.isRequired,
-//   setValue: PropTypes.func.isRequired,
-// }
-
 const MovementForm = () => {
+  const [catRef, setCatRef] = React.useState([])
+  const {
+    options: [{currencies, movementType}],
+    addMovement,
+  } = useData()
   const methods = useForm({
     reValidateMode: 'onSubmit',
   })
-  const {
-    opciones: {monedas, tipoMovimiento},
-    addMovement,
-  } = useData()
-  const [catRef, setCatRef] = React.useState([])
 
   const {
     register,
@@ -159,68 +147,67 @@ const MovementForm = () => {
     setError,
   } = methods
 
-  const tipo = watch('tipo', 'ingreso')
-  const isEgreso = tipo === 'egreso'
+  const type = watch('type', 'income')
+  const isEgreso = type === 'egreso'
 
   const onSubmit = data => {
-    const movement = {...data}
-    if (isEgreso) {
-      const {categorias} = control.fieldArrayValuesRef.current
-      if (!categorias.length) {
-        setError('categoria', {message: 'Debe haber al menos una categoria'})
-        return
-      }
-      movement.categorias = categorias.map(({id, ...rest}) => rest)
+    const {categories} = control.fieldArrayValuesRef.current
+    if (!categories.length) {
+      setError('category', {message: 'Debe haber al menos una categoria'})
+      return
     }
-    addMovement(movement)
+    addMovement({
+      ...data,
+      categories: categories.map(({id, ...rest}) => rest),
+    })
   }
 
-  React.useEffect(() => {
-    setValue('monto', null)
-    setValue('moneda', monedas[0])
-  }, [monedas, setValue, tipo])
+  // React.useEffect(() => {
+  // setValue('amount', null)
+  // setValue('currency', currencies[0])
+  // }, [currencies, setValue, type])
 
   return (
-    <FormProvider {...{...methods, catRef, setCatRef}}>
+    <FormProvider {...{...methods, catRef, setCatRef, exchangeNeeded: true}}>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="detalle">
+        <label htmlFor="details">
           <LabelText>detalle</LabelText>
           <input
-            id="detalle"
-            name="detalle"
+            id="details"
+            name="details"
             type="text"
             placeholder="Detalle"
             autoComplete="off"
             ref={register({required: 'Campo obligatorio'})}
           />
         </label>
-        <FormError message={errors?.detalle?.message} />
-        <label htmlFor="fecha">
+        <FormError message={errors?.details?.message} />
+        <label htmlFor="date">
           <LabelText>fecha</LabelText>
           <input
-            id="fecha"
-            name="fecha"
+            id="date"
+            name="date"
             type="date"
             defaultValue={new Date().toISOString().split('T')[0]}
             ref={register({required: 'Campo obligatorio'})}
           />
         </label>
-        <FormError message={errors?.fecha?.message} />
-        <label htmlFor="tipo">
+        <FormError message={errors?.date?.message} />
+        <label htmlFor="type">
           <LabelText>tipo de movimiento</LabelText>
-          <select name="tipo" id="tipo" ref={register}>
-            {tipoMovimiento.map(t => (
-              <option key={t} value={t}>
-                {t}
+          <select name="type" id="type" ref={register}>
+            {movementType.map(movType => (
+              <option key={movType} value={movType}>
+                {movType}
               </option>
             ))}
           </select>
         </label>
-        <FormError message={errors?.tipo?.message} />
+        <FormError message={errors?.type?.message} />
         {isEgreso && <FormEgreso />}
         <Montos />
-        {isEgreso && <ModalCategories />}
-        <FormError message={errors?.categoria?.message} />
+        <ModalCategories />
+        <FormError message={errors?.category?.message} />
         <Button type="submit">Guardar</Button>
       </Form>
     </FormProvider>

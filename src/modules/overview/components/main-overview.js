@@ -26,7 +26,7 @@ const TextCenter = styled.div`
   flex-direction: column;
 `
 
-const MainOverview = ({mainData: {ingreso, egreso}}) => (
+const MainOverview = ({mainData: {income, spent}}) => (
   <div
     css={css`
       height: 100%;
@@ -44,12 +44,12 @@ const MainOverview = ({mainData: {ingreso, egreso}}) => (
   >
     <TextCenter>
       <Small>Ingresos</Small>
-      <Big>{formatAmount(ingreso, 'ars')}</Big>
+      <Big>{formatAmount(income)}</Big>
     </TextCenter>
     <AbsoluteBox position={{mobile: {top: '6.5rem'}, desktop: {top: '11rem'}}}>
       <TextCenter>
         <Small>Gastos</Small>
-        <Big>{formatAmount(egreso, 'ars')}</Big>
+        <Big>{formatAmount(spent)}</Big>
       </TextCenter>
     </AbsoluteBox>
     <DesktopOnly>
@@ -60,20 +60,20 @@ const MainOverview = ({mainData: {ingreso, egreso}}) => (
           min-width: 12rem;
         `}
       >
-        <DonutChart ingreso={ingreso} gasto={egreso} />
+        <DonutChart income={income} spent={spent} />
       </ChartWrapper>
     </DesktopOnly>
     <TextCenter>
       <Small>Disponible</Small>
-      <Bigger>{formatAmount(ingreso - egreso, 'ars')}</Bigger>
+      <Bigger>{formatAmount(income - spent)}</Bigger>
     </TextCenter>
   </div>
 )
 
 MainOverview.propTypes = {
   mainData: PropTypes.shape({
-    ingreso: PropTypes.number.isRequired,
-    egreso: PropTypes.number.isRequired,
+    income: PropTypes.number.isRequired,
+    spent: PropTypes.number.isRequired,
   }).isRequired,
 }
 

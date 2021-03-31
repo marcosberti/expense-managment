@@ -7,6 +7,7 @@ import {Button, Modal, ModalBackdrop, Small} from 'common-components'
 import {MONTHS} from 'common-utils'
 import {FilterIcon, SortIcon, AddIcon} from 'icons'
 import * as mq from 'media-queries'
+import {useHistory, useLocation} from 'react-router'
 
 const actionVariants = {
   action: {
@@ -75,6 +76,48 @@ const Dropdown = () => (
   </select>
 )
 
+const MonthSel = () => {
+  const history = useHistory()
+  const location = useLocation()
+  const [inValue, setInValue] = React.useState(() => {
+    const val = location.search.split('=')[1]
+    if (val) {
+      return val
+    }
+
+    const date = new Date()
+    const cyear = date.getFullYear()
+    let cmonth = date.getMonth() + 1
+    cmonth = cmonth <= 9 ? `0${cmonth}` : `${cmonth}`
+    return `${cyear}-${cmonth}`
+  })
+
+  const handleChange = e => {
+    const {value} = e.target
+    const path = `${location.pathname}?month=${value}`
+    history.push(path, location.state)
+    setInValue(value)
+  }
+
+  return (
+    <input
+      type="month"
+      onChange={handleChange}
+      value={inValue}
+      css={css`
+        font-weight: 500;
+        min-height: 3rem;
+        margin-right: auto;
+        background-color: inherit;
+        color: var(--text-color-light);
+        font-size: var(--font-size-sm);
+        border: 1px solid var(--neutral-300);
+        border-radius: var(--border-radius);
+      `}
+    />
+  )
+}
+
 const ActionsWrapper = styled.div`
   gap: 0.5rem;
   display: flex;
@@ -133,6 +176,7 @@ const AddButton = ({onModal}) => {
           modalProps={{
             right: '0',
             top: '4rem',
+            zIndex: '1',
             width: '7rem',
             padding: '0.5rem',
             borderRadius: 'var(--border-radius)',
@@ -169,7 +213,8 @@ AddButton.propTypes = {
 
 const Actions = ({onModal}) => (
   <ActionsWrapper>
-    <Dropdown />
+    {/* <Dropdown /> */}
+    <MonthSel />
     <ActionButton variant="actionActive">
       <ActionText>Categoria</ActionText>
       <SortIcon />

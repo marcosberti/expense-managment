@@ -1,15 +1,26 @@
-const {getQueries} = require('../queries')
+const {getKeyRef, getResponseData} = require('../utils')
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
-  const {
-    queryStringParameters: {dateISO, queryKeys},
+  let {
+    queryStringParameters: {dateISO, keys},
   } = event
+
+  keys = JSON.parse(keys)
 
   if (!dateISO) {
     return {
       statusCode: 400,
       body: JSON.stringify({message: 'A date in ISO format is required'}),
+    }
+  }
+
+  if (!keys.length) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: 'A keys array is required',
+      }),
     }
   }
 
@@ -20,25 +31,17 @@ const handler = async (event, ctx) => {
   }
 
   try {
-    const {queries, keys} = getQueries(dateISO, queryKeys)
-    console.log('queries', queries)
-    const result = await Promise.all(queries)
-    console.log('result', result)
-    const data = result.reduce((acc, r, i) => {
-      const key = keys[i]
-      acc[key] =
-        key === 'opciones'
-          ? r.data.reduce(
-              (opciones, opcion) => ({...opciones, ...opcion.data}),
-              {}
-            )
-          : r.data.map(d => ({ref: d.ref, ...d.data}))
-      return acc
-    }, {})
+    const queries = keys.map(key => {
+      const ref = getKeyRef(key, dateISO)
+      return ref.get()
+    })
+
+    const response = await Promise.all(queries)
+    const result = getResponseData(keys, response)
 
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify({...result}),
     }
   } catch (e) {
     return {

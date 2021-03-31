@@ -6,7 +6,7 @@ import {ChartWrapper, Chart} from './chart-wrapper'
 import {YearBalanceChart} from './year-balance-chart'
 import {PaymentsChart} from './payments-chart'
 
-const DetailOverview = ({yearData, cuotas}) => (
+const DetailOverview = ({yearData, payments}) => (
   <div
     css={css`
       display: none;
@@ -24,7 +24,7 @@ const DetailOverview = ({yearData, cuotas}) => (
         <YearBalanceChart yearData={yearData} />
       </Chart>
       <Chart id="detalle-cuotas">
-        <PaymentsChart paymentsData={cuotas} />
+        <PaymentsChart paymentsData={payments} />
       </Chart>
     </ChartWrapper>
   </div>
@@ -32,7 +32,7 @@ const DetailOverview = ({yearData, cuotas}) => (
 
 DetailOverview.propTypes = {
   yearData: PropTypes.array.isRequired,
-  cuotas: PropTypes.array.isRequired,
+  payments: PropTypes.array.isRequired,
 }
 
 export {DetailOverview}

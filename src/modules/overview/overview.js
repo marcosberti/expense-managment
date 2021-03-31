@@ -26,7 +26,7 @@ const Charts = () => {
       `}
     >
       <DesktopOnly>
-        <DetailOverview yearData={yearData} cuotas={data.gastosCuotas} />
+        <DetailOverview yearData={yearData} payments={data.payments} />
       </DesktopOnly>
       <MainOverview mainData={mainData} />
     </div>
