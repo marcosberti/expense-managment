@@ -39,8 +39,8 @@ const FormEgreso = () => {
 
     if (isFijo) {
       setGastos(
-        fixed.map(({detail}) => ({
-          key: detail,
+        fixed.map(({id, detail}) => ({
+          key: id,
           value: detail,
         }))
       )
@@ -48,8 +48,9 @@ const FormEgreso = () => {
 
     if (isCuotas) {
       setGastos(
-        payments.map(({details, padis, payments}) => ({
-          key: details,
+        // eslint-disable-next-line no-shadow
+        payments.map(({id, details, padis, payments}) => ({
+          key: id,
           value: `${details} (${padis.filter(p => p).length + 1}/${payments})`,
         }))
       )
@@ -130,7 +131,7 @@ const FormEgreso = () => {
 const MovementForm = () => {
   const [catRef, setCatRef] = React.useState([])
   const {
-    options: [{currencies, movementType}],
+    options: [{currencies, movementTypes}],
     addMovement,
   } = useData()
   const methods = useForm({
@@ -162,10 +163,10 @@ const MovementForm = () => {
     })
   }
 
-  // React.useEffect(() => {
-  // setValue('amount', null)
-  // setValue('currency', currencies[0])
-  // }, [currencies, setValue, type])
+  React.useEffect(() => {
+    setValue('amount', null)
+    setValue('currency', currencies[0])
+  }, [currencies, setValue, type])
 
   return (
     <FormProvider {...{...methods, catRef, setCatRef, exchangeNeeded: true}}>
@@ -196,7 +197,7 @@ const MovementForm = () => {
         <label htmlFor="type">
           <LabelText>tipo de movimiento</LabelText>
           <select name="type" id="type" ref={register}>
-            {movementType.map(movType => (
+            {movementTypes.map(movType => (
               <option key={movType} value={movType}>
                 {movType}
               </option>

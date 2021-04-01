@@ -1,22 +1,24 @@
-import {getTime, getMonthDates} from 'common-utils'
-
 const getMovementsMonth = location => {
   if (location.search) {
     // eslint-disable-next-line no-shadow
     const [year, month] = location.search.split('=')[1].split('-')
     return [Number(year), Number(month) - 1]
   }
-  const {month, year} = getMonthDates()
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = date.getMonth()
   return [year, month]
 }
 
-const filterMovements = (movimientos, month, year) =>
-  movimientos
-    .filter(m => {
-      const [mYear, mMonth] = m.fecha.split('-')
-      return mYear === year && mMonth === month
+const filterMovements = (movements, month, year) =>
+  movements
+    .filter(({date}) => {
+      const movDate = new Date(date)
+      const movYear = movDate.getFullYear()
+      const movMonth = movDate.getMonth()
+      return movYear === year && movMonth === month
     })
-    .sort((a, b) => (getTime(a.fecha) < getTime(b.fecha) ? 1 : -1))
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
 
 const getMovements = ({movements}, location) => {
   const [year, month] = getMovementsMonth(location)

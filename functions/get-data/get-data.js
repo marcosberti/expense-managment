@@ -2,6 +2,13 @@ const {getKeyRef, getResponseData} = require('../utils')
 
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
+
+  if (!user || user.email !== process.env.EXPMAN_VALID_EMAIL) {
+    return {
+      statusCode: 401,
+    }
+  }
+
   let {
     queryStringParameters: {dateISO, keys},
   } = event
@@ -21,12 +28,6 @@ const handler = async (event, ctx) => {
       body: JSON.stringify({
         message: 'A keys array is required',
       }),
-    }
-  }
-
-  if (!user || user.email !== process.env.EXPMAN_VALID_EMAIL) {
-    return {
-      statusCode: 401,
     }
   }
 

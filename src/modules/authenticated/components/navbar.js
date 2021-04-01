@@ -124,8 +124,8 @@ MobileMenuButton.propTypes = {
 }
 
 const routes = [
-  {path: '/', text: 'Overview', endpoint: 'get-overview'},
-  {path: '/movements', text: 'Movimientos', endpoint: 'get-movements'},
+  {path: '/', text: 'Overview'},
+  {path: '/movements', text: 'Movimientos'},
   {path: '/reports', text: 'Reportes', disabled: true},
 ]
 
@@ -149,16 +149,7 @@ const NavbarContainer = () => {
               {route.disabled ? (
                 <span>{route.text}</span>
               ) : (
-                <Link
-                  to={{
-                    state: {
-                      endpoint: route.endpoint,
-                    },
-                    pathname: route.path,
-                  }}
-                >
-                  {route.text}
-                </Link>
+                <Link to={route.path}>{route.text}</Link>
               )}
             </NavbarItem>
           ))}
