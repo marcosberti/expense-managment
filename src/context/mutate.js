@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import {useClient} from 'hooks'
 import {useData} from './data'
 
@@ -125,89 +126,84 @@ const getMovementBody = (movement, monthly, payments) => {
 const MutateProvider = ({children}) => {
   const data = useData()
   const client = useClient()
+  const {setPending, setError, setData} = data
 
   /**
-   * Add a new category
+   * mutate a category
    */
-  const addCategory = React.useCallback(
+  const mutateCategory = React.useCallback(
     async category => {
       console.log('cat', category)
       const body = [{collection: 'categories', data: category}]
-      // dispatch({type: STATUS_PENDING})
-      // const response = await client('mutate-data', {body})
-      // if (response.error) {
-      //   dispatch({type: STATUS_REJECTED, error: response.error})
+      // setPending()
+      // const {data, error} = await client('mutate-data', {body})
+      // if (error) {
+      //   setError(error)
       //   return
       // }
 
-      // const {
-      //   // eslint-disable-next-line no-shadow
-      //   data: {ref, data},
-      // } = response
-
-      // dispatch({type: STATUS_ADDED, key: 'categorias', value: {ref, ...data}})
+      // setData(data)
     },
     [client]
   )
 
   /**
-   * Add a new expense
+   * mutate an expense
    */
-  const addExpense = React.useCallback(
+  const mutateExpense = React.useCallback(
     async expense => {
       console.log('gasto', expense)
-      // dispatch({type: STATUS_PENDING})
+      // setPending()
       // const body = formatExpense(expense)
-      // const response = await client('mutate-data', {body})
-      // if (response.error) {
-      //   dispatch({type: STATUS_REJECTED, error: response.error})
+      // const {data, error} = await client('mutate-data', {body})
+      // if (error) {
+      //   setError(error)
       //   return
       // }
 
-      // const {
-      //   // eslint-disable-next-line no-shadow
-      //   data: {ref, data},
-      // } = response
-
-      // const key = expense.tipo === 'cuotas' ? 'gastosCuotas' : 'gastosFijos'
-      // dispatch({type: STATUS_ADDED, key, value: {ref, ...data}})
+      // setData(data)
     },
     [client]
   )
 
   /**
-   * Add a new movement
+   * mutate a new movement
    */
-  const addMovement = React.useCallback(
+  const mutateMovement = React.useCallback(
     async movement => {
       const {monthly, payments} = data
       const body = getMovementBody(movement, monthly, payments)
       console.log('mov', body)
-      // dispatch({type: STATUS_PENDING})
-      // const response = await client('mutate-data', {body})
-      // if (response.error) {
-      //   dispatch({type: STATUS_REJECTED, error: response.error})
+      // setPending()
+      // const {data, error} = await client('mutate-data', {body})
+      // if (error) {
+      //   setError(error)
       //   return
       // }
 
-      // dispatch({type: STATUS_ADDED, values: response.data})
+      // setData(data)
     },
     [client, data]
   )
 
   const value = React.useMemo(
     () => ({
-      addCategory,
-      addExpense,
-      addMovement,
+      mutateCategory,
+      mutateExpense,
+      mutateMovement,
     }),
-    [addCategory, addExpense, addMovement]
+    [mutateCategory, mutateExpense, mutateMovement]
   )
 
   return (
     <MutateContext.Provider value={value}>{children}</MutateContext.Provider>
   )
 }
+
+MutateProvider.propTypes = {
+  children: PropTypes.object.isRequired,
+}
+
 const useMutate = () => {
   const context = React.useContext(MutateContext)
   if (context === undefined) {

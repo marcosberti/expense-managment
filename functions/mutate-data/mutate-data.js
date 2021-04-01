@@ -23,6 +23,7 @@ const handler = async (event, ctx) => {
 
       return {
         id: docRef.id,
+        collection,
         ...mutated,
       }
     })

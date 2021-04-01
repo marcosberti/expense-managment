@@ -84,47 +84,14 @@ const reducer = (state, action) => {
     const updatedData = {
       ...state.data,
     }
-    if (action.key) {
-      updatedData[action.key] = [...state.data[action.key], action.value]
-    }
-    if (action.values) {
-      throw Error('mirar esto')
-      // en vez de key, hacer Object.keys(actions.values)
-      // action.values.forEach(({data, ref, key}) => {
-      //   if (key === 'movimientos') {
-      //     updatedData.movimientos.push({ref, ...data})
-      //   }
-      //   if (key === 'movimientosMensuales') {
-      //     let movimientoMensual = updatedData.movimientosMensuales.find(
-      //       m => m.mes === data.mes
-      //     )
-      //     if (!movimientoMensual) {
-      //       movimientoMensual = {
-      //         anio: data.anio,
-      //         mes: data.mes,
-      //         ingreso: 0,
-      //         egreso: 0,
-      //         ref,
-      //       }
-      //       updatedData.movimientosMensuales.push(movimientoMensual)
-      //     }
-      //     movimientoMensual.ingreso =
-      //       movimientoMensual.ingreso === data.ingreso
-      //         ? data.ingreso
-      //         : movimientoMensual.ingreso + data.ingreso
-      //     movimientoMensual.egreso =
-      //       movimientoMensual.egreso === data.egreso
-      //         ? data.egreso
-      //         : movimientoMensual.egreso + data.egreso
-      //   }
-      //   if (key === 'gastosCuotas') {
-      //     const index = updatedData.gastosCuotas.indexOf(
-      //       g => g.detalle === data.detalle
-      //     )
-      //     updatedData.gastosCuotas[index] = data
-      //   }
-      // })
-    }
+    action.values.forEAch(({collection, id, ...data}) => {
+      let value = updatedData[collection].find(({id: _id}) => _id === id)
+      if (value) {
+        value = {...data}
+      } else {
+        updatedData[collection].push({id, ...data})
+      }
+    })
 
     saveToStorage(STORAGE_KEY, updatedData)
 
@@ -198,13 +165,40 @@ const DataProvider = ({children}) => {
   }, [location, client])
 
   /**
+   * Set pending status
+   */
+  const setPending = React.useCallback(
+    () => dispatch({type: STATUS_PENDING}),
+    []
+  )
+
+  /**
+   * Set error
+   */
+  const setError = React.useCallback(
+    error => dispatch({type: STATUS_REJECTED, error}),
+    []
+  )
+
+  /**
+   * Update data
+   */
+  const setData = React.useCallback(
+    values => dispatch({type: STATUS_ADDED, values}),
+    []
+  )
+
+  /**
    * Memoize the values
    */
   const value = React.useMemo(
     () => ({
       ...data,
+      setPending,
+      setError,
+      setData,
     }),
-    [data]
+    [data, setData, setError, setPending]
   )
 
   console.log('data', data)
