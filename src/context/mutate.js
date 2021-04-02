@@ -1,6 +1,7 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import {useClient} from 'hooks'
+import {getDateData} from 'common-utils'
 import {useData} from './data'
 
 const MutateContext = React.createContext()
@@ -22,18 +23,23 @@ const formatMovement = movement => {
   }
 }
 
-const formatExpense = expense => {
-  if (expense.type === 'fijo') {
+const formatExpense = (expense, operation) => {
+  if (expense.type === 'fixed') {
     const {activeDate, inactiveDate, amount, type, ...rest} = expense
+    console.log('inactiveDate', inactiveDate)
     return [
       {
         collection: 'fixed',
+        operation: operation ?? (expense.id ? 'update' : 'set'),
         data: {
           ...rest,
+          active: Boolean(!inactiveDate),
           amounts: [
             {
               activeDate: new Date(`${activeDate}T00:00:00`).getTime(),
-              inactiveDate: false,
+              inactiveDate: inactiveDate
+                ? new Date(`${inactiveDate}T00:00:00`).getTime()
+                : false,
               amount: Number(amount),
             },
           ],
@@ -41,7 +47,7 @@ const formatExpense = expense => {
       },
     ]
   }
-  if (expense.type === 'cuotas') {
+  if (expense.type === 'payments') {
     const {type, ...rest} = expense
     const firstPaymentDate = new Date(`${expense.firstPaymentDate}T00:00:00`)
     rest.firstPaymentDate = firstPaymentDate.getTime()
@@ -53,7 +59,7 @@ const formatExpense = expense => {
 
     const lastPaymentDate = new Date(
       year,
-      month + rest.cuotas,
+      month + rest.payments,
       0,
       0,
       0,
@@ -63,6 +69,7 @@ const formatExpense = expense => {
     return [
       {
         collection: 'payments',
+        operation: operation ?? (expense.id ? 'update' : 'set'),
         data: {
           ...rest,
           lastPaymentDate,
@@ -76,9 +83,8 @@ const formatExpense = expense => {
   throw new Error('Unhandled expense type')
 }
 
-const formatMonthly = (monthly, movement) => {
-  const year = movement.date.getFullYear()
-  const month = movement.date.getMonth()
+const formatMonthly = (monthly, movement, operation) => {
+  const {year, month} = getDateData(movement.date)
   let data = monthly.find(m => m.year === year && m.month === month)
   if (!data) {
     data = {
@@ -89,33 +95,39 @@ const formatMonthly = (monthly, movement) => {
     }
   }
 
-  const amount = movement.exchange
+  let amount = movement.exchange
     ? movement.amount * movement.exchange
     : movement.amount
-  data[movement.tipo] += amount
+  amount = operation === 'delete' ? amount * -1 : amount
+  data[movement.type] += amount
   return data
 }
 
-const getMovementBody = (movement, monthly, payments) => {
+const getMovementBody = (movement, monthly, payments, operation) => {
   const formattedMovement = formatMovement(movement)
-  const formattedMonthly = formatMonthly(monthly, movement)
+  const formattedMonthly = formatMonthly(monthly, formattedMovement, operation)
   const body = [
     {
-      collection: 'movement',
+      collection: 'movements',
+      operation: operation ?? movement.id ? 'update' : 'set',
       data: formattedMovement,
     },
     {
       collection: 'monthly',
-      monthly: formattedMonthly,
+      operation: formattedMonthly.id ? 'update' : 'set',
+      data: formattedMonthly,
     },
   ]
 
-  if (movement.spentType === 'cuotas') {
+  if (movement.spentType === 'payments') {
     const payment = payments.find(({id}) => id === movement.expenseRef)
-    const index = payment.payments.indexOf(false)
-    payment.paids[index] = true
+    let index = payment.paids.indexOf(false)
+    const isPaying = operation !== 'delete'
+    index = isPaying ? index : index - 1
+    payment.paids[index] = isPaying
     body.push({
       collection: 'payments',
+      operation: 'update',
       data: payment,
     })
   }
@@ -132,58 +144,57 @@ const MutateProvider = ({children}) => {
    * mutate a category
    */
   const mutateCategory = React.useCallback(
-    async category => {
-      console.log('cat', category)
-      const body = [{collection: 'categories', data: category}]
-      // setPending()
-      // const {data, error} = await client('mutate-data', {body})
-      // if (error) {
-      //   setError(error)
-      //   return
-      // }
+    async (category, operation = 'set') => {
+      const body = [{collection: 'categories', operation, data: category}]
+      setPending()
+      const {data: rData, error} = await client('mutate-data', {body})
+      if (error) {
+        setError(error)
+        return
+      }
 
-      // setData(data)
+      setData(rData)
     },
-    [client]
+    [client, setData, setError, setPending]
   )
 
   /**
    * mutate an expense
    */
   const mutateExpense = React.useCallback(
-    async expense => {
-      console.log('gasto', expense)
-      // setPending()
-      // const body = formatExpense(expense)
-      // const {data, error} = await client('mutate-data', {body})
-      // if (error) {
-      //   setError(error)
-      //   return
-      // }
+    async (expense, operation = 'set') => {
+      setPending()
+      const body = formatExpense(expense, operation)
+      const {data: rData, error} = await client('mutate-data', {body})
+      if (error) {
+        setError(error)
+        return
+      }
 
-      // setData(data)
+      setData(rData)
     },
-    [client]
+    [client, setData, setError, setPending]
   )
 
   /**
    * mutate a new movement
    */
   const mutateMovement = React.useCallback(
-    async movement => {
+    async (movement, operation = null) => {
       const {monthly, payments} = data
-      const body = getMovementBody(movement, monthly, payments)
-      console.log('mov', body)
-      // setPending()
-      // const {data, error} = await client('mutate-data', {body})
-      // if (error) {
-      //   setError(error)
-      //   return
-      // }
+      const body = getMovementBody(movement, monthly, payments, operation)
+      console.log('body', body)
+      setPending()
+      const {data: rData, error} = await client('mutate-data', {body})
+      if (error) {
+        setError(error)
+        return
+      }
 
-      // setData(data)
+      console.log('rData', rData)
+      setData(rData)
     },
-    [client, data]
+    [client, data, setData, setError, setPending]
   )
 
   const value = React.useMemo(

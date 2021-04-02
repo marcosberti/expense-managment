@@ -3,11 +3,10 @@ import * as React from 'react'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
+import {useHistory, useLocation} from 'react-router-dom'
 import {Button, Modal, ModalBackdrop, Small} from 'common-components'
-import {MONTHS} from 'common-utils'
 import {FilterIcon, SortIcon, AddIcon} from 'icons'
 import * as mq from 'media-queries'
-import {useHistory, useLocation} from 'react-router'
 
 const actionVariants = {
   action: {
@@ -52,29 +51,6 @@ const ActionButton = styled(Button)`
 const ActionText = styled(Small)`
   font-weight: 600;
 `
-
-const Dropdown = () => (
-  <select
-    id="months"
-    name="months"
-    css={css`
-      font-weight: 600;
-      min-height: 3rem;
-      margin-right: auto;
-      background-color: inherit;
-      color: var(--text-color-light);
-      font-size: var(--font-size-sm);
-      border-color: var(--neutral-300);
-      border-radius: var(--border-radius);
-    `}
-  >
-    {MONTHS.map(month => (
-      <option key={month} value={month}>
-        {month}
-      </option>
-    ))}
-  </select>
-)
 
 const MonthSel = () => {
   const history = useHistory()
@@ -213,7 +189,6 @@ AddButton.propTypes = {
 
 const Actions = ({onModal}) => (
   <ActionsWrapper>
-    {/* <Dropdown /> */}
     <MonthSel />
     <ActionButton variant="actionActive">
       <ActionText>Categoria</ActionText>

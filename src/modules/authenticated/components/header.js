@@ -39,6 +39,7 @@ const Header = () => {
             .forEach(k => {
               localStorage.setItem(k, null)
             })
+          window.location.reload()
         }}
       >
         clear

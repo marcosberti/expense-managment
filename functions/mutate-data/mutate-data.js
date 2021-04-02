@@ -9,30 +9,31 @@ const handler = async (event, ctx) => {
     }
   }
 
-  let {data} = JSON.parse(event.body)
+  let mutatedData = JSON.parse(event.body)
 
   try {
     const batch = db.batch()
-    data = data.map(({collection, data: {id, ...mutated}}) => {
-      const docRef = id
-        ? db.collection(collection).doc(id)
-        : db.collection(collection).doc()
+    mutatedData = mutatedData.map(
+      ({collection, operation, data: {id, ...data}}) => {
+        const docRef = id
+          ? db.collection(collection).doc(id)
+          : db.collection(collection).doc()
 
-      const operation = id ? 'update' : 'set'
-      batch[operation](docRef, {...mutated})
+        batch[operation](docRef, {...data})
 
-      return {
-        id: docRef.id,
-        collection,
-        ...mutated,
+        return {
+          id: docRef.id,
+          collection,
+          ...data,
+        }
       }
-    })
+    )
 
     await batch.commit()
 
     return {
       statusCode: 201,
-      body: JSON.stringify(data),
+      body: JSON.stringify(mutatedData),
     }
   } catch (e) {
     return {

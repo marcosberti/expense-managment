@@ -10,16 +10,16 @@ import {
   Title,
   Modal,
 } from 'common-components'
-import {useData} from 'context/data'
+import {useMutate} from 'context/mutate'
 
 const CategoryForm = () => {
-  const {addCategory} = useData()
+  const {mutateCategory} = useMutate()
   const {register, handleSubmit, errors} = useForm({
     reValidateMode: 'onSubmit',
   })
 
   const onSubmit = data => {
-    addCategory(data)
+    mutateCategory(data)
   }
 
   return (
@@ -35,7 +35,7 @@ const CategoryForm = () => {
           ref={register({required: 'Debe ingresar el nombre de la categoría'})}
         />
       </label>
-      {errors.nombre && <FormError>{errors.nombre.message}</FormError>}
+      <FormError message={errors.name?.message} />
       <FormGroup>
         <label
           htmlFor="icon"
@@ -63,6 +63,7 @@ const CategoryForm = () => {
           <input id="color" name="color" type="color" ref={register} />
         </label>
       </FormGroup>
+      <FormError message={errors.icon?.message} />
       <Button type="submit">Guardar</Button>
     </Form>
   )

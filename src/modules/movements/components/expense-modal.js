@@ -1,5 +1,6 @@
 import {useForm, FormProvider} from 'react-hook-form'
 import {useData} from 'context/data'
+import {useMutate} from 'context/mutate'
 import {
   Modal,
   Title,
@@ -13,15 +14,15 @@ import {FechaCuota, FechaFijo, ModalCategories, Montos} from './common'
 const ExpenseForm = () => {
   const {
     options: [{expenseTypes}],
-    addExpense,
   } = useData()
+  const {mutateExpense} = useMutate()
   const methods = useForm()
 
   const {register, handleSubmit, watch, control, setError, errors} = methods
 
-  const type = watch('type', 'fijo')
-  const isFijo = type === 'fijo'
-  const isCuotas = type === 'cuotas'
+  const type = watch('type', 'fixed')
+  const isFixed = type === 'fixed'
+  const isPayment = type === 'payments'
 
   const onSubmit = data => {
     let {categories} = control.fieldArrayValuesRef.current
@@ -30,7 +31,7 @@ const ExpenseForm = () => {
       return
     }
     categories = categories.map(({id, ...rest}) => rest)
-    addExpense({...data, categories})
+    mutateExpense({...data, categories})
   }
 
   return (
@@ -59,8 +60,8 @@ const ExpenseForm = () => {
           </select>
         </label>
         <FormError message={errors?.type?.message} />
-        {isFijo && <FechaFijo {...{register, errors}} />}
-        {isCuotas && <FechaCuota {...{register, errors}} />}
+        {isFixed && <FechaFijo {...{register, errors}} />}
+        {isPayment && <FechaCuota {...{register, errors}} />}
         <Montos />
         <ModalCategories />
         <FormError message={errors?.categories?.message} />

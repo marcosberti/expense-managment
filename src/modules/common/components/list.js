@@ -47,7 +47,7 @@ const ItemAmount = ({type, amount, currency, exchange}) => (
     `}
   >
     <Big>
-      {type === 'egreso' ? (
+      {type === 'spent' ? (
         <DownArrowIcon fill="#d41d1d" size={16} />
       ) : (
         <UpArrowIcon fill="#25a525" size={16} align="baseline" />

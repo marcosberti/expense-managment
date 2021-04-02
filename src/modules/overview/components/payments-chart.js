@@ -122,7 +122,7 @@ const PaymentsChart = ({width, height, chartRef, paymentsData}) => {
       )
       .attr('y', (d, i) => yScale(i) - yScale.bandwidth() / 4)
       .attr('dy', '0.35em')
-      .text(d => `${d.detalle} ${d.paids.filter(p => p).length}/${d.payments}`)
+      .text(d => `${d.details} ${d.paids.filter(p => p).length}/${d.payments}`)
       .attr('opacity', 0)
       .transition(500)
       .delay(250)

@@ -172,6 +172,10 @@ const Small = styled.small`
 const FormError = ({message}) =>
   message ? <Small error>{message}</Small> : null
 
+FormError.propTypes = {
+  message: PropTypes.string,
+}
+
 const Title = styled(Big)`
   margin-bottom: 1.5rem;
   border-bottom: 4px solid var(--primary-400);

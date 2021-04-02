@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {useForm, useFormContext, FormProvider} from 'react-hook-form'
 import {useData} from 'context/data'
+import {useMutate} from 'context/mutate'
 import {
   Button,
   Form,
@@ -31,32 +32,34 @@ const FormEgreso = () => {
 
   React.useEffect(() => {
     const isVariable = spentType === 'variable'
-    const isCuotas = spentType === 'cuotas'
-    const isFijo = spentType === 'fijo'
+    const isPayment = spentType === 'payments'
+    const isFixed = spentType === 'fixed'
     if (isVariable) {
       setGastos(null)
     }
 
-    if (isFijo) {
+    if (isFixed) {
+      setValue('expenseRef', 'default')
       setGastos(
-        fixed.map(({id, detail}) => ({
+        fixed.map(({id, details}) => ({
           key: id,
-          value: detail,
+          value: details,
         }))
       )
     }
 
-    if (isCuotas) {
+    if (isPayment) {
+      setValue('expenseRef', 'default')
       setGastos(
         // eslint-disable-next-line no-shadow
-        payments.map(({id, details, padis, payments}) => ({
+        payments.map(({id, details, paids, payments}) => ({
           key: id,
-          value: `${details} (${padis.filter(p => p).length + 1}/${payments})`,
+          value: `${details} (${paids.filter(p => p).length + 1}/${payments})`,
         }))
       )
     }
     setCatRef([])
-  }, [fixed, payments, setCatRef, spentType])
+  }, [fixed, payments, setCatRef, setValue, spentType])
 
   React.useEffect(() => {
     if (!expense || expense === 'default') {
@@ -68,28 +71,34 @@ const FormEgreso = () => {
       return
     }
 
-    const isCuotas = spentType === 'cuotas'
-    const isFijo = spentType === 'fijo'
-    let _gasto = {}
+    const isPayment = spentType === 'payments'
+    const isFixed = spentType === 'fixed'
+    let exp = {}
 
-    if (isCuotas) {
-      _gasto = {...payments.find(({details}) => details === expense)}
-      _gasto.amount = _gasto.paymentAmount
-      _gasto.details = `${_gasto.details} (${
-        _gasto.paids.filter(p => p).length + 1
-      }/${_gasto.payments})`
+    if (isPayment) {
+      exp = {...payments.find(({id}) => id === expense)}
+      if (!Object.keys(exp).length) {
+        return
+      }
+      exp.amount = exp.paymentAmount
+      exp.details = `${exp.details} (${exp.paids.filter(p => p).length + 1}/${
+        exp.payments
+      })`
     }
 
-    if (isFijo) {
-      _gasto = {...fixed.find(({details}) => details === expense)}
-      const {amount} = {..._gasto.amounts.find(m => !m.inactiveDate)}
-      _gasto.amount = amount
+    if (isFixed) {
+      exp = {...fixed.find(({id}) => id === expense)}
+      if (!Object.keys(exp).length) {
+        return
+      }
+      const {amount} = {...exp.amounts.find(m => !m.inactiveDate)}
+      exp.amount = amount
     }
 
-    setValue('detalle', _gasto.detalle)
-    setValue('monto', _gasto.monto)
-    setValue('moneda', _gasto.moneda)
-    setCatRef(_gasto.categorias)
+    setValue('details', exp.details)
+    setValue('amount', exp.amount)
+    setValue('currency', exp.currency)
+    setCatRef(exp.categories)
   }, [catRef, expense, fixed, payments, setCatRef, setValue, spentType])
 
   return (
@@ -132,8 +141,8 @@ const MovementForm = () => {
   const [catRef, setCatRef] = React.useState([])
   const {
     options: [{currencies, movementTypes}],
-    addMovement,
   } = useData()
+  const {mutateMovement} = useMutate()
   const methods = useForm({
     reValidateMode: 'onSubmit',
   })
@@ -149,7 +158,7 @@ const MovementForm = () => {
   } = methods
 
   const type = watch('type', 'income')
-  const isEgreso = type === 'egreso'
+  const isSpent = type === 'spent'
 
   const onSubmit = data => {
     const {categories} = control.fieldArrayValuesRef.current
@@ -157,7 +166,7 @@ const MovementForm = () => {
       setError('category', {message: 'Debe haber al menos una categoria'})
       return
     }
-    addMovement({
+    mutateMovement({
       ...data,
       categories: categories.map(({id, ...rest}) => rest),
     })
@@ -205,7 +214,7 @@ const MovementForm = () => {
           </select>
         </label>
         <FormError message={errors?.type?.message} />
-        {isEgreso && <FormEgreso />}
+        {isSpent && <FormEgreso />}
         <Montos />
         <ModalCategories />
         <FormError message={errors?.category?.message} />

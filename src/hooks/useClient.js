@@ -45,15 +45,13 @@ const getClient = token => {
       }
       if (!response.ok) {
         const errorMessage = await response.text()
-        return Promise.reject(new Error(errorMessage))
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
       return {data}
     } catch (e) {
-      const {status, statusText} = e
-      console.log('e', e)
-      const {message} = await e.json()
+      const {status, statusText, message} = e
       return {
         error: {
           status,

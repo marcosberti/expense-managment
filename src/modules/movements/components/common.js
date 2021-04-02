@@ -251,7 +251,7 @@ const ModalCategories = () => {
       return
     }
 
-    const category = categories.find(c => c.name === catName)
+    const {id, ...category} = categories.find(c => c.name === catName)
     append(category)
     clearErrors('category')
   }

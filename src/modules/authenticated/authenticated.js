@@ -3,6 +3,7 @@ import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import * as mq from 'media-queries'
 import {DataProvider} from 'context/data'
+import {MutateProvider} from 'context/mutate'
 import {Navbar} from './components/navbar'
 import {Header} from './components/header'
 import {Routes} from './components/routes'
@@ -37,7 +38,9 @@ const Authenticated = () => (
     <Navbar />
     <Header />
     <DataProvider>
-      <Routes />
+      <MutateProvider>
+        <Routes />
+      </MutateProvider>
     </DataProvider>
   </Grid>
 )

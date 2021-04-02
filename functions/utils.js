@@ -1,5 +1,9 @@
 const {db} = require('./firebase')
 
+const sorted = {
+  categories: 'name',
+}
+
 const getResponseData = (queriedkeys, response) => {
   const result = response.reduce((r, snapshot, i) => {
     const data = []
@@ -10,7 +14,10 @@ const getResponseData = (queriedkeys, response) => {
       })
     })
     const key = queriedkeys[i]
-    r[key] = data
+    const sortField = sorted[key]
+    r[key] = sortField
+      ? data.sort((a, b) => (a[sortField] > b[sortField] ? 1 : -1))
+      : data
 
     return r
   }, {})
@@ -28,14 +35,16 @@ const dateInfo = dateISO => {
   return {
     firstOfMonth,
     lastOfMonth,
+    year,
   }
 }
 
-const getMovements = (begin, end) =>
+const getMovements = ({begin, end}) =>
   db.collection('movements').where('date', '>=', begin).where('date', '<=', end)
-const getMonthly = year => db.collection('monthly').where('year', '==', year)
+const getMonthly = ({year}) =>
+  db.collection('monthly').where('year', '==', year)
 const getPayments = () =>
-  db.collection('payments').where('payments', 'array-contains', false)
+  db.collection('payments').where('paids', 'array-contains', false)
 const getCategories = () => db.collection('categories')
 const getOptions = () => db.collection('options')
 const getFixed = () => db.collection('fixed').where('active', '==', true)
@@ -50,11 +59,11 @@ const keys = {
 }
 
 const getKeyRef = (key, dateISO) => {
-  const {firstOfMonth, lastOfMonth} = dateInfo(dateISO)
+  const {firstOfMonth, lastOfMonth, year} = dateInfo(dateISO)
   const begin = firstOfMonth.getTime()
   const end = lastOfMonth.getTime()
 
-  return keys[key](begin, end)
+  return keys[key]({begin, end, year})
 }
 
 module.exports = {getKeyRef, getResponseData}

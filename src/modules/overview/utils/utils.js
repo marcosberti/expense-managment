@@ -1,3 +1,5 @@
+import {getDateData} from 'common-utils'
+
 const getMainData = ({monthly}) => {
   const year = new Date().getFullYear()
   const month = new Date().getMonth()
@@ -24,33 +26,25 @@ const getYearlyData = ({monthly}) => {
   })
 }
 
-const getPaymentDateData = time => {
-  const date = new Date(time)
-
-  return {
-    year: date.getFullYear(),
-    month: date.getMonth(),
-    date: date.getDate(),
-  }
-}
-
+// a los meses le sumamos 1 (el de inicio) y
+// 2 (al ultimo) pq el chart va de 0 a 13,
+// dos elementos extra para mejor visualizacion
 const getFisrtPaymentMonth = firstPaymentDate => {
-  const {year, month} = getPaymentDateData(firstPaymentDate)
+  const {year, month} = getDateData(firstPaymentDate)
   const currentYear = new Date().getFullYear()
-  return currentYear > year ? 1 : month
+  return currentYear > year ? 1 : month + 1
 }
 
 const getLastPaymentMonth = lastPaymentDate => {
-  const {year, month} = getPaymentDateData(lastPaymentDate)
+  const {year, month} = getDateData(lastPaymentDate)
   const currentYear = new Date().getFullYear()
-  // le sumamos 1 al mes para que se visualize mejor en el chart
-  return currentYear < year ? 13 : month + 1
+  return currentYear < year ? 13 : month + 2
 }
 
 const getPaidPaymentsMonth = (paids, firstPaymentDate) => {
   const paid = paids.filter(p => p).length
-  const {year, month} = getPaymentDateData(firstPaymentDate)
-  const paymentDate = new Date(year, month - 1 + paid)
+  const {year, month} = getDateData(firstPaymentDate)
+  const paymentDate = new Date(year, month + 1 + paid)
   const paymentYear = paymentDate.getFullYear()
   const paymentMonth = paymentDate.getMonth()
   const currentYear = new Date().getFullYear()

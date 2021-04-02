@@ -30,6 +30,10 @@ const getPathnameParams = (pathname, keys, search) => {
   const date = search ? new Date(`${search.split('=')[1]}-10`) : new Date()
   const missingKeys = pathsKeys[pathname].filter(k => !keys.includes(k))
 
+  if (!missingKeys.length && search) {
+    missingKeys.push('movements')
+  }
+
   return {
     dateISO: date.toISOString(),
     keys: missingKeys,
@@ -84,7 +88,7 @@ const reducer = (state, action) => {
     const updatedData = {
       ...state.data,
     }
-    action.values.forEAch(({collection, id, ...data}) => {
+    action.values.forEach(({collection, id, ...data}) => {
       let value = updatedData[collection].find(({id: _id}) => _id === id)
       if (value) {
         value = {...data}
@@ -106,6 +110,7 @@ const reducer = (state, action) => {
 
 const initialState = {
   status: STATUS_PENDING,
+  data: {},
 }
 
 const DataProvider = ({children}) => {
@@ -131,6 +136,7 @@ const DataProvider = ({children}) => {
    */
   React.useEffect(() => {
     pageRef.current = `${location.pathname}${location.search}`
+
     /**
      * check if that page was already requested
      * if so, get the data from storage
@@ -147,18 +153,21 @@ const DataProvider = ({children}) => {
         keysRef.current,
         location.search
       )
-      console.log('params', params)
-      dispatch({type: STATUS_PENDING})
+      if (!params.keys.length) {
+        saveToStorage(pageRef.current, true)
+        dispatch({type: STATUS_STORAGE})
+        return
+      }
 
-      // eslint-disable-next-line no-shadow
-      const {data, error} = await client('get-data', {params})
+      dispatch({type: STATUS_PENDING})
+      const {data: rData, error} = await client('get-data', {params})
       if (error) {
         dispatch({type: STATUS_REJECTED, error})
         return
       }
 
       saveToStorage(pageRef.current, true)
-      dispatch({type: STATUS_UPDATED, data})
+      dispatch({type: STATUS_UPDATED, data: rData})
     }
 
     run()
