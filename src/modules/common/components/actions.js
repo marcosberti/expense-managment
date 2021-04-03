@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import {useModal} from 'context/modal'
 import {FilterIcon, SortIcon, AddIcon} from 'icons'
 import * as mq from 'media-queries'
-import {Button, Small} from './components'
+import {Button, Small} from './styled'
 
 const actionVariants = {
   action: {

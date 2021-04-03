@@ -291,7 +291,10 @@ const MutateProvider = ({children}) => {
     async (id, collection) => {
       const {movements, monthly, payments} = data
       const body = getDeletedBody(id, collection, movements, monthly, payments)
-      console.log('body', body)
+      if (!body.length) {
+        setError({message: 'No se encontraron datos para eliminar'})
+        return
+      }
       setPending()
       const {error} = await client('mutate-data', {body})
       if (error) {

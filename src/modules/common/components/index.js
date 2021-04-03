@@ -1,5 +1,5 @@
+export * from './styled'
 export * from './components'
 export * from './modal'
 export * from './list'
 export * from './actions'
-export * from './forms'

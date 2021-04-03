@@ -4,17 +4,11 @@ import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
 import {useModal} from 'context/modal'
 import {useMutate} from 'context/mutate'
-import {
-  Big,
-  Button,
-  CustomSVG,
-  DesktopOnly,
-  Small,
-  Title,
-} from 'common-components'
 import {formatAmount, formatDate} from 'common-utils'
 import {UpArrowIcon, DownArrowIcon, DeclineIcon, EditIcon} from 'icons'
 import * as mq from 'media-queries'
+import {Big, Button, Small, Title} from './styled'
+import {CustomSVG, DesktopOnly} from './components'
 
 const ItemDetail = ({details, clarification, children}) => (
   <div
