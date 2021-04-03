@@ -24,6 +24,7 @@ const pathsKeys = {
     'payments',
     'fixed',
   ],
+  '/expenses': ['fixed', 'payments'],
 }
 
 const getPathnameParams = (pathname, keys, search) => {
@@ -88,12 +89,14 @@ const reducer = (state, action) => {
     const updatedData = {
       ...state.data,
     }
-    action.values.forEach(({collection, id, ...data}) => {
-      let value = updatedData[collection].find(({id: _id}) => _id === id)
-      if (value) {
-        value = {...data}
+    action.values.forEach(({collection, operation, ...data}) => {
+      const index = updatedData[collection].findIndex(c => c.id === data.id)
+      if (operation === 'delete') {
+        updatedData[collection].splice(index, 1)
+      } else if (index >= 0) {
+        updatedData[collection][index] = data
       } else {
-        updatedData[collection].push({id, ...data})
+        updatedData[collection].push(data)
       }
     })
 
@@ -210,7 +213,7 @@ const DataProvider = ({children}) => {
     [data, setData, setError, setPending]
   )
 
-  console.log('data', data)
+  // console.log('data', data)
 
   const isPending = status === STATUS_PENDING
   const isRejected = status === STATUS_REJECTED

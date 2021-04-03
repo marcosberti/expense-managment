@@ -1,10 +1,11 @@
 import {useModal} from 'context/modal'
 import {Modal, Title} from 'common-components'
-import {NewMovementForm} from './new-movement-form'
-import {EditMovementForm} from './edit-movement-form'
+import {NewExpenseForm} from './new-expense-form'
+import {EditExpenseForm} from './edit-expense-form'
 
-const MovementModal = () => {
+const ExpenseModal = () => {
   const {isOpen, editDataRef, handleModal} = useModal()
+
   return (
     <Modal
       modalProps={{
@@ -18,14 +19,14 @@ const MovementModal = () => {
       isOpen={isOpen}
       onClose={handleModal}
     >
-      <Title>{editDataRef ? 'Editar' : 'Nuevo'} movimiento</Title>
+      <Title>{editDataRef ? 'Editar' : 'Nuevo'} Gasto</Title>
       {editDataRef ? (
-        <EditMovementForm editDataRef={editDataRef} />
+        <EditExpenseForm editDataRef={editDataRef} />
       ) : (
-        <NewMovementForm />
+        <NewExpenseForm />
       )}
     </Modal>
   )
 }
 
-export {MovementModal}
+export {ExpenseModal}

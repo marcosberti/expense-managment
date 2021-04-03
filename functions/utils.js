@@ -2,6 +2,13 @@ const {db} = require('./firebase')
 
 const sorted = {
   categories: 'name',
+  payments: 'details',
+  fixed: 'details',
+  movements: 'date',
+}
+
+const sortedInverted = {
+  date: true,
 }
 
 const getResponseData = (queriedkeys, response) => {
@@ -15,8 +22,12 @@ const getResponseData = (queriedkeys, response) => {
     })
     const key = queriedkeys[i]
     const sortField = sorted[key]
+    const inverted = sortedInverted[sortField]
+    const sortValues = inverted ? [-1, 1] : [1, -1]
     r[key] = sortField
-      ? data.sort((a, b) => (a[sortField] > b[sortField] ? 1 : -1))
+      ? data.sort((a, b) =>
+          a[sortField] > b[sortField] ? sortValues[0] : sortValues[1]
+        )
       : data
 
     return r

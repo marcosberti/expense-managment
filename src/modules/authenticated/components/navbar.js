@@ -126,6 +126,7 @@ MobileMenuButton.propTypes = {
 const routes = [
   {path: '/', text: 'Overview'},
   {path: '/movements', text: 'Movimientos'},
+  {path: '/expenses', text: 'Gastos'},
   {path: '/reports', text: 'Reportes', disabled: true},
 ]
 

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import {useForm} from 'react-hook-form'
+import {useModal} from 'context/modal'
 import {
   Button,
   Form,
@@ -13,13 +14,13 @@ import {
 import {useMutate} from 'context/mutate'
 
 const CategoryForm = () => {
-  const {mutateCategory} = useMutate()
+  const {addCategory} = useMutate()
   const {register, handleSubmit, errors} = useForm({
     reValidateMode: 'onSubmit',
   })
 
   const onSubmit = data => {
-    mutateCategory(data)
+    addCategory(data)
   }
 
   return (
@@ -69,20 +70,25 @@ const CategoryForm = () => {
   )
 }
 
-const CategoryModal = props => (
-  <Modal
-    modalProps={{
-      top: '0',
-      right: '0',
-      height: '100%',
-      width: '400px',
-      zIndex: '1',
-    }}
-    {...props}
-  >
-    <Title>Nueva categoria</Title>
-    <CategoryForm />
-  </Modal>
-)
+const CategoryModal = () => {
+  const {isCategoryOpen, onModal} = useModal()
+
+  return (
+    <Modal
+      modalProps={{
+        top: '0',
+        right: '0',
+        height: '100%',
+        width: '400px',
+        zIndex: '1',
+      }}
+      isOpen={isCategoryOpen}
+      onClose={onModal}
+    >
+      <Title>Nueva categoria</Title>
+      <CategoryForm />
+    </Modal>
+  )
+}
 
 export {CategoryModal}

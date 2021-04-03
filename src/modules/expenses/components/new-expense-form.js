@@ -2,21 +2,23 @@ import {useForm, FormProvider} from 'react-hook-form'
 import {useData} from 'context/data'
 import {useMutate} from 'context/mutate'
 import {
-  Modal,
-  Title,
   Button,
   Form,
   FormError,
   LabelText,
+  ModalCategories,
+  Montos,
 } from 'common-components'
-import {FechaCuota, FechaFijo, ModalCategories, Montos} from './common'
+import {FechaCuota, FechaFijo} from './forms'
 
-const ExpenseForm = () => {
+const NewExpenseForm = () => {
+  const data = useData()
+  const {addExpense} = useMutate()
+  const methods = useForm()
+
   const {
     options: [{expenseTypes}],
-  } = useData()
-  const {mutateExpense} = useMutate()
-  const methods = useForm()
+  } = data
 
   const {register, handleSubmit, watch, control, setError, errors} = methods
 
@@ -24,14 +26,14 @@ const ExpenseForm = () => {
   const isFixed = type === 'fixed'
   const isPayment = type === 'payments'
 
-  const onSubmit = data => {
+  const onSubmit = expense => {
     let {categories} = control.fieldArrayValuesRef.current
     if (!categories.length) {
       setError('category', {message: 'Debe haber al menos una categoria'})
       return
     }
     categories = categories.map(({id, ...rest}) => rest)
-    mutateExpense({...data, categories})
+    addExpense({...expense, categories})
   }
 
   return (
@@ -71,21 +73,4 @@ const ExpenseForm = () => {
   )
 }
 
-const ExpenseModal = props => (
-  <Modal
-    modalProps={{
-      '--category-size': '5rem',
-      top: '0',
-      right: '0',
-      height: '100%',
-      width: '400px',
-      zIndex: '1',
-    }}
-    {...props}
-  >
-    <Title>Nuevo Gasto</Title>
-    <ExpenseForm />
-  </Modal>
-)
-
-export {ExpenseModal}
+export {NewExpenseForm}

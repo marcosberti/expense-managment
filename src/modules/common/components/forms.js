@@ -2,89 +2,19 @@
 import * as React from 'react'
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
-import PropTypes from 'prop-types'
 import {useFieldArray, useFormContext} from 'react-hook-form'
+import PropTypes from 'prop-types'
 import {useData} from 'context/data'
-import {AddIcon} from 'icons'
 import {
   Button,
-  Modal,
   FormGroup,
   FormError,
-  LabelText,
-  ItemIcon,
+  Modal,
   Small,
+  LabelText,
 } from 'common-components'
-
-const FechaCuota = ({register, errors}) => (
-  <FormGroup>
-    <label htmlFor="firstPaymentDate">
-      <LabelText>fecha primer pago</LabelText>
-      <input
-        id="firstPaymentDate"
-        name="firstPaymentDate"
-        type="date"
-        defaultValue={new Date().toISOString().split('T')[0]}
-        ref={register({
-          required: 'Campo obligatorio',
-        })}
-      />
-    </label>
-    <FormError message={errors?.firstPaymentDate?.message} />
-    <label htmlFor="payments">
-      <LabelText>cuotas</LabelText>
-      <input
-        id="payments"
-        name="payments"
-        type="number"
-        step="3"
-        min="0"
-        placeholder="Cuotas"
-        ref={register({required: 'Campo obligatorio'})}
-      />
-    </label>
-    <FormError message={errors?.payments?.message} />
-  </FormGroup>
-)
-
-FechaCuota.propTypes = {
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-}
-
-const FechaFijo = ({register, errors}) => (
-  <>
-    <FormGroup>
-      <label htmlFor="activeDate">
-        <LabelText>fecha activo</LabelText>
-        <input
-          id="activeDate"
-          name="activeDate"
-          type="date"
-          defaultValue={new Date().toISOString().split('T')[0]}
-          ref={register({
-            required: 'Campo obligatorio',
-          })}
-        />
-      </label>
-      <label htmlFor="inactiveDate">
-        <LabelText>fecha inactivo</LabelText>
-        <input
-          id="inactiveDate"
-          name="inactiveDate"
-          type="date"
-          ref={register}
-        />
-      </label>
-    </FormGroup>
-    <FormError message={errors?.activeDate?.message} />
-  </>
-)
-
-FechaFijo.propTypes = {
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-}
+import {AddIcon} from 'icons'
+import {ItemIcon} from './list'
 
 const Montos = () => {
   const {register, errors, watch, exchangeNeeded} = useFormContext()
@@ -294,4 +224,4 @@ const ModalCategories = () => {
   )
 }
 
-export {FechaCuota, FechaFijo, ModalCategories, Montos}
+export {Montos, ModalCategories}

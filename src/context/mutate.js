@@ -103,7 +103,7 @@ const formatMonthly = (monthly, movement, operation) => {
   return data
 }
 
-const getMovementBody = (movement, monthly, payments, operation) => {
+const getNewMovementBody = (movement, monthly, payments, operation) => {
   const formattedMovement = formatMovement(movement)
   const formattedMonthly = formatMonthly(monthly, formattedMovement, operation)
   const body = [
@@ -135,15 +135,85 @@ const getMovementBody = (movement, monthly, payments, operation) => {
   return body
 }
 
+const getEditedMovementBody = (oldMov, newMov, monthly) => {
+  const {year, month} = getDateData(oldMov.date)
+  const monthlyData = monthly.find(m => m.year === year && m.month === month)
+  const newAmount = Number(newMov.amount)
+  monthlyData[oldMov.type] += oldMov.amount * -1 + newAmount
+  const body = [
+    {
+      collection: 'movements',
+      operation: 'update',
+      data: {...oldMov, ...newMov, amount: newAmount},
+    },
+    {
+      collection: 'monthly',
+      operation: 'update',
+      data: monthlyData,
+    },
+  ]
+
+  return body
+}
+
+const getDeletedBody = (id, collection, movements, monthly, payments) => {
+  const body = [
+    {
+      collection,
+      operation: 'delete',
+      data: {id},
+    },
+  ]
+  if (collection === 'movements') {
+    const movement = movements.find(m => m.id === id)
+    const {year, month} = getDateData(movement.date)
+    const monthlyData = monthly.find(m => m.year === year && m.month === month)
+    monthlyData[movement.type] -= movement.exchange
+      ? movement.amount * movement.exchange
+      : movement.amount
+    body.push({
+      collection: 'monthly',
+      operation: 'update',
+      data: monthlyData,
+    })
+    if (movement.spentType === 'payments') {
+      let [details, paymentNo] = movement.details.split('(')
+      details = details.replace(' ', '')
+      paymentNo = Number(paymentNo.split('/')[0])
+      const payment = payments.find(p => p.details === details)
+      if (!payment) {
+        console.warn(
+          'No se encontro el gasto correspondiente.\n Debe corresponder a uno ya pagado en su toatlidad. \n Pruebe manualmente'
+        )
+        return []
+      }
+      const paids = payment.paids.filter(p => p).length
+      if (paids !== paymentNo) {
+        alert('debe eliminar los pagos posteriores antes de eliminar este')
+        return []
+      }
+
+      payment.paids[paymentNo - 1] = false
+      body.push({
+        collection: 'payments',
+        operation: 'update',
+        data: payment,
+      })
+    }
+  }
+
+  return body
+}
+
 const MutateProvider = ({children}) => {
   const data = useData()
   const client = useClient()
   const {setPending, setError, setData} = data
 
   /**
-   * mutate a category
+   * add a category
    */
-  const mutateCategory = React.useCallback(
+  const addCategory = React.useCallback(
     async (category, operation = 'set') => {
       const body = [{collection: 'categories', operation, data: category}]
       setPending()
@@ -159,9 +229,9 @@ const MutateProvider = ({children}) => {
   )
 
   /**
-   * mutate an expense
+   * add an expense
    */
-  const mutateExpense = React.useCallback(
+  const addExpense = React.useCallback(
     async (expense, operation = 'set') => {
       setPending()
       const body = formatExpense(expense, operation)
@@ -177,13 +247,12 @@ const MutateProvider = ({children}) => {
   )
 
   /**
-   * mutate a new movement
+   * add a new movement
    */
-  const mutateMovement = React.useCallback(
+  const addMovement = React.useCallback(
     async (movement, operation = null) => {
       const {monthly, payments} = data
-      const body = getMovementBody(movement, monthly, payments, operation)
-      console.log('body', body)
+      const body = getNewMovementBody(movement, monthly, payments, operation)
       setPending()
       const {data: rData, error} = await client('mutate-data', {body})
       if (error) {
@@ -191,19 +260,59 @@ const MutateProvider = ({children}) => {
         return
       }
 
-      console.log('rData', rData)
       setData(rData)
+    },
+    [client, data, setData, setError, setPending]
+  )
+
+  /**
+   * Edit a movement
+   */
+  const editMovement = React.useCallback(
+    async (oldMov, newMov) => {
+      const {monthly} = data
+      const body = getEditedMovementBody(oldMov, newMov, monthly)
+      setPending()
+      const {data: rData, error} = await client('mutate-data', {body})
+      if (error) {
+        setError(error)
+        return
+      }
+
+      setData(rData)
+    },
+    [client, data, setData, setError, setPending]
+  )
+
+  /**
+   * delete a doc by its id
+   */
+  const deleteDoc = React.useCallback(
+    async (id, collection) => {
+      const {movements, monthly, payments} = data
+      const body = getDeletedBody(id, collection, movements, monthly, payments)
+      console.log('body', body)
+      setPending()
+      const {error} = await client('mutate-data', {body})
+      if (error) {
+        setError(error)
+        return
+      }
+
+      setData(body)
     },
     [client, data, setData, setError, setPending]
   )
 
   const value = React.useMemo(
     () => ({
-      mutateCategory,
-      mutateExpense,
-      mutateMovement,
+      addCategory,
+      addExpense,
+      addMovement,
+      editMovement,
+      deleteDoc,
     }),
-    [mutateCategory, mutateExpense, mutateMovement]
+    [addCategory, addExpense, addMovement, editMovement, deleteDoc]
   )
 
   return (

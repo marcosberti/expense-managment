@@ -4,11 +4,22 @@ import PropTypes from 'prop-types'
 import {Button, Small} from 'common-components'
 import {formatDate} from 'common-utils'
 import {useAuth} from 'context/auth'
+import {RefreshIcon, LogoutIcon} from 'icons'
+
+const Refresh = ({handleRefresh}) => (
+  <Button variant="secondary" onClick={handleRefresh}>
+    <RefreshIcon fill="var(--primary-400)" />
+  </Button>
+)
+
+Refresh.propTypes = {
+  handleRefresh: PropTypes.func.isRequired,
+}
 
 const Logout = ({logout}) => (
-  <div>
-    <Button onClick={logout}>logout</Button>
-  </div>
+  <Button onClick={logout}>
+    <LogoutIcon />
+  </Button>
 )
 
 Logout.propTypes = {
@@ -17,6 +28,15 @@ Logout.propTypes = {
 
 const Header = () => {
   const {user, logout} = useAuth()
+  const handleRefresh = () => {
+    const keys = Object.keys(localStorage)
+    keys
+      .filter(k => !k.includes('gotrue.user'))
+      .forEach(k => {
+        localStorage.setItem(k, null)
+      })
+    window.location.reload()
+  }
   return (
     <header
       css={css`
@@ -31,20 +51,15 @@ const Header = () => {
         <h1>{user.name}</h1>
         <Small>{formatDate(Date.now())}</Small>
       </div>
-      <Button
-        onClick={() => {
-          const keys = Object.keys(localStorage)
-          keys
-            .filter(k => !k.includes('gotrue.user'))
-            .forEach(k => {
-              localStorage.setItem(k, null)
-            })
-          window.location.reload()
-        }}
+      <div
+        css={css`
+          gap: 1rem;
+          display: flex;
+        `}
       >
-        clear
-      </Button>
-      <Logout logout={logout} />
+        <Refresh handleRefresh={handleRefresh} />
+        <Logout logout={logout} />
+      </div>
     </header>
   )
 }

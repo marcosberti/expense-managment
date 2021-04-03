@@ -18,7 +18,7 @@ const filterMovements = (movements, month, year) =>
       const movMonth = movDate.getMonth()
       return movYear === year && movMonth === month
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .sort((a, b) => (a.date > b.date ? -1 : 1))
 
 const getMovements = ({movements}, location) => {
   const [year, month] = getMovementsMonth(location)

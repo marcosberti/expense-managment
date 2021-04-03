@@ -1,13 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import * as React from 'react'
 import {css} from '@emotion/react'
 import {useLocation} from 'react-router-dom'
 import {useData} from 'context/data'
-import {Big, List, Small, MovementItem} from 'common-components'
-import {Actions} from './components/actions'
-import {CategoryModal} from './components/category-modal'
+import {Actions, Big, List, Small, MovementItem} from 'common-components'
 import {MovementModal} from './components/movement-modal'
-import {ExpenseModal} from './components/expense-modal'
 import {getMovements} from './utils'
 
 const NoMovements = () => (
@@ -30,15 +26,6 @@ const Movements = () => {
   const data = useData()
   const location = useLocation()
   const movements = getMovements(data, location)
-  const [openModal, setOpenModal] = React.useState(null)
-
-  const onModal = modal => {
-    setOpenModal(modal ?? null)
-  }
-
-  React.useEffect(() => {
-    setOpenModal(null)
-  }, [data])
 
   return (
     <div
@@ -49,10 +36,8 @@ const Movements = () => {
         max-height: calc(100vh - var(--header-size));
       `}
     >
-      <MovementModal isOpen={openModal === 'movimiento'} onClose={onModal} />
-      <ExpenseModal isOpen={openModal === 'gasto'} onClose={onModal} />
-      <CategoryModal isOpen={openModal === 'categoria'} onClose={onModal} />
-      <Actions onModal={onModal} />
+      <MovementModal />
+      <Actions monthSel sortCategory sortDate sortValue />
       <List
         listProps={{
           gap: '0.5rem',

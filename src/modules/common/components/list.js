@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
+import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
+import {useModal} from 'context/modal'
+import {useMutate} from 'context/mutate'
 import {
   Big,
   Button,
@@ -10,10 +13,10 @@ import {
   Title,
 } from 'common-components'
 import {formatAmount, formatDate} from 'common-utils'
-import {UpArrowIcon, DownArrowIcon, DeclineIcon} from 'icons'
+import {UpArrowIcon, DownArrowIcon, DeclineIcon, EditIcon} from 'icons'
 import * as mq from 'media-queries'
 
-const ItemDetail = ({details, date}) => (
+const ItemDetail = ({details, clarification, children}) => (
   <div
     css={css`
       display: flex;
@@ -21,14 +24,38 @@ const ItemDetail = ({details, date}) => (
       justify-content: space-between;
     `}
   >
-    <Big>{details}</Big>
-    <Small>{formatDate(date)}</Small>
+    <div>
+      <Big>{details}</Big>
+      {clarification && (
+        <Small>
+          {'  '}({clarification})
+        </Small>
+      )}
+    </div>
+    {children}
   </div>
 )
 
 ItemDetail.propTypes = {
   details: PropTypes.string,
-  date: PropTypes.string,
+  clarification: PropTypes.string,
+  children: PropTypes.object,
+}
+
+const ItemAmountIcon = ({type}) => {
+  if (!type) {
+    return null
+  }
+
+  return type === 'spent' ? (
+    <DownArrowIcon fill="#d41d1d" size={16} />
+  ) : (
+    <UpArrowIcon fill="#25a525" size={16} align="baseline" />
+  )
+}
+
+ItemAmountIcon.propTypes = {
+  type: PropTypes.string,
 }
 
 const ItemAmount = ({type, amount, currency, exchange}) => (
@@ -47,12 +74,8 @@ const ItemAmount = ({type, amount, currency, exchange}) => (
     `}
   >
     <Big>
-      {type === 'spent' ? (
-        <DownArrowIcon fill="#d41d1d" size={16} />
-      ) : (
-        <UpArrowIcon fill="#25a525" size={16} align="baseline" />
-      )}
-      {formatAmount(exchange ? amount * exchange : amount)}
+      <ItemAmountIcon type={type} />
+      {formatAmount(exchange ? amount * exchange : amount, currency)}
     </Big>
     {exchange && (
       <Small>
@@ -69,55 +92,124 @@ ItemAmount.propTypes = {
   currency: PropTypes.string,
 }
 
+const ItemWrapper = styled.div`
+  gap: 1rem;
+  display: flex;
+  padding: 1rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  justify-content: flex-start;
+  border-radius: var(--border-radius);
+  background-color: var(--background-color-light);
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  ${mq.large} {
+    padding: 1.25rem;
+  }
+`
+
 const MovementItem = ({
-  item: {details, date, type, amount, currency, exchange, categories},
-}) => (
-  <div
-    css={css`
-      gap: 1rem;
-      display: flex;
-      padding: 1rem;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      justify-content: flex-start;
-      border-radius: var(--border-radius);
-      background-color: var(--background-color-light);
+  item: {id, details, date, type, amount, currency, exchange, categories},
+}) => {
+  const {handleModal} = useModal()
+  const {deleteDoc} = useMutate()
 
-      &:last-of-type {
-        margin-bottom: 0;
-      }
+  const handleEdit = () => {
+    handleModal({id, type})
+  }
 
-      ${mq.large} {
-        padding: 2rem;
-      }
-    `}
-  >
-    <DesktopOnly>
-      <ItemIcon icon={categories[0].icon} color={categories[0].color} />
-    </DesktopOnly>
-    <ItemDetail details={details} date={date} />
-    <ItemAmount
-      type={type}
-      amount={amount}
-      currency={currency}
-      exchange={exchange}
-    />
-    <Button type="button" variant="icon">
-      <DeclineIcon fill="#555" />
-    </Button>
-  </div>
-)
+  const handleDelete = () => {
+    deleteDoc(id, 'movements')
+  }
+
+  return (
+    <ItemWrapper>
+      <DesktopOnly>
+        <ItemIcon icon={categories[0].icon} color={categories[0].color} />
+      </DesktopOnly>
+      <ItemDetail details={details}>
+        <Small>{formatDate(date)}</Small>
+      </ItemDetail>
+      <ItemAmount
+        type={type}
+        amount={amount}
+        currency={currency}
+        exchange={exchange}
+      />
+      <Button variant="icon" onClick={handleEdit}>
+        <EditIcon fill="#555" />
+      </Button>
+      <Button variant="icon" onClick={handleDelete}>
+        <DeclineIcon fill="#555" />
+      </Button>
+    </ItemWrapper>
+  )
+}
 
 MovementItem.propTypes = {
   item: PropTypes.shape({
+    id: PropTypes.string,
     icon: PropTypes.func,
     details: PropTypes.string,
-    date: PropTypes.string,
+    date: PropTypes.number,
     type: PropTypes.string,
     amount: PropTypes.number,
     currency: PropTypes.string,
     categories: PropTypes.array,
     exchange: PropTypes.number,
+  }).isRequired,
+}
+
+const ExpensesItem = ({
+  item: {id, details, paids, type, date, amount, currency, categories},
+}) => {
+  const {handleModal} = useModal()
+  const {deleteDoc} = useMutate()
+
+  const handleEdit = () => {
+    handleModal({id, type})
+  }
+
+  const handleDelete = () => {
+    if (paids) {
+      alert('tiene cuotas pagas, no se puede eliminar')
+      return
+    }
+    deleteDoc(id, type)
+  }
+
+  return (
+    <ItemWrapper>
+      <DesktopOnly>
+        <ItemIcon icon={categories[0].icon} color={categories[0].color} />
+      </DesktopOnly>
+      <ItemDetail details={details} clarification={type}>
+        <Small>{formatDate(date)}</Small>
+      </ItemDetail>
+      <ItemAmount amount={amount} currency={currency} />
+      <Button variant="icon" onClick={handleEdit}>
+        <EditIcon fill="#555" />
+      </Button>
+      <Button variant="icon" onClick={handleDelete}>
+        <DeclineIcon fill="#555" />
+      </Button>
+    </ItemWrapper>
+  )
+}
+
+ExpensesItem.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.string,
+    details: PropTypes.string,
+    date: PropTypes.number,
+    type: PropTypes.string,
+    amount: PropTypes.number,
+    paids: PropTypes.number,
+    currency: PropTypes.string,
+    categories: PropTypes.array,
   }).isRequired,
 }
 
@@ -209,4 +301,4 @@ List.propTypes = {
   listNoItems: PropTypes.object.isRequired,
 }
 
-export {List, CategoryItem, ItemIcon, MovementItem}
+export {List, CategoryItem, ItemIcon, ExpensesItem, MovementItem}
