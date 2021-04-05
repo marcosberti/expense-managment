@@ -3,6 +3,7 @@ const {getKeyRef, getResponseData} = require('../utils')
 const handler = async (event, ctx) => {
   const {user} = ctx.clientContext
 
+  console.log(user.email, process.env.EXPMAN_VALID_EMAIL)
   if (!user || user.email !== process.env.EXPMAN_VALID_EMAIL) {
     return {
       statusCode: 401,
