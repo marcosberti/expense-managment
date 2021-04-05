@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {useModal} from 'context/modal'
 import {useMutate} from 'context/mutate'
 import {formatAmount, formatDate} from 'common-utils'
-import {UpArrowIcon, DownArrowIcon, DeclineIcon, EditIcon} from 'icons'
+import {AddIcon, UpArrowIcon, DownArrowIcon, DeclineIcon, EditIcon} from 'icons'
 import * as mq from 'media-queries'
 import {Big, Button, Small, Title} from './styled'
 import {CustomSVG, DesktopOnly} from './components'
@@ -96,6 +96,8 @@ const ItemWrapper = styled.div`
   border-radius: var(--border-radius);
   background-color: var(--background-color-light);
 
+  ${({isPending}) => (isPending ? `opacity: 0.25` : null)};
+
   &:last-of-type {
     margin-bottom: 0;
   }
@@ -106,10 +108,34 @@ const ItemWrapper = styled.div`
 `
 
 const MovementItem = ({
-  item: {id, details, date, type, amount, currency, exchange, categories},
+  item: {
+    id,
+    details,
+    date,
+    type,
+    spentType,
+    expenseRef,
+    amount,
+    currency,
+    exchange,
+    categories,
+    status,
+  },
 }) => {
   const {handleModal} = useModal()
   const {deleteDoc} = useMutate()
+
+  const handleExpense = () => {
+    handleModal({
+      details,
+      type,
+      spentType,
+      expenseRef,
+      amount,
+      currency,
+      categories,
+    })
+  }
 
   const handleEdit = () => {
     handleModal({id, type})
@@ -119,13 +145,15 @@ const MovementItem = ({
     deleteDoc(id, 'movements')
   }
 
+  const isPending = status === 'pending'
+
   return (
-    <ItemWrapper>
+    <ItemWrapper isPending={isPending}>
       <DesktopOnly>
         <ItemIcon icon={categories[0].icon} color={categories[0].color} />
       </DesktopOnly>
       <ItemDetail details={details}>
-        <Small>{formatDate(date)}</Small>
+        {!isPending ? <Small>{formatDate(date)}</Small> : null}
       </ItemDetail>
       <ItemAmount
         type={type}
@@ -133,12 +161,20 @@ const MovementItem = ({
         currency={currency}
         exchange={exchange}
       />
-      <Button variant="icon" onClick={handleEdit}>
-        <EditIcon fill="#555" />
-      </Button>
-      <Button variant="icon" onClick={handleDelete}>
-        <DeclineIcon fill="#555" />
-      </Button>
+      {isPending ? (
+        <Button variant="icon" onClick={handleExpense}>
+          <AddIcon fill="#555" />
+        </Button>
+      ) : (
+        <>
+          <Button variant="icon" onClick={handleEdit}>
+            <EditIcon fill="#555" />
+          </Button>
+          <Button variant="icon" onClick={handleDelete}>
+            <DeclineIcon fill="#555" />
+          </Button>
+        </>
+      )}
     </ItemWrapper>
   )
 }
@@ -154,6 +190,9 @@ MovementItem.propTypes = {
     currency: PropTypes.string,
     categories: PropTypes.array,
     exchange: PropTypes.number,
+    status: PropTypes.string,
+    spentType: PropTypes.string,
+    expenseRef: PropTypes.string,
   }).isRequired,
 }
 

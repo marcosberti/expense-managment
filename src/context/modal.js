@@ -14,7 +14,7 @@ const ModalProvider = ({children}) => {
 
   const handleModal = React.useCallback(
     editRef => {
-      if (editRef?.id) {
+      if (editRef?.id || editRef?.details) {
         editDataRef.current = editRef
       }
       if (isOpen) {

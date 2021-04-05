@@ -7,6 +7,9 @@ import {
   Form,
   FormError,
   LabelText,
+  Label,
+  Input,
+  Select,
   ModalCategories,
   Montos,
 } from 'common-components'
@@ -100,20 +103,20 @@ const FormEgreso = () => {
 
   return (
     <>
-      <label htmlFor="spentType">
+      <Label htmlFor="spentType">
         <LabelText>tipo de egreso</LabelText>
-        <select id="spentType" name="spentType" ref={register}>
+        <Select id="spentType" name="spentType" ref={register}>
           {spentTypes.map(type => (
             <option key={type} value={type}>
               {type}
             </option>
           ))}
-        </select>
-      </label>
+        </Select>
+      </Label>
       {gastos && (
-        <label htmlFor="expenseRef">
+        <Label htmlFor="expenseRef">
           <LabelText>Gasto a pagar</LabelText>
-          <select
+          <Select
             id="expenseRef"
             name="expenseRef"
             ref={register({
@@ -126,8 +129,8 @@ const FormEgreso = () => {
                 {value}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
       )}
       <FormError message={errors?.expenseRef ? 'Campo obligatorio' : false} />
     </>
@@ -179,9 +182,9 @@ const NewMovementForm = () => {
   return (
     <FormProvider {...{...methods, catRef, setCatRef, exchangeNeeded: true}}>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="details">
+        <Label htmlFor="details">
           <LabelText>detalle</LabelText>
-          <input
+          <Input
             id="details"
             name="details"
             type="text"
@@ -189,29 +192,29 @@ const NewMovementForm = () => {
             autoComplete="off"
             ref={register({required: 'Campo obligatorio'})}
           />
-        </label>
+        </Label>
         <FormError message={errors?.details?.message} />
-        <label htmlFor="date">
+        <Label htmlFor="date">
           <LabelText>fecha</LabelText>
-          <input
+          <Input
             id="date"
             name="date"
             type="date"
             defaultValue={new Date().toISOString().split('T')[0]}
             ref={register({required: 'Campo obligatorio'})}
           />
-        </label>
+        </Label>
         <FormError message={errors?.date?.message} />
-        <label htmlFor="type">
+        <Label htmlFor="type">
           <LabelText>tipo de movimiento</LabelText>
-          <select name="type" id="type" ref={register}>
+          <Select name="type" id="type" ref={register}>
             {movementTypes.map(movType => (
               <option key={movType} value={movType}>
                 {movType}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
         <FormError message={errors?.type?.message} />
         {isSpent && <FormEgreso />}
         <Montos />

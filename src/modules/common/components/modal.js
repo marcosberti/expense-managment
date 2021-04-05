@@ -6,12 +6,22 @@ import PropTypes from 'prop-types'
 import {useFieldArray, useFormContext} from 'react-hook-form'
 import {useData} from 'context/data'
 import {AddIcon} from 'icons'
-import {Button, FormGroup, FormError, Small, LabelText} from './styled'
+import {
+  Button,
+  FormGroup,
+  FormError,
+  Input,
+  Label,
+  Select,
+  Small,
+  LabelText,
+} from './styled'
 import {ItemIcon} from './list'
 
 const ModalBackdrop = styled.button`
   top: 0;
   left: 0;
+  z-index: 1;
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -76,9 +86,9 @@ const Montos = () => {
   return (
     <>
       <FormGroup>
-        <label htmlFor="amount">
+        <Label htmlFor="amount">
           <LabelText>Monto</LabelText>
-          <input
+          <Input
             id="amount"
             name="amount"
             type="number"
@@ -87,10 +97,10 @@ const Montos = () => {
             step="0.01"
             ref={register({required: 'Campo obligatorio'})}
           />
-        </label>
-        <label htmlFor="currency">
+        </Label>
+        <Label htmlFor="currency">
           <LabelText>Moneda</LabelText>
-          <select
+          <Select
             id="currency"
             name="currency"
             defaultValue={currencies[0]}
@@ -101,14 +111,14 @@ const Montos = () => {
                 {curr}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
       </FormGroup>
       {exchangeNeeded && currency !== 'ars' && (
         <>
-          <label htmlFor="exchange">
+          <Label htmlFor="exchange">
             <LabelText>Tipo de cambio</LabelText>
-            <input
+            <Input
               id="exchange"
               name="exchange"
               type="number"
@@ -117,7 +127,7 @@ const Montos = () => {
               step="0.01"
               ref={register({required: 'Campo obligatorio'})}
             />
-          </label>
+          </Label>
         </>
       )}
       <FormError message={errors?.amount?.message} />

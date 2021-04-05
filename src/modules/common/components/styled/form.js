@@ -35,11 +35,6 @@ const commonStyles = css`
   border-radius: var(--border-radius);
   border: 1px solid var(--neutral-200);
   background-color: var(--background-color-light);
-`
-
-const Input = styled.input`
-  ${commonStyles}
-  font-size: 0.75rem;
 
   ::placeholder {
     transition: color 0.25s ease;
@@ -51,6 +46,11 @@ const Input = styled.input`
       color: transparent;
     }
   }
+`
+
+const Input = styled.input`
+  ${commonStyles}
+  font-size: 0.75rem;
 
   &[type='color'] {
     height: 3.25rem;

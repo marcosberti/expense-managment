@@ -2,16 +2,17 @@ import {useForm, FormProvider} from 'react-hook-form'
 import PropTypes from 'prop-types'
 import {useData} from 'context/data'
 import {useMutate} from 'context/mutate'
-import {Button, Form, LabelText, Montos} from 'common-components'
+import {Button, Form, Input, Label, LabelText, Montos} from 'common-components'
 
 const EditMovementForm = ({editDataRef}) => {
   const data = useData()
-  const {editMovement} = useMutate()
+  const {addMovement, editMovement} = useMutate()
   const {movements} = data
   const {id} = editDataRef
 
-  const movement = movements.find(m => m.id === id)
-  const date = new Date(movement.date).toISOString().split('T')[0]
+  const movement = id ? movements.find(m => m.id === id) : editDataRef
+  const dateObj = movement.date ? new Date(movement.date) : new Date()
+  const date = dateObj.toISOString().split('T')[0]
   const type = movement.spentType
     ? `${movement.type} - ${movement.spentType}`
     : movement.type
@@ -23,7 +24,11 @@ const EditMovementForm = ({editDataRef}) => {
   const {handleSubmit} = methods
 
   const onSubmit = mov => {
-    editMovement(movement, mov)
+    if (id) {
+      editMovement(movement, mov)
+    } else {
+      addMovement({...movement, ...mov, date})
+    }
   }
 
   return (
@@ -31,36 +36,36 @@ const EditMovementForm = ({editDataRef}) => {
       {...{...methods, exchangeNeeded: movement.currency !== 'ars'}}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="details">
+        <Label htmlFor="details">
           <LabelText>Detalle</LabelText>
-          <input
+          <Input
             id="details"
             name="details"
             type="text"
             defaultValue={movement.details}
             disabled
           />
-        </label>
-        <label htmlFor="date">
+        </Label>
+        <Label htmlFor="date">
           <LabelText>Fecha</LabelText>
-          <input
+          <Input
             id="date"
             name="date"
             type="date"
             defaultValue={date}
-            disabled
+            disabled={Boolean(id)}
           />
-        </label>
-        <label htmlFor="type">
+        </Label>
+        <Label htmlFor="type">
           <LabelText>Tipo de movimiento</LabelText>
-          <input
+          <Input
             id="type"
             name="type"
             type="text"
             defaultValue={type}
             disabled
           />
-        </label>
+        </Label>
         <Montos />
         <Button type="submit">Guardar</Button>
       </Form>
@@ -70,7 +75,7 @@ const EditMovementForm = ({editDataRef}) => {
 
 EditMovementForm.propTypes = {
   editDataRef: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
   }).isRequired,
 }
 

@@ -302,7 +302,14 @@ const MutateProvider = ({children}) => {
         return
       }
 
-      setData(body)
+      setData(
+        // eslint-disable-next-line no-shadow
+        body.map(({collection, operation, data}) => ({
+          collection,
+          operation,
+          ...data,
+        }))
+      )
     },
     [client, data, setData, setError, setPending]
   )

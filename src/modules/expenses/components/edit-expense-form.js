@@ -1,4 +1,5 @@
 import {useForm, FormProvider} from 'react-hook-form'
+import PropTypes from 'prop-types'
 import {useData} from 'context/data'
 import {
   Button,
@@ -31,7 +32,6 @@ const EditExpenseForm = ({editDataRef}) => {
   const isFixed = type === 'fixed'
   const isPayment = type === 'payments'
 
-  console.log(isDisabled, expense)
   return (
     <FormProvider {...{...methods, catRef: expense.categories}}>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -65,6 +65,12 @@ const EditExpenseForm = ({editDataRef}) => {
       </Form>
     </FormProvider>
   )
+}
+EditExpenseForm.propTypes = {
+  editDataRef: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+  }).isRequired,
 }
 
 export {EditExpenseForm}
