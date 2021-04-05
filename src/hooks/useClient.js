@@ -36,10 +36,9 @@ const getClient = token => {
         : endpoint
 
     try {
-      const response = await fetch(
-        `${process.env.NETLIFY_FUNCTIONS_ENDPOINT_LOCAL}/${finalEndpoint}`,
-        config
-      )
+      // const url = `${process.env.NETLIFY_FUNCTIONS_ENDPOINT_LOCAL}/${finalEndpoint}`
+      const url = `${process.env.NETLIFY_FUNCTIONS_ENDPOINT}/${finalEndpoint}`
+      const response = await fetch(url, config)
       if (response.status === 401) {
         console.log('401 unauthirazed')
       }
