@@ -31,7 +31,9 @@ const getExpenses = ({fixed, payments}) => {
     })
   )
 
-  return expenses
+  return expenses.sort((a, b) =>
+    a.categories[0].name > b.categories[0].name ? 1 : -1
+  )
 }
 
 const NoMovements = () => (

@@ -114,6 +114,7 @@ const Montos = () => {
           </Select>
         </Label>
       </FormGroup>
+      <FormError message={errors?.amount?.message} />
       {exchangeNeeded && currency !== 'ars' && (
         <>
           <Label htmlFor="exchange">
@@ -128,9 +129,9 @@ const Montos = () => {
               ref={register({required: 'Campo obligatorio'})}
             />
           </Label>
+          <FormError message={errors?.exchange?.message} />
         </>
       )}
-      <FormError message={errors?.amount?.message} />
     </>
   )
 }

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import {FormGroup, FormError, LabelText} from 'common-components'
+import {FormGroup, FormError, Label, LabelText, Input} from 'common-components'
 
 const FechaCuota = ({register, errors}) => (
   <FormGroup>
-    <label htmlFor="firstPaymentDate">
+    <Label htmlFor="firstPaymentDate">
       <LabelText>fecha primer pago</LabelText>
-      <input
+      <Input
         id="firstPaymentDate"
         name="firstPaymentDate"
         type="date"
@@ -14,11 +14,11 @@ const FechaCuota = ({register, errors}) => (
           required: 'Campo obligatorio',
         })}
       />
-    </label>
+    </Label>
     <FormError message={errors?.firstPaymentDate?.message} />
-    <label htmlFor="payments">
+    <Label htmlFor="payments">
       <LabelText>cuotas</LabelText>
-      <input
+      <Input
         id="payments"
         name="payments"
         type="number"
@@ -27,7 +27,7 @@ const FechaCuota = ({register, errors}) => (
         placeholder="Cuotas"
         ref={register({required: 'Campo obligatorio'})}
       />
-    </label>
+    </Label>
     <FormError message={errors?.payments?.message} />
   </FormGroup>
 )
@@ -40,9 +40,9 @@ FechaCuota.propTypes = {
 const FechaFijo = ({register, errors}) => (
   <>
     <FormGroup>
-      <label htmlFor="activeDate">
+      <Label htmlFor="activeDate">
         <LabelText>fecha activo</LabelText>
-        <input
+        <Input
           id="activeDate"
           name="activeDate"
           type="date"
@@ -51,16 +51,16 @@ const FechaFijo = ({register, errors}) => (
             required: 'Campo obligatorio',
           })}
         />
-      </label>
-      <label htmlFor="inactiveDate">
+      </Label>
+      <Label htmlFor="inactiveDate">
         <LabelText>fecha inactivo</LabelText>
-        <input
+        <Input
           id="inactiveDate"
           name="inactiveDate"
           type="date"
           ref={register}
         />
-      </label>
+      </Label>
     </FormGroup>
     <FormError message={errors?.activeDate?.message} />
   </>

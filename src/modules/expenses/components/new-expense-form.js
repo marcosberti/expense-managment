@@ -5,6 +5,9 @@ import {
   Button,
   Form,
   FormError,
+  Input,
+  Label,
+  Select,
   LabelText,
   ModalCategories,
   Montos,
@@ -39,9 +42,9 @@ const NewExpenseForm = () => {
   return (
     <FormProvider {...methods}>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="details">
+        <Label htmlFor="details">
           <LabelText>detalle</LabelText>
-          <input
+          <Input
             id="details"
             name="details"
             type="text"
@@ -49,18 +52,18 @@ const NewExpenseForm = () => {
             autoComplete="off"
             ref={register({required: 'Campo obligatorio'})}
           />
-        </label>
+        </Label>
         <FormError message={errors?.details?.message} />
-        <label htmlFor="type">
+        <Label htmlFor="type">
           <LabelText>tipo de gasto</LabelText>
-          <select name="type" id="type" ref={register}>
+          <Select name="type" id="type" ref={register}>
             {expenseTypes.map(exType => (
               <option key={exType} value={exType}>
                 {exType}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
         <FormError message={errors?.type?.message} />
         {isFixed && <FechaFijo {...{register, errors}} />}
         {isPayment && <FechaCuota {...{register, errors}} />}

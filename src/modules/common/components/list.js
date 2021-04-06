@@ -4,8 +4,17 @@ import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
 import {useModal} from 'context/modal'
 import {useMutate} from 'context/mutate'
+import {useList} from 'context/list'
 import {formatAmount, formatDate} from 'common-utils'
-import {AddIcon, UpArrowIcon, DownArrowIcon, DeclineIcon, EditIcon} from 'icons'
+import {
+  AddIcon,
+  UpArrowIcon,
+  DownArrowIcon,
+  DeclineIcon,
+  EditIcon,
+  SubstractIcon,
+  SumarizeIcon,
+} from 'icons'
 import * as mq from 'media-queries'
 import {Big, Button, Small, Title} from './styled'
 import {CustomSVG, DesktopOnly} from './components'
@@ -124,6 +133,7 @@ const MovementItem = ({
 }) => {
   const {handleModal} = useModal()
   const {deleteDoc} = useMutate()
+  const {items, handleItem: handleItemContext} = useList()
 
   const handleExpense = () => {
     handleModal({
@@ -145,7 +155,13 @@ const MovementItem = ({
     deleteDoc(id, 'movements')
   }
 
+  const handleItem = () => {
+    handleItemContext({id, amount: exchange ? amount * exchange : amount})
+  }
+
   const isPending = status === 'pending'
+  const indexOf = items.findIndex(i => i.id === id)
+  const isSelected = indexOf >= 0
 
   return (
     <ItemWrapper isPending={isPending}>
@@ -167,6 +183,15 @@ const MovementItem = ({
         </Button>
       ) : (
         <>
+          {isSelected ? (
+            <Button variant="icon" onClick={handleItem}>
+              <SubstractIcon fill="#555" />
+            </Button>
+          ) : (
+            <Button variant="icon" onClick={handleItem}>
+              <SumarizeIcon fill="#555" />
+            </Button>
+          )}
           <Button variant="icon" onClick={handleEdit}>
             <EditIcon fill="#555" />
           </Button>

@@ -2,7 +2,15 @@
 import {css} from '@emotion/react'
 import {useForm} from 'react-hook-form'
 import {useAuth} from 'context/auth'
-import {Button, Big, Form, FormError} from 'common-components'
+import {
+  Button,
+  Big,
+  Label,
+  LabelText,
+  Input,
+  Form,
+  FormError,
+} from 'common-components'
 import lgimg from './login-img.svg'
 
 const Login = () => (
@@ -31,24 +39,28 @@ const LoginForm = () => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="username">username</label>
-      <input
-        id="username"
-        type="email"
-        name="username"
-        placeholder="Usuario"
-        autoComplete="off"
-        ref={register({required: 'Debe ingresar un usuario'})}
-      />
+      <Label htmlFor="username">
+        <LabelText>username</LabelText>
+        <Input
+          id="username"
+          type="email"
+          name="username"
+          placeholder="Usuario"
+          autoComplete="off"
+          ref={register({required: 'Debe ingresar un usuario'})}
+        />
+      </Label>
       {errors.username && <FormError>{errors.username.message}</FormError>}
-      <label htmlFor="password">password</label>
-      <input
-        id="password"
-        type="password"
-        name="password"
-        placeholder="Contraseña"
-        ref={register({required: 'Debe ingresar la contraseña'})}
-      />
+      <Label htmlFor="password">
+        <LabelText>password</LabelText>
+        <Input
+          id="password"
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          ref={register({required: 'Debe ingresar la contraseña'})}
+        />
+      </Label>
       {errors.password && <FormError>{errors.password.message}</FormError>}
       <Button type="submit" variant="primary">
         Ingresar

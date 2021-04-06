@@ -27,20 +27,23 @@ const getPendingExpenses = (filteredMovs, payments, fixed, time) => {
     .filter(
       p =>
         !movRef.includes(p.id) &&
-        p.firstPaymentDate >= time.begin &&
-        p.lastPaymentDate <= time.end
+        time.end >= p.firstPaymentDate &&
+        time.end <= p.lastPaymentDate
     )
-    .forEach(({id, details, currency, amount, categories}) =>
-      pending.push({
-        details,
-        currency,
-        amount,
-        categories,
-        expenseRef: id,
-        type: 'spent',
-        spentType: 'payments',
-        status: 'pending',
-      })
+    .forEach(
+      ({id, details, currency, paymentAmount, categories, payments, paids}) =>
+        pending.push({
+          details: `${details} (${
+            paids.filter(p => p).length + 1
+          }/${payments})`,
+          currency,
+          categories,
+          amount: paymentAmount,
+          expenseRef: id,
+          type: 'spent',
+          spentType: 'payments',
+          status: 'pending',
+        })
     )
   fixed
     .filter(
@@ -62,7 +65,9 @@ const getPendingExpenses = (filteredMovs, payments, fixed, time) => {
       })
     )
 
-  return pending
+  return pending.sort((a, b) =>
+    a.categories[0].name > b.categories[0].name ? 1 : -1
+  )
 }
 
 const getMovements = ({movements, payments, fixed}, location) => {
