@@ -177,10 +177,9 @@ const getDeletedBody = (id, collection, movements, monthly, payments) => {
       data: monthlyData,
     })
     if (movement.spentType === 'payments') {
-      let [details, paymentNo] = movement.details.split('(')
-      details = details.replace(' ', '')
+      let paymentNo = movement.details.split('(')[1]
       paymentNo = Number(paymentNo.split('/')[0])
-      const payment = payments.find(p => p.details === details)
+      const payment = payments.find(p => p.id === movement.expenseRef)
       if (!payment) {
         console.warn(
           'No se encontro el gasto correspondiente.\n Debe corresponder a uno ya pagado en su toatlidad. \n Pruebe manualmente'

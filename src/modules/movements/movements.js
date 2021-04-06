@@ -2,17 +2,15 @@
 import {css} from '@emotion/react'
 import {useLocation} from 'react-router-dom'
 import {useData} from 'context/data'
-import {ListProvider, useList} from 'context/list'
+import {ListProvider} from 'context/list'
 import {
   Actions,
   Big,
-  Button,
   List,
+  ListTotals,
   Small,
   MovementItem,
 } from 'common-components'
-import {formatAmount} from 'common-utils'
-import {DeclineIcon} from 'icons'
 import {MovementModal} from './components/movement-modal'
 import {getMovements} from './utils'
 
@@ -36,54 +34,18 @@ const MovementsList = () => {
   const data = useData()
   const location = useLocation()
   const movements = getMovements(data, location)
-  const {items, handleClear} = useList()
-
-  const total = items.reduce((acc, {amount}) => acc + amount, 0)
-  console.log('items', total)
 
   return (
     <div
       css={css`
-        position: relative;
         overflow-y: auto;
+        position: relative;
       `}
     >
-      {total > 0 ? (
-        <div
-          css={css`
-            position: sticky;
-            top: 0;
-            width: 100%;
-            height: 3rem;
-            background-color: #ebf5d5;
-            z-index: 1;
-            text-align: end;
-            padding: 0.75rem 14rem;
-            border-radius: var(--border-radius);
-            color: var(--text-color-light);
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-          `}
-        >
-          Total:{' '}
-          <span
-            css={css`
-              font-weight: 600;
-              font-size: 1.25rem;
-            `}
-          >
-            {formatAmount(total)}
-          </span>
-          <Button variant="icon" onClick={handleClear}>
-            <DeclineIcon fill="#555" />
-          </Button>
-        </div>
-      ) : null}
+      <ListTotals />
       <List
         listProps={{
           gap: '0.5rem',
-          // overflowY: 'auto',
           flexDirection: 'column',
         }}
         items={movements}

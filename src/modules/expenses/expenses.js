@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import {useData} from 'context/data'
-import {Actions, Big, List, ExpensesItem} from 'common-components'
+import {ListProvider} from 'context/list'
+import {Actions, Big, List, ListTotals, ExpensesItem} from 'common-components'
 import {ExpenseModal} from './components/expense-modal'
 
 const getExpenses = ({fixed, payments}) => {
@@ -51,25 +52,21 @@ const NoMovements = () => (
   </div>
 )
 
-const Expenses = () => {
+const ExpenseList = () => {
   const data = useData()
   const expenses = getExpenses(data)
 
   return (
     <div
       css={css`
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        max-height: calc(100vh - var(--header-size));
+        overflow-y: auto;
+        position: relative;
       `}
     >
-      <ExpenseModal />
-      <Actions />
+      <ListTotals />
       <List
         listProps={{
           gap: '0.5rem',
-          overflowY: 'auto',
           flexDirection: 'column',
         }}
         items={expenses}
@@ -79,5 +76,22 @@ const Expenses = () => {
     </div>
   )
 }
+
+const Expenses = () => (
+  <div
+    css={css`
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - var(--header-size));
+    `}
+  >
+    <ExpenseModal />
+    <Actions />
+    <ListProvider>
+      <ExpenseList />
+    </ListProvider>
+  </div>
+)
 
 export {Expenses}

@@ -26,6 +26,7 @@ const GlobalStyles = () => (
         --primary-600: ${primary[600]};
 
         /* secondaty colors */
+        --secondary-100-op: ${secondary[100]}34;
         --secondary-300: ${secondary[300]};
         --secondary-400: ${secondary[400]};
         --secondary-400-op: ${secondary[400]}54;

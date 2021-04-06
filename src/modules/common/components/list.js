@@ -107,6 +107,9 @@ const ItemWrapper = styled.div`
 
   ${({isPending}) => (isPending ? `opacity: 0.25` : null)};
 
+  ${({isSelected}) =>
+    isSelected ? `background-color: var(--secondary-100-op)` : null};
+
   &:last-of-type {
     margin-bottom: 0;
   }
@@ -164,7 +167,7 @@ const MovementItem = ({
   const isSelected = indexOf >= 0
 
   return (
-    <ItemWrapper isPending={isPending}>
+    <ItemWrapper isPending={isPending} isSelected={isSelected}>
       <DesktopOnly>
         <ItemIcon icon={categories[0].icon} color={categories[0].color} />
       </DesktopOnly>
@@ -226,6 +229,7 @@ const ExpensesItem = ({
 }) => {
   const {handleModal} = useModal()
   const {deleteDoc} = useMutate()
+  const {items, handleItem: handleItemContext} = useList()
 
   const handleEdit = () => {
     handleModal({id, type})
@@ -239,8 +243,15 @@ const ExpensesItem = ({
     deleteDoc(id, type)
   }
 
+  const handleItem = () => {
+    handleItemContext({id, amount})
+  }
+
+  const indexOf = items.findIndex(i => i.id === id)
+  const isSelected = indexOf >= 0
+
   return (
-    <ItemWrapper>
+    <ItemWrapper isSelected={isSelected}>
       <DesktopOnly>
         <ItemIcon icon={categories[0].icon} color={categories[0].color} />
       </DesktopOnly>
@@ -248,6 +259,15 @@ const ExpensesItem = ({
         <Small>{formatDate(date)}</Small>
       </ItemDetail>
       <ItemAmount amount={amount} currency={currency} />
+      {isSelected ? (
+        <Button variant="icon" onClick={handleItem}>
+          <SubstractIcon fill="#555" />
+        </Button>
+      ) : (
+        <Button variant="icon" onClick={handleItem}>
+          <SumarizeIcon fill="#555" />
+        </Button>
+      )}
       <Button variant="icon" onClick={handleEdit}>
         <EditIcon fill="#555" />
       </Button>
@@ -329,6 +349,45 @@ CategoryItem.propTypes = {
   }),
 }
 
+const ListTotals = () => {
+  const {items, handleClear} = useList()
+  const total = items.reduce((acc, {amount}) => acc + amount, 0)
+
+  return total > 0 ? (
+    <div
+      css={css`
+        top: 0;
+        z-index: 1;
+        gap: 0.5rem;
+        width: 100%;
+        height: 4rem;
+        display: flex;
+        text-align: end;
+        position: sticky;
+        align-items: center;
+        padding: 0.75rem 11rem;
+        justify-content: flex-end;
+        background-color: #ebf5d5;
+        color: var(--text-color-light);
+        border-radius: var(--border-radius);
+      `}
+    >
+      Total:
+      <span
+        css={css`
+          font-weight: 600;
+          font-size: 1.25rem;
+        `}
+      >
+        {formatAmount(total)}
+      </span>
+      <Button variant="icon" onClick={handleClear}>
+        <DeclineIcon fill="#555" />
+      </Button>
+    </div>
+  ) : null
+}
+
 const List = ({title, listProps, items, itemComponent: Item, listNoItems}) => (
   <>
     {title && <Title>{title}</Title>}
@@ -359,4 +418,4 @@ List.propTypes = {
   listNoItems: PropTypes.object.isRequired,
 }
 
-export {List, CategoryItem, ItemIcon, ExpensesItem, MovementItem}
+export {List, ListTotals, CategoryItem, ItemIcon, ExpensesItem, MovementItem}
