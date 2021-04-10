@@ -16,6 +16,7 @@ const getUserInfo = user => {
     user_metadata: {full_name: name},
     app_metadata: {roles},
   } = user
+  console.log('user', user)
 
   return {name, roles, mail, token}
 }
@@ -47,7 +48,9 @@ const useNetlifyLogin = () => {
   }, [])
 
   const refresh = React.useCallback(async () => {
-    await auth.currentUser().jwt(true)
+    // eslint-disable-next-line no-shadow
+    const current = auth.currentUser()
+    await current.jwt(true)
     setUser(getCurrentUser())
   }, [])
 

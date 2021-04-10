@@ -11,7 +11,7 @@ const objectToQueryString = obj =>
     )
     .join('&')
 
-const getClient = token => {
+const getClient = (token, refresh) => {
   const authHeaders = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
@@ -40,6 +40,8 @@ const getClient = token => {
       const response = await fetch(url, config)
       if (response.status === 401) {
         console.log('401 unauthirazed')
+        refresh()
+        return
       }
       if (!response.ok) {
         const errorMessage = await response.text()
@@ -64,13 +66,24 @@ const getClient = token => {
 }
 
 const useClient = () => {
-  const {user} = useAuth()
-  const [client, setClient] = React.useState(() => getClient(user.token))
+  const {user, refresh} = useAuth()
+  const userRef = React.useRef()
+  const [client, setClient] = React.useState(() =>
+    getClient(user.token, refresh)
+  )
 
-  // React.useEffect(() => {
-  //   console.log('in client eff')
-  //   setClient(() => getClient(user.token))
-  // }, [user])
+  React.useEffect(() => {
+    if (!userRef.current) {
+      userRef.current = user
+      return
+    }
+    const areEqual = Object.is(user, userRef.current)
+    console.log(areEqual, userRef.current)
+    if (!areEqual) {
+      console.log('upd client', user)
+      setClient(() => getClient(user.token, refresh))
+    }
+  }, [refresh, user])
 
   return client
 }
